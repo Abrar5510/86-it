@@ -7,3 +7,9 @@ eval/results/
 recordings/
 capture/
 videos/86-it-demo/capture/
+videos/86-it-demo/renders/*
+!videos/86-it-demo/renders/86-it-demo-final.mp4
+videos/86-it-demo/build/
+videos/86-it-demo/.thumbnails/
+videos/86-it-demo/.hyperframes/preview/
+videos/86-it-demo/.hyperframes/history-id

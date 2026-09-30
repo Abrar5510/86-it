@@ -170,21 +170,21 @@
 }
 
 :root{
-  --ink-black:#EEF1F5;
-  --ink-black-alt:#E7E6E5;
-  --fire-orange:#FF8A00;
-  --cream:#0D0F12;
-  --cream-muted:#FF5A1F;
-  --cream-hint:#B7B3AF;
-  --border-dark:#D9D8D7;
+  --canvas:#F4EFE6;
+  --canvas:#F4EFE6;
+  --accent-forest:#0F7A57;
+  --ink:#17181C;
+  --accent-forest:#0F7A57;
+  --hint-warm:#B7B3AF;
+  --hairline:#DAD5C9;
 }
 #root{
   position:relative;
   width:1920px;
   height:1080px;
   container-type:size;
-  background:var(--ink-black);
-  color:var(--cream);
+  background:var(--canvas);
+  color:var(--ink);
   font-family:"Space Grotesk",system-ui,sans-serif;
   overflow:hidden;
 }
@@ -193,7 +193,7 @@
   inset:0;
 }
 .frame-09-bg{
-  background:var(--ink-black);
+  background:var(--canvas);
   z-index:0;
 }
 .frame-09-world{
@@ -219,7 +219,7 @@
   line-height:1.1;
   text-align:center;
   white-space:nowrap;
-  color:var(--cream);
+  color:var(--ink);
   text-transform:lowercase;
   letter-spacing:-0.02em;
 }
@@ -230,19 +230,19 @@
   line-height:1.4;
   text-align:center;
   white-space:nowrap;
-  color:var(--cream-hint);
+  color:var(--hint-warm);
   text-transform:uppercase;
   letter-spacing:0.14em;
 }
 .frame-09-node-accent{
-  color:var(--fire-orange);
+  color:var(--accent-forest);
 }
 .frame-09-connector{
   position:absolute;
   inset:0;
   pointer-events:none;
   z-index:0;
-  stroke:var(--fire-orange);
+  stroke:var(--accent-forest);
   stroke-width:2.5;
   stroke-linecap:round;
   fill:none;
@@ -267,7 +267,7 @@
   font-weight:500;
   font-size:1.8cqw;
   line-height:1.2;
-  color:var(--cream-hint);
+  color:var(--hint-warm);
   text-transform:lowercase;
   letter-spacing:-0.01em;
 }
@@ -288,16 +288,16 @@
   line-height:1;
   letter-spacing:0.14em;
   text-transform:uppercase;
-  color:var(--cream-hint);
-  border:1px solid var(--border-dark);
+  color:var(--hint-warm);
+  border:1px solid var(--hairline);
   padding:0.5cqw 1.2cqw;
   background:transparent;
   white-space:nowrap;
   will-change:transform,opacity;
 }
 .frame-09-chip.accent{
-  color:var(--fire-orange);
-  border-color:var(--fire-orange);
+  color:var(--accent-forest);
+  border-color:var(--accent-forest);
 }
 .frame-09-gradient-blob{
   position:absolute;
@@ -309,55 +309,55 @@
   will-change:transform;
 }
 </style>
-<div id="root" data-composition-id="09-how" data-width="1920" data-height="1080">
-  <div class="clip frame-09-bg" id="bg" data-start="0" data-duration="9.613" data-track-index="0"></div>
-  <svg class="clip frame-09-connectors" id="connectors" viewBox="0 0 1920 1080" data-start="0" data-duration="9.613" data-track-index="1">
-    <defs>
-      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="var(--fire-orange)"/>
+<div data-hf-id="hf-5y9r" id="root" data-composition-id="09-how" data-width="1920" data-height="1080">
+  <div data-hf-id="hf-0mln" class="clip frame-09-bg" id="bg" data-start="0" data-duration="9.613" data-track-index="0"></div>
+  <svg data-hf-id="hf-urh5" class="clip frame-09-connectors" id="connectors" viewBox="0 0 1920 1080" data-start="0" data-duration="9.613" data-track-index="1">
+    <defs data-hf-id="hf-mh0t">
+      <marker data-hf-id="hf-q92r" id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon data-hf-id="hf-8xwe" points="0 0, 10 3.5, 0 7" fill="var(--accent-forest)" />
       </marker>
     </defs>
-    <path id="conn-station-ai" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 320 360 L 760 360"/>
-    <path id="conn-ai-do" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1100 360 L 1500 360"/>
-    <path id="conn-do-kds" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1600 400 Q 1600 550 1100 650"/>
-    <path id="conn-do-foh" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1600 400 L 1600 650"/>
-    <path id="conn-do-menu" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1600 400 Q 1600 550 2100 650"/>
+    <path data-hf-id="hf-1xx4" id="conn-station-ai" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 320 360 L 760 360" />
+    <path data-hf-id="hf-3mnv" id="conn-ai-do" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1100 360 L 1500 360" />
+    <path data-hf-id="hf-rdmt" id="conn-do-kds" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1600 400 Q 1600 550 1100 650" />
+    <path data-hf-id="hf-pzpf" id="conn-do-foh" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1600 400 L 1600 650" />
+    <path data-hf-id="hf-bpvt" id="conn-do-menu" class="frame-09-connector" marker-end="url(#arrowhead)" d="M 1600 400 Q 1600 550 2100 650" />
   </svg>
-  <div class="clip frame-09-gradient-blob" id="blob1" style="width:400px;height:400px;left:10%;top:10%;background:var(--fire-orange);" data-start="0" data-duration="9.613" data-track-index="4"></div>
-  <div class="clip frame-09-gradient-blob" id="blob2" style="width:300px;height:300px;right:15%;top:20%;background:var(--fire-orange);" data-start="0" data-duration="9.613" data-track-index="5"></div>
-  <div class="clip frame-09-gradient-blob" id="blob3" style="width:350px;height:350px;left:50%;top:70%;background:var(--fire-orange);" data-start="0" data-duration="9.613" data-track-index="3"></div>
-  <div class="clip frame-09-world" id="world" data-start="0" data-duration="9.613" data-track-index="6">
-    <div class="frame-09-node" id="node-station" style="left:16.7%;top:33.3%;">
-      <div class="frame-09-node-label">station</div>
-      <div class="frame-09-node-sub">browser</div>
+  <div data-hf-id="hf-zyd7" class="clip frame-09-gradient-blob" id="blob1" style="width:400px;height:400px;left:10%;top:10%;background:var(--accent-forest);" data-start="0" data-duration="9.613" data-track-index="4"></div>
+  <div data-hf-id="hf-uqje" class="clip frame-09-gradient-blob" id="blob2" style="width:300px;height:300px;right:15%;top:20%;background:var(--accent-forest);" data-start="0" data-duration="9.613" data-track-index="5"></div>
+  <div data-hf-id="hf-2x60" class="clip frame-09-gradient-blob" id="blob3" style="width:350px;height:350px;left:50%;top:70%;background:var(--accent-forest);" data-start="0" data-duration="9.613" data-track-index="3"></div>
+  <div data-hf-id="hf-jn2v" class="clip frame-09-world" id="world" data-start="0" data-duration="9.613" data-track-index="6">
+    <div data-hf-id="hf-8sje" class="frame-09-node" id="node-station" style="left:16.7%;top:33.3%;">
+      <div data-hf-id="hf-2yex" class="frame-09-node-label">station</div>
+      <div data-hf-id="hf-hj6p" class="frame-09-node-sub">browser</div>
     </div>
-    <div class="frame-09-node" id="node-ai" style="left:44.3%;top:33.3%;">
-      <div class="frame-09-node-label">assemblyai <span class="frame-09-node-accent">· 1 ws</span></div>
-      <div class="frame-09-node-sub">stt + llm + tts</div>
+    <div data-hf-id="hf-3kyv" class="frame-09-node" id="node-ai" style="left:44.3%;top:33.3%;">
+      <div data-hf-id="hf-8qw9" class="frame-09-node-label">assemblyai <span data-hf-id="hf-kv0w" class="frame-09-node-accent">· 1 ws</span></div>
+      <div data-hf-id="hf-rdxm" class="frame-09-node-sub">stt + llm + tts</div>
     </div>
-    <div class="frame-09-node" id="node-do" style="left:72%;top:33.3%;">
-      <div class="frame-09-node-label">durable object</div>
-      <div class="frame-09-node-sub">tool.call → state</div>
+    <div data-hf-id="hf-s5pg" class="frame-09-node" id="node-do" style="left:72%;top:33.3%;">
+      <div data-hf-id="hf-xtjx" class="frame-09-node-label">durable object</div>
+      <div data-hf-id="hf-m8xy" class="frame-09-node-sub">tool.call → state</div>
     </div>
-    <div class="frame-09-fan-group" id="fan-group" style="left:50%;top:60%;">
-      <div class="frame-09-fan-node" id="fan-kds">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--cream-hint);"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-        <div class="frame-09-fan-label">kds</div>
+    <div data-hf-id="hf-1va5" class="frame-09-fan-group" id="fan-group" style="left:50%;top:60%;">
+      <div data-hf-id="hf-8c7w" class="frame-09-fan-node" id="fan-kds">
+        <svg data-hf-id="hf-5ax2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hint-warm);"><rect data-hf-id="hf-r7md" x="2" y="3" width="20" height="14" rx="2" /><path data-hf-id="hf-85wg" d="M8 21h8" /><path data-hf-id="hf-wew8" d="M12 17v4" /></svg>
+        <div data-hf-id="hf-9h9g" class="frame-09-fan-label">kds</div>
       </div>
-      <div class="frame-09-fan-node" id="fan-foh">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--cream-hint);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <div class="frame-09-fan-label">foh</div>
+      <div data-hf-id="hf-viy7" class="frame-09-fan-node" id="fan-foh">
+        <svg data-hf-id="hf-hpca" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hint-warm);"><path data-hf-id="hf-97rn" d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle data-hf-id="hf-nb88" cx="9" cy="7" r="4" /><path data-hf-id="hf-z8a4" d="M23 21v-2a4 4 0 0 0-3-3.87" /><path data-hf-id="hf-53jq" d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+        <div data-hf-id="hf-0v65" class="frame-09-fan-label">foh</div>
       </div>
-      <div class="frame-09-fan-node" id="fan-menu">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--cream-hint);"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
-        <div class="frame-09-fan-label">menu</div>
+      <div data-hf-id="hf-c9h1" class="frame-09-fan-node" id="fan-menu">
+        <svg data-hf-id="hf-i3nb" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--hint-warm);"><line data-hf-id="hf-jh3c" x1="4" y1="12" x2="20" y2="12" /><line data-hf-id="hf-30x0" x1="4" y1="6" x2="20" y2="6" /><line data-hf-id="hf-m6gw" x1="4" y1="18" x2="20" y2="18" /></svg>
+        <div data-hf-id="hf-132v" class="frame-09-fan-label">menu</div>
       </div>
     </div>
-    <div class="frame-09-chips" id="chips" style="top:78%;">
-      <div class="frame-09-chip" id="chip1">session.update</div>
-      <div class="frame-09-chip accent" id="chip2">10 tools</div>
-      <div class="frame-09-chip" id="chip3">keyterms</div>
-      <div class="frame-09-chip" id="chip4">voice_focus</div>
+    <div data-hf-id="hf-my9m" class="frame-09-chips" id="chips" style="top:78%;">
+      <div data-hf-id="hf-n7ye" class="frame-09-chip" id="chip1">session.update</div>
+      <div data-hf-id="hf-9hve" class="frame-09-chip accent" id="chip2">10 tools</div>
+      <div data-hf-id="hf-7np5" class="frame-09-chip" id="chip3">keyterms</div>
+      <div data-hf-id="hf-y07x" class="frame-09-chip" id="chip4">voice_focus</div>
     </div>
   </div>
 </div>

@@ -2,7 +2,7 @@
 format: 1920x1080
 duration: 180s
 message: "86 It — say it once, every screen knows: real voice control for restaurant kitchens"
-arc: Demo Loop → question → product intro → demo cycles (fire / 86 / status / chatter / barge-in / alert) → trust → CTA
+arc: Demo Loop → question → product intro → demo cycles (fire / 86 / status / chatter / barge-in / alert) → noisy proof → trust → CTA
 audience: hackathon judges (AssemblyAI Voice Agent API track)
 mode: collaborative
 music: none
@@ -35,7 +35,7 @@ keyMessage: Shouting distance is broken; overselling sold-out dishes costs money
 
 - scene: Title card chain: wordmark "86 It" (big, lowercase 900) → tagline "say it once. every screen knows." → small mono label "VOICE CONTROL FOR THE LINE · ASSEMBLYAI VOICE AGENT API".
 - voiceover: "86 It — say it once, every screen knows."
-- duration: 4.127s
+- duration: 4.232s
 - transition_in: zoom-through
 - status: animated
 - src: compositions/frames/02-intro.html
@@ -150,7 +150,24 @@ keyMessage: Semantic barge-in; the agent never holds the floor.
 narrativeRole: Demo cycle 6 — escalate from command-and-response to a system that initiates.
 keyMessage: The agent acts without being asked (reply.create).
 
-## Frame 9 — How it works
+## Frame 9 — Live, unedited: the tool in real time
+
+- scene: Raw full-bleed screen capture, station page, t+73→124 of the run3 service run — no overlays, no captions, no voice-over, nothing added. One continuous take: off-topic chatter gets no tool call; "All day fries?" answered live; "Wait, stop." barge-in; "Fire table for" → Fired 4 + proactive "Table 4, 12 minutes." alert + clarification — five commands, ~175 ms median. Audio is the live mic over a busy-kitchen bed (vent hum, crowd babble, sizzle, clatter).
+- voiceover: — none (raw segment, deliberately unnarrated)
+- duration: 51s
+- transition_in: crossfade
+- status: animated
+- src: compositions/frames/09-live-raw.html
+- type: benefit_highlight
+- persuasion: Robustness proof under load
+- beat: awe + trust
+- blueprint: device-surface-showcase
+- asset_candidates: assets/demo-live.mp4 — real screen capture: station page, live service, uncut
+
+narrativeRole: Demo cycle 7 — the raw proof. Nothing staged: one unedited take of real service, heard as it happened.
+keyMessage: It works live, in real time, over real kitchen noise — no edit, no narration, no motion graphics.
+
+## Frame 10 — How it works
 
 - scene: Diagram build: browser station → one WebSocket → AssemblyAI (STT+LLM+TTS) → tool.call → Cloudflare Durable Object → fan-out arrows to KDS / FOH / menu; nodes pop in as the VO names them, orange connectors draw on last. Mono chips: "session.update", "10 tools", "keyterms", "voice_focus".
 - voiceover: "One WebSocket does speech, reasoning and voice. Tools hit a Durable Object. Every screen follows the same state."
@@ -167,7 +184,7 @@ keyMessage: The agent acts without being asked (reply.create).
 narrativeRole: The trust beat — show the mechanism behind the magic so judges can audit it.
 keyMessage: Built on the AssemblyAI Voice Agent API; real engineering, not a mock.
 
-## Frame 10 — Results
+## Frame 11 — Results
 
 - scene: Count-up hits on a dark stat grid: 96.8% command accuracy · 12/12 chatter ignored · 0 spoken false triggers · 43 eval clips; numbers tick as the VO reads them, "96.8%" lands biggest last. Small mono footnote: "live AssemblyAI sessions · every run recorded".
 - voiceover: "Measured over forty-three clips: ninety-six point eight percent accuracy. Twelve of twelve chatter lines ignored. Zero false triggers."
@@ -184,7 +201,7 @@ keyMessage: Built on the AssemblyAI Voice Agent API; real engineering, not a moc
 narrativeRole: The numbers behind the demo — evidence for the judges' rubric.
 keyMessage: The demo isn't lucky; it's measured.
 
-## Frame 11 — Business
+## Frame 12 — Business
 
 - scene: Accumulating value list popping one line per second: "one location, one monthly price" · "headset + tablet bundle" · "plugs into POS vendors via act()" · "fewer refunds, fewer comps" · "timestamped 86 log from session timelines" — holds as a full list.
 - voiceover: "Sold per location to restaurants — and it slots into POS vendors as an add-on. Fewer refunds, faster tickets, an audit trail of every 86."
@@ -201,7 +218,7 @@ keyMessage: The demo isn't lucky; it's measured.
 narrativeRole: Give the judges the business case they need to score.
 keyMessage: Clear buyer, clear model, real money saved.
 
-## Frame 12 — CTA: try it
+## Frame 13 — CTA: try it
 
 - scene: Wordmark assembles center ("86 It"), then the URL pushes through to a held end card: 86-it.rd5510.workers.dev + mono line "SAY IT ONCE. EVERY SCREEN KNOWS." — hold with caret blink.
 - voiceover: "Try it — say it once. Eight-six, dot it, workers dot dev."
@@ -217,3 +234,4 @@ keyMessage: Clear buyer, clear model, real money saved.
 
 narrativeRole: Close on the claim + the place to verify it live.
 keyMessage: Here's the URL — judge it yourself.
+

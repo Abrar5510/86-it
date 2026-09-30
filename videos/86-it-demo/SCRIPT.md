@@ -1,6 +1,6 @@
 # SCRIPT — 86-it-demo
 
-**Voice:** Marcia (HeyGen default — no voice preference named in the brief)
+**Voice:** Orson (HeyGen starfish — firm, measured, dry; replaces the original Marcia default)
 **Voice direction:** Confident, plain, a little dry — a competent line cook showing you their rig, not a marketing announcer. Fast beats, no hype.
 
 ---

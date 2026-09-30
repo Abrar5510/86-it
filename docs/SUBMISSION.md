@@ -3,6 +3,10 @@
 > **Say it once. Every screen knows.**
 > Voice control for restaurant kitchens, built on the AssemblyAI Voice Agent API.
 
+## Demo video
+[`videos/86-it-demo/renders/86-it-demo-final.mp4`](../videos/86-it-demo/renders/86-it-demo-final.mp4) — 2:16, 1920×1080, with captions and narration.
+The automated backup demo: the real voice loop on the deployed site, beat for beat, including a 51-second raw segment — no graphics, no narration, just the busy kitchen and the tool used in real time. (The live pitch script below runs 3:00; the video is a tighter cut of the same beats.)
+
 ## The problem
 When a kitchen runs out of a dish, the news spreads by shouting. Servers keep selling it, and so do delivery apps. That leads to refunds, comped meals, angry guests and bad reviews. Cooks can't tap screens with gloved or greasy hands, and kitchens are too loud for ordinary voice assistants.
 
@@ -45,7 +49,7 @@ Stretch goal: the owner calls a phone number and asks "What did we 86 tonight?" 
 See [ARCHITECTURE.md](ARCHITECTURE.md). In short: browser ⇄ AssemblyAI for voice; browser ⇄ Cloudflare Durable Object for state; the Durable Object broadcasts to every screen; on the owner phone line, AssemblyAI calls the Worker's HTTP tools.
 
 ## Engineering quality
-- 13 unit tests (`npm test`) cover the kitchen logic, fuzzy item matching, void safety, alerts and the session config.
+- 15 unit tests (`npm test`) cover the kitchen logic, fuzzy item matching, void safety, alerts and the session config.
 - A protocol-faithful fake AssemblyAI server (`test/mock-aai.js`) flags protocol violations. The full voice loop was tested against it in the browser: tool calls, result timing, barge-in, chatter, an unknown item, a spoken alert, a dropped connection with resume, a refused resume, and the voice-focus fallback. It recorded 0 violations.
 
 ## Results

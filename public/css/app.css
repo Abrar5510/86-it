@@ -1,11 +1,12 @@
 :root {
-  --bg: #0d0f12;
-  --panel: #161a20;
-  --panel-2: #1e232b;
-  --line: #2a313b;
-  --text: #eef1f5;
-  --muted: #8a94a3;
-  --accent: #ff5a1f;
+  --bg: #17181c;
+  --panel: #1d201e;
+  --panel-2: #242824;
+  --line: #2e322d;
+  --text: #f0efe9;
+  --muted: #8e958d;
+  --accent: #0f7a57;
+  --accent-ink: #3fbe90;
   --new: #3b82f6;
   --fired: #ff8a00;
   --held: #a78bfa;
@@ -26,7 +27,7 @@ a { color: inherit; }
   border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 5;
 }
 .brand { font-weight: 700; font-size: 20px; letter-spacing: -0.02em; }
-.brand b { color: var(--accent); }
+.brand b { color: var(--accent-ink); }
 .nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
 .nav a { text-decoration: none; padding: 6px 12px; border-radius: 999px; color: var(--muted); font-size: 14px; }
 .nav a[aria-current] { background: var(--panel-2); color: var(--text); }
@@ -56,7 +57,7 @@ a { color: inherit; }
 .ticket .status { padding: 0 14px 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
 .ticket ul { list-style: none; margin: 0; padding: 0 14px 14px; }
 .ticket li { padding: 5px 0; border-top: 1px dashed var(--line); display: flex; gap: 8px; }
-.ticket li b { font-family: var(--mono); color: var(--accent); min-width: 22px; }
+.ticket li b { font-family: var(--mono); color: var(--accent-ink); min-width: 22px; }
 .ticket li.gone { color: var(--danger); text-decoration: line-through; }
 .allergy { background: var(--danger); color: #fff; font-weight: 700; padding: 6px 14px; text-transform: uppercase; font-size: 13px; }
 .src { font-size: 11px; padding: 2px 6px; border-radius: 6px; background: var(--panel-2); margin-left: 6px; vertical-align: middle; }
@@ -91,7 +92,7 @@ a { color: inherit; }
   transition: box-shadow .08s, background .2s;
 }
 .orb.live { background: var(--accent); color: #fff; }
-.orb.speaking { background: var(--done); }
+.orb.speaking { background: var(--text); color: var(--bg); }
 .phase { font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .15em; font-size: 13px; }
 .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .toggle { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; }
@@ -115,7 +116,7 @@ a { color: inherit; }
 .mini { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 
 /* Online menu (phone) */
-.phone { max-width: 420px; margin: 0 auto; min-height: 100vh; background: #fff; color: #111; }
+.phone { max-width: 420px; margin: 0 auto; min-height: 100vh; background: #fff; color: #17181c; }
 .phone header { padding: 20px 16px 10px; }
 .phone h1 { margin: 0; font-size: 26px; }
 .phone .sub { color: #666; font-size: 14px; }
@@ -123,13 +124,13 @@ a { color: inherit; }
 .dish { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #eee; transition: opacity .3s; }
 .dish .n { font-weight: 600; }
 .dish .p { color: #666; font-size: 14px; }
-.dish button { border: none; background: #111; color: #fff; border-radius: 999px; padding: 8px 14px; font-weight: 700; min-width: 80px; }
+.dish button { border: none; background: #17181c; color: #fff; border-radius: 999px; padding: 8px 14px; font-weight: 700; min-width: 80px; }
 .dish.out { opacity: .5; }
 .dish.out button { background: #e5e5e5; color: #b91c1c; }
 .cart { position: sticky; bottom: 0; padding: 12px 16px; background: #fff; border-top: 1px solid #eee; }
 .cart button { width: 100%; border: none; background: var(--accent); color: #fff; border-radius: 12px; padding: 14px; font-weight: 700; font-size: 16px; }
 .cart button:disabled { background: #ccc; }
-.toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #17181c; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; opacity: 0; transition: opacity .3s; pointer-events: none; }
 .toast.show { opacity: 1; }
 
 @media (max-width: 800px) {

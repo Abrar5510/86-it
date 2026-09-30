@@ -3,25 +3,28 @@ version: alpha
 name: Broadside — Frame (video / frame layer)
 description: >
   Video-first companion to Broadside's design.md. The unit is the frame (1920×1080). Atoms are
-  identical and sacred — the two-register surface system (dark ink-black / fire-orange), massive
+  identical and sacred — the two-register surface system (warm charcoal / warm cream), massive
   Space Grotesk in lowercase weight 900 treated as graphic primitive, IBM Plex Mono chrome (uppercase,
-  0.14em), the single fire-orange accent, the flat plane, and 1px hairline dividers. Composition +
-  frame scale rewritten for the frame. Motion out of scope.
+  0.14em), the single green accent (mint on charcoal, forest on cream), the flat plane, and 1px
+  hairline dividers. Composition + frame scale rewritten for the frame. Motion out of scope.
 unit: the frame — 1920×1080 primary; 9:16 and 1:1 documented
 principle: atoms are sacred · composition is free · numbers come from the script
 
 colors:
-  ink-black: "#EEF1F5"
-  ink-black-alt: "#E7E6E5"
-  fire-orange: "#FF8A00"
-  cream: "#0D0F12"
-  cream-muted: "#FF5A1F"
-  cream-hint: "#B7B3AF"
-  border-dark: "#D9D8D7"
-  ink-on-orange-muted: "rgba(17,17,17,0.75)"
-  ink-on-orange-hint: "rgba(17,17,17,0.55)"
-  ink-on-orange-faint: "rgba(17,17,17,0.40)"
-  ink-on-orange-border: "rgba(17,17,17,0.20)"
+  ink: "#17181C"
+  canvas: "#F4EFE6"
+  accent-mint: "#3FBE90"
+  accent-forest: "#0F7A57"
+  hint-warm: "#B7B3AF"
+  hint-cool: "#93968E"
+  hairline: "#D6D1C9"
+  panel: "#1D201E"
+  line: "#2E322D"
+  ink-72: "rgba(23,24,28,0.72)"
+  ink-45: "rgba(23,24,28,0.45)"
+  ink-20: "rgba(23,24,28,0.20)"
+  canvas-45: "rgba(244,239,230,0.45)"
+  canvas-05: "rgba(244,239,230,0.05)"
 
 typography:
   # — reading ramp —
@@ -49,41 +52,41 @@ spacing:
 
 components:
   registers:
-    dark: "ground {colors.ink-black}, text {colors.cream}, accent {colors.fire-orange}"
-    orange: "ground {colors.fire-orange}, text {colors.ink-black}"
-    description: "Two surfaces only — no cream/paper register. One register per frame."
+    charcoal: "ground {colors.ink}, text {colors.canvas}, accent {colors.accent-mint}"
+    cream: "ground {colors.canvas}, text {colors.ink}, accent {colors.accent-forest}"
+    description: "Two surfaces only — warm charcoal and warm cream. One register per frame; one accent hue per frame."
   slide-chrome:
-    rule: "1px solid {colors.border-dark} (dark) / 20% ink (orange)"
+    rule: "1px solid {colors.hairline} (charcoal) / 20% ink (cream)"
     placement: "top + bottom bars (label left, number right)"
     description: "SUPPRESSED on cover/chapter/statement/quote/end — declarative frames let type fill the field."
   kicker:
     typography: "{typography.label}"
-    color: "{colors.fire-orange} (dark) / 55% ink (orange)"
+    color: "{colors.accent-mint} (charcoal) / 55% ink (cream)"
     description: "Uppercase mono eyebrow."
   rule:
-    backgroundColor: "{colors.fire-orange} (dark) / {colors.ink-black} (orange)"
+    backgroundColor: "{colors.accent-mint} (charcoal) / {colors.ink} (cream)"
     size: "36×2px"
     description: "Stub accent bar — the system's only ornament."
   broadside-num:
     typography: "{typography.label}"
-    placement: "top-left of orange cover/chapter, low opacity"
+    placement: "top-left of cream cover/chapter, low opacity"
     description: "Mono catalogue numeral."
   stat-card:
-    borderTop: "1px solid {colors.border-dark}"
-    typography: "{typography.stat-value} (orange on dark / ink on orange) + {typography.body} + {typography.label}"
+    borderTop: "1px solid {colors.hairline}"
+    typography: "{typography.stat-value} (mint on charcoal / forest on cream) + {typography.body} + {typography.label}"
     description: "Top-border-only block, no other borders."
   bullet:
-    marker: "orange `/` mono via ::before"
+    marker: "accent `/` mono via ::before"
     typography: "{typography.lead}"
     description: "Capped at THREE items."
   bar-track:
-    borderLeft: "1px solid {colors.border-dark}"
-    bars: "{colors.cream-hint}, one .accent {colors.fire-orange}"
+    borderLeft: "1px solid {colors.hairline}"
+    bars: "{colors.hint-warm}, one .accent {colors.accent-mint}"
     typography: "{typography.label} axis"
     description: "Vertical bar chart, left axis only."
   compare-panel:
     layout: "two equal panels split by a 1px vertical rule"
-    payoff: "right panel may fill {colors.fire-orange}"
+    payoff: "right panel may fill {colors.accent-forest} with {colors.canvas} type"
     description: "Before/after."
   fadelist:
     typography: "{typography.fadelist-item} ×3 at opacity 1.0/0.5/0.22 + {typography.fadelist-title}"
@@ -105,9 +108,9 @@ This is the **broadside** preset remixed onto the captured brand. The YAML front
 
 Broadside at frame scale is a **protest-poster system where type is so large it stops reading as
 text and becomes graphic primitive.** Space Grotesk `display` at 13cqw puts a single lowercase word
-nearly across the frame. The system runs in **two registers**: a dark ink-black ground with cream
-text for documentation, and a fire-orange ground with dark ink for declaration. Fire-orange is the
-_only_ color — accent on dark, environment on orange. The plane is flat; hierarchy is weight, size,
+nearly across the frame. The system runs in **two registers**: a warm charcoal ground with cream
+text for documentation, and a warm cream ground with dark ink for declaration. The green accent is the
+_only_ color — mint on charcoal, forest on cream. The plane is flat; hierarchy is weight, size,
 and 1px hairlines.
 
 **Space Grotesk** carries every text role from display to body — expressive range from weight (400–900)
@@ -117,9 +120,9 @@ distinctive single decision, a deliberate inversion of the brutalist norm.
 
 **Key characteristics at frame scale:**
 
-- **Two registers** — dark (cream text) / orange (ink text). No cream/paper register.
+- **Two registers** — charcoal (cream text) / cream (ink text).
 - **Massive lowercase Space Grotesk 900**, negative-tracked, as graphic primitive (display 13cqw).
-- **Fire-orange is the only color** — accent on dark, full environment on orange.
+- **The green accent is the only color** — mint on charcoal, forest on cream.
 - **IBM Plex Mono chrome** — uppercase, 0.14em; the `/` bullet marker; mono catalogue numbers.
 - **Flat plane** — no shadow, no radius (save nav dots), no gradient; 1px hairlines carry structure.
 - **Low density** — one statement per frame, bullets capped at three, chrome suppressed on declarative frames.
@@ -132,7 +135,7 @@ Three eyeball tests gate every frame before any structural check:
 
 - **Squint** — exactly **one display moment dominates** at 3–6× everything else; nothing competes.
 - **Silence** — declarative frames read **45–55% empty**; the **stat grid is the one dense exception**.
-- **Restraint** — **one register per frame**; **fire-orange is the only color** (accent on dark, environment on orange); one display moment; bullets capped at three.
+- **Restraint** — **one register per frame**; **the green accent is the only color** (mint on charcoal, forest on cream); one display moment; bullets capped at three.
 - **Reference** — aim at **broadside printing / a SPACE10 report / a Wim Crouwel grid with one loud color**; failure looks like a **multi-accent corporate slide deck**.
 
 - **Primary:** 1920×1080 (16:9). Type authored in **`cqw`** (`px ÷ 1920 × 100 = cqw`; or carry the source's `vw` 1:1).
@@ -145,12 +148,29 @@ full-screen). 1px hairlines stay 1px.
 
 ## Colors
 
-Tokens identical to the source, in two registers. **Dark:** `{colors.ink-black}` ground,
-`{colors.cream}` text, `{colors.fire-orange}` accent (kickers, accent stat, bullet `/`, lead bar,
-quote mark, rule stub). **Orange:** `{colors.fire-orange}` ground, `{colors.ink-black}` headlines +
-body, with the dark-ink overlays (75/55/40/20%) as the muted tones. Choose one register per frame
-and commit. **No second accent color** — on orange, emphasis is weight/opacity on the ink, never a
-new hue. Cream text on orange does not exist (ink-on-fire is absolute).
+Tokens in two registers. **Charcoal:** `{colors.ink}` ground, `{colors.canvas}` text,
+`{colors.accent-mint}` accent (kickers, accent stat, bullet `/`, lead bar, quote mark, rule stub).
+**Cream:** `{colors.canvas}` ground, `{colors.ink}` headlines + body, `{colors.accent-forest}` lone
+accent, with the dark-ink overlays (`{colors.ink-72}` / `ink-45` / `ink-20`) as the muted tones.
+Choose one register per frame and commit. **No second accent color** — on cream, emphasis is
+weight/opacity on the ink and forest is the lone accent; mint lives only on charcoal grounds (and
+over footage). Never mint as text on cream (fails contrast), never forest as small text on
+charcoal (fails contrast).
+
+## Capture frames (03–08) — real footage
+
+Six frames ground on an approved full-bleed screen capture instead of a color field:
+
+- The frame's `<video data-frame-video="approved">` is hoisted to the host root, which paints ABOVE
+  the frame's own layers — the graphic overlay clip MUST set `z-index: 3` (with the scrim as its
+  first child) or the footage covers it.
+- The footage is dark UI, so these frames use the **charcoal register over footage**: cream type,
+  `{colors.accent-mint}` accent, mono chrome at `{colors.canvas}` ~70%.
+- Legibility comes from a **localized scrim** (left-column / bottom `rgba(23,24,28,…)` soft
+  falloff) — never a full-screen linear gradient, and never over the region the shot is
+  demonstrating.
+- Keep kicker/quote/stamp inside the safe pad and above the caption keep-out; the callout frames
+  real UI moments — land it on the capture's own event time (the packet's scene lines).
 
 ## Typography
 
@@ -167,7 +187,7 @@ Flat plane, the only technique. Hierarchy from:
 
 - **Weight + size contrast** — the dominant signal (900 lowercase display).
 - **1px hairlines** — chrome bars, stat-card top, compare divider, bar-track left, chart baseline.
-- **Color shift** — orange on ink, ink on cream, cream-muted on cream.
+- **Color shift** — mint on charcoal, ink on cream, `{colors.ink-45}` muted on cream.
 - **Negative space** — generous, intentional empty regions.
 
 **Ceiling:** no box-shadow, no elevation, no rounded surface (save nav dots), no gradient ground.
@@ -180,63 +200,63 @@ Flat plane, the only technique. Hierarchy from:
 
 - **registers** — the two-surface system. **slide-chrome** — optional hairline bars, suppressed on declarative frames.
 - **kicker** (mono eyebrow) / **rule** (36×2 stub) / **broadside-num** (catalogue mark) — the chrome ornament set.
-- **stat-card** (top-border only) / **bullet** (orange `/`, max 3) / **bar-track** (one accent bar) / **compare-panel** (orange payoff) / **fadelist** (1.0/0.5/0.22 stack).
+- **stat-card** (top-border only) / **bullet** (accent `/`, max 3) / **bar-track** (one accent bar) / **compare-panel** (forest payoff) / **fadelist** (1.0/0.5/0.22 stack).
 
 ## Frame Treatments
 
 > Recipe: ground · register · composes · focal · chrome · accent · silence · Fixed/Free · density.
 > One statement per frame; chrome suppressed on declarative frames.
 
-### 1 · Cover (identity · move: massive type · ORANGE register · left)
+### 1 · Cover (identity · move: massive type · CREAM register · left)
 
-**Ground** fire-orange. **Composes** broadside-num, rule, kicker, display, lead. **Focal** a 1–2 word
+**Ground** cream. **Composes** broadside-num, rule, kicker, display, lead. **Focal** a 1–2 word
 Space Grotesk `display` (13cqw) lowercase in ink, left-anchored, over a small ink rule stub + mono kicker; a
-Space Grotesk lead line beneath in 75% ink. **Chrome** mono catalogue number top-left, mono meta top-right
-(no chrome bars). **Accent** the ink itself is the pop on orange. **Silence** ~45%. **Fixed** ink-on-fire,
+Space Grotesk lead line beneath in 72% ink. **Chrome** mono catalogue number top-left, mono meta top-right
+(no chrome bars). **Accent** the ink itself is the pop on cream. **Silence** ~45%. **Fixed** ink-on-cream,
 lowercase 900, flat. **Free** the word, kicker, lead. **Density** low.
 
-### 2 · Statement (declarative · move: type IS composition · DARK register · left)
+### 2 · Statement (declarative · move: type IS composition · CHARCOAL register · left)
 
-**Ground** ink-black. **Composes** kicker, display. **Focal** a 2–4 word Space Grotesk `display`/`h1`
-lowercase in cream, with ONE clause inked `{colors.fire-orange}`. **Chrome** mono kicker; no bars.
-**Accent** the orange clause. **Silence** ~55%. **Fixed** lowercase 900, one orange clause, flat.
-**Free** the statement, which clause is orange. **Density** low.
+**Ground** charcoal (`{colors.ink}`). **Composes** kicker, display. **Focal** a 2–4 word Space Grotesk `display`/`h1`
+lowercase in cream, with ONE clause inked `{colors.accent-mint}`. **Chrome** mono kicker; no bars.
+**Accent** the mint clause. **Silence** ~55%. **Fixed** lowercase 900, one mint clause, flat.
+**Free** the statement, which clause is mint. **Density** low.
 
-### 3 · Stat Grid (data · move: top-border cards · DARK · the dense frame)
+### 3 · Stat Grid (data · move: top-border cards · CHARCOAL · the dense frame)
 
-**Ground** ink-black, chrome bars present. **Composes** slide-chrome, kicker, 3× stat-card. **Focal** a
-row of three top-border-only stat-cards — big Space Grotesk-900 numeral in `{colors.fire-orange}`, Space Grotesk
-label, mono note. **Chrome** top + bottom hairline bars (label + number). **Accent** the orange
-numerals. **Silence** moderate — the density exception. **Fixed** top-border-only cards, orange
+**Ground** charcoal, chrome bars present. **Composes** slide-chrome, kicker, 3× stat-card. **Focal** a
+row of three top-border-only stat-cards — big Space Grotesk-900 numeral in `{colors.accent-mint}`, Space Grotesk
+label, mono note. **Chrome** top + bottom hairline bars (label + number). **Accent** the mint
+numerals. **Silence** moderate — the density exception. **Fixed** top-border-only cards, mint
 numerals, 1px hairlines. **Free** figures (from script), labels. **Density** dense-exception.
 
-### 4 · Fadelist (narrative · move: opacity stack · DARK)
+### 4 · Fadelist (narrative · move: opacity stack · CHARCOAL)
 
-**Ground** ink-black. **Composes** fadelist (3 stacked Space Grotesk-900 words at 1.0/0.5/0.22), fadelist-title.
-**Focal** the three-stage word stack opposite an oversized display title in `{colors.fire-orange}`
-(before/during/after). **Accent** the orange title. **Silence** moderate. **Fixed** the opacity
+**Ground** charcoal. **Composes** fadelist (3 stacked Space Grotesk-900 words at 1.0/0.5/0.22), fadelist-title.
+**Focal** the three-stage word stack opposite an oversized display title in `{colors.accent-mint}`
+(before/during/after). **Accent** the mint title. **Silence** moderate. **Fixed** the opacity
 ladder, lowercase 900. **Free** the three words, the title. **Density** low-moderate.
 
-### 5 · Pull Quote (quote · move: oversized mark · DARK · left)
+### 5 · Pull Quote (quote · move: oversized mark · CHARCOAL · left)
 
-**Ground** ink-black, chrome suppressed. **Composes** quote-mark, quote-text, attribution. **Focal** a
-Space Grotesk `quote-text` (700, lowercase) at ≤78cqw under an oversized fire-orange `quote-mark` (10cqw,
-line-height 0.6). **Chrome** mono attribution (name + role). **Accent** the orange quote mark. **Silence**
-~50%. **Fixed** orange mark, lowercase quote. **Free** quote, attribution. **Density** low.
+**Ground** charcoal, chrome suppressed. **Composes** quote-mark, quote-text, attribution. **Focal** a
+Space Grotesk `quote-text` (700, lowercase) at ≤78cqw under an oversized mint `quote-mark` (10cqw,
+line-height 0.6). **Chrome** mono attribution (name + role). **Accent** the mint quote mark. **Silence**
+~50%. **Fixed** mint mark, lowercase quote. **Free** quote, attribution. **Density** low.
 
-### 6 · Compare (argument · move: split + orange payoff · DARK→ORANGE)
+### 6 · Compare (argument · move: split + forest payoff · CHARCOAL→CREAM)
 
-**Ground** ink-black left panel + fire-orange right (payoff) panel, 1px divider. **Composes**
-compare-panel pair, kicker, h3. **Focal** two panels — left documents (cream on dark), right declares
-(ink on orange). **Chrome** mono panel labels. **Accent** the orange payoff panel. **Silence** moderate.
-**Fixed** ink-on-fire right panel, 1px divider, flat. **Free** the before/after content. **Density** standard.
+**Ground** charcoal left panel + forest-green right (payoff) panel, 1px divider. **Composes**
+compare-panel pair, kicker, h3. **Focal** two panels — left documents (cream on charcoal), right declares
+(cream on forest). **Chrome** mono panel labels. **Accent** the forest payoff panel. **Silence** moderate.
+**Fixed** cream-on-forest right panel, 1px divider, flat. **Free** the before/after content. **Density** standard.
 
 ## Composition Rules
 
 ### Do
 
 - Set every Space Grotesk display in **lowercase weight 900**, negative-tracked — the system's signature.
-- Use **fire-orange as full environment** on declarative frames, the **lone accent** on dark.
+- Use **cream as full environment** on declarative frames, the **lone green accent** on charcoal (mint) and cream (forest).
 - Keep chrome in **IBM Plex Mono uppercase, 0.14em**; use the `/` mono bullet marker.
 - **Cap bullets at three; one statement per frame**; build hierarchy from weight, size, 1px hairlines.
 - Suppress chrome bars on cover/chapter/statement/quote/end; let type fill the field.
@@ -245,7 +265,7 @@ compare-panel pair, kicker, h3. **Focal** two panels — left documents (cream o
 ### Don't
 
 - Never uppercase Space Grotesk display; never add a second accent color.
-- Never put cream text on orange (ink-on-fire is absolute); never a cream/paper register.
+- Never mint as text on a cream ground, never forest as small text on charcoal; never a third surface — the two registers are the system.
 - No drop shadow, no rounded surface (save nav dots), no gradient ground.
 - No serif companion; chrome is never Space Grotesk.
 - Don't pack two display moments into one frame; don't blow a long line edge-to-edge — step down.
@@ -259,7 +279,7 @@ compare-panel pair, kicker, h3. **Focal** two panels — left documents (cream o
 | Stat Grid  | 3 across                   | 3 stacked                  | 2+1              |
 | Fadelist   | stack + title side-by-side | stack over title           | stack over title |
 | Pull Quote | mark + quote left          | mark top, quote below      | centered         |
-| Compare    | side-by-side panels        | stacked (dark over orange) | stacked          |
+| Compare    | side-by-side panels        | stacked (charcoal over cream) | stacked          |
 
 `pad-x` holds tight on the short edge; re-step display so the one big line stays ≤78cqw and above the
 1.4cqw floor. Mono chrome stays Latin/digit-only.
@@ -279,10 +299,10 @@ them. Catalogue numbers (No. 01) are decorative chrome and may be sequential.
 
 - **Squint** — exactly one display moment dominates; nothing competes.
 - **Silence** — declarative frames ~45–55% empty; only the stat grid runs dense.
-- **Register** — one register per frame; ink-on-fire on orange, cream on dark; no second hue.
+- **Register** — one register per frame; cream on charcoal, ink (or cream-on-forest) on cream; no second hue.
 - **Type** — Space Grotesk lowercase 900 negative-tracked, fit-to-measure; mono chrome uppercase 0.14em; ≥1.4cqw floor.
 - **Depth** — 0 shadow, 0 radius (save nav dots); 1px hairlines only.
-- **Bullets** — capped at three, orange `/` marker.
+- **Bullets** — capped at three, accent `/` marker.
 - **Fabrication** — every numeral traces to the script, else placeholder.
 
 ## Known Gaps

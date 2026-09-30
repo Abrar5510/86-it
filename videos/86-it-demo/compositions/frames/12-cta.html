@@ -169,7 +169,7 @@
     }
 
     .frame-12-cta-bg {
-      background: #EEF1F5;
+      background: #F4EFE6;
     }
 
     .frame-12-cta-wordmark {
@@ -181,7 +181,7 @@
       line-height: 0.88;
       letter-spacing: -0.04em;
       text-transform: lowercase;
-      color: #0D0F12;
+      color: #17181C;
       top: 18cqw;
       left: 50%;
       transform: translateX(-50%);
@@ -206,11 +206,12 @@
       line-height: 1.15;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #FF8A00;
-      top: 48cqw;
+      color: #0F7A57;
+      top: 64cqh;
       left: 50%;
       transform: translateX(-50%);
       white-space: nowrap;
+      text-align: center;
       overflow: hidden;
       clip-path: inset(0 100% 0 0);
       will-change: clip-path;
@@ -222,7 +223,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(90deg, transparent, #FF8A00, transparent);
+      background: linear-gradient(90deg, transparent, #0F7A57, transparent);
       opacity: 0;
       pointer-events: none;
       will-change: opacity, transform;
@@ -236,11 +237,12 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: #B7B3AF;
-      top: 68cqw;
+      top: 80cqh;
       left: 50%;
       transform: translateX(-50%);
       white-space: nowrap;
       display: flex;
+      justify-content: center;
       gap: 0.3em;
       align-items: baseline;
     }
@@ -265,30 +267,30 @@
     }
   </style>
 
-  <div id="root" data-composition-id="12-cta" data-width="1920" data-height="1080">
-    <div id="frame-12-cta-bg" class="clip frame-12-cta-bg" data-start="0" data-duration="5.773" data-track-index="0"></div>
+  <div data-hf-id="hf-43uj" id="root" data-composition-id="12-cta" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-m4w6" id="frame-12-cta-bg" class="clip frame-12-cta-bg" data-start="0" data-duration="5.773" data-track-index="0"></div>
 
-    <div id="frame-12-cta-wordmark" class="clip frame-12-cta-wordmark" data-start="0" data-duration="5.773" data-track-index="1">
-      <span class="letter" data-index="0">8</span>
-      <span class="letter" data-index="1">6</span>
-      <span class="letter space" data-index="2"></span>
-      <span class="letter" data-index="3">i</span>
-      <span class="letter" data-index="4">t</span>
+    <div data-hf-id="hf-ow7d" id="frame-12-cta-wordmark" class="clip frame-12-cta-wordmark" data-start="0" data-duration="5.773" data-track-index="1">
+      <span data-hf-id="hf-z2xb" class="letter" data-index="0">8</span>
+      <span data-hf-id="hf-j8wm" class="letter" data-index="1">6</span>
+      <span data-hf-id="hf-29z9" class="letter space" data-index="2"></span>
+      <span data-hf-id="hf-zbkl" class="letter" data-index="3">i</span>
+      <span data-hf-id="hf-7etj" class="letter" data-index="4">t</span>
     </div>
 
-    <div id="frame-12-cta-url" class="clip frame-12-cta-url" data-start="1.2" data-duration="4.573" data-track-index="2">
+    <div data-hf-id="hf-58t7" id="frame-12-cta-url" class="clip frame-12-cta-url" data-start="1.2" data-duration="4.573" data-track-index="2">
       86-it.rd5510.workers.dev
-      <div class="frame-12-cta-url-glow"></div>
+      <div data-hf-id="hf-uayi" class="frame-12-cta-url-glow"></div>
     </div>
 
-    <div id="frame-12-cta-tagline" class="clip frame-12-cta-tagline" data-start="2.0" data-duration="3.773" data-track-index="3">
-      <span class="word">SAY</span>
-      <span class="word">IT</span>
-      <span class="word">ONCE.</span>
-      <span class="word">EVERY</span>
-      <span class="word">SCREEN</span>
-      <span class="word">KNOWS.</span>
-      <span class="caret">▊</span>
+    <div data-hf-id="hf-1y6n" id="frame-12-cta-tagline" class="clip frame-12-cta-tagline" data-start="2.0" data-duration="3.773" data-track-index="3">
+      <span data-hf-id="hf-kfec" class="word">SAY</span>
+      <span data-hf-id="hf-4w9g" class="word">IT</span>
+      <span data-hf-id="hf-8mpu" class="word">ONCE.</span>
+      <span data-hf-id="hf-vuts" class="word">EVERY</span>
+      <span data-hf-id="hf-jl45" class="word">SCREEN</span>
+      <span data-hf-id="hf-502j" class="word">KNOWS.</span>
+      <span data-hf-id="hf-cp54" class="caret">▊</span>
     </div>
   </div>
 
@@ -314,7 +316,7 @@
         ease: 'back.out(1.7)',
         duration: 0.6,
         stagger: 0.09,
-        clearProps: 'transform,opacity'
+        clearProps: 'transform'
       },
       0
     );
@@ -349,7 +351,7 @@
       { opacity: 0, color: '#B7B3AF' },
       {
         opacity: 1,
-        color: '#0D0F12',
+        color: '#17181C',
         duration: 0.35,
         ease: 'power1.out',
         stagger: 0.12,

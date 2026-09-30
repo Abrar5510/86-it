@@ -151,9 +151,9 @@
       container-type: size;
       position: relative;
       overflow: hidden;
-      background: #EEF1F5;
+      background: #F4EFE6;
       font-family: 'Space Grotesk', sans-serif;
-      color: #0D0F12;
+      color: #17181C;
     }
 
     .clip {
@@ -165,7 +165,7 @@
     }
 
     #frame-07-bg {
-      background: #EEF1F5;
+      background: #F4EFE6;
       z-index: 0;
     }
 
@@ -180,31 +180,34 @@
     }
 
     #frame-07-overlay {
-      z-index: 2;
+      z-index: 3;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 0 105.6px;
+      /* bottom padding lifts the centered cluster 70px so the status label clears
+         the capture's stats row (y≈650) */
+      padding: 0 105.6px 140px;
       pointer-events: none;
     }
 
-    .frame-07-reply-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 3.2cqw;
-      line-height: 1.25;
-      color: #C6CDD7;
-      text-align: center;
-      text-transform: lowercase;
-      letter-spacing: -0.02em;
-      opacity: 0;
-      transform: translateY(20px);
+    /* localized scrim — sits under the overlay type (z-index:-1 keeps it below the
+       in-flow copy but still inside the z-index:3 clip, hence above the host video);
+       pool behind the centered quote + bottom band under the stamp, both clear of the
+       Live orb, the said-dialogue column and the new LIVE EVENT LOG rows */
+    #frame-07-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(38% 34% at 50% 45%, rgba(23,24,28,0.7) 0%, rgba(23,24,28,0.45) 45%, rgba(23,24,28,0) 100%),
+        linear-gradient(0deg, rgba(23,24,28,0.6) 0%, rgba(23,24,28,0.55) 20%, rgba(23,24,28,0.3) 28%, rgba(23,24,28,0) 36%);
     }
 
     #frame-07-interrupt-panel {
       background: transparent;
-      border: 2px solid #FF8A00;
+      border: 2px solid #3FBE90;
       border-radius: 0;
       padding: 2cqw 4cqw;
       margin-top: 2cqw;
@@ -217,7 +220,7 @@
       font-weight: 900;
       font-size: 5cqw;
       line-height: 1;
-      color: #FF8A00;
+      color: #3FBE90;
       text-align: center;
       text-transform: lowercase;
       letter-spacing: -0.04em;
@@ -231,7 +234,7 @@
       line-height: 1.5;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #8A94A3;
+      color: rgba(244,239,230,0.7);
       text-align: center;
       margin-top: 2cqw;
       opacity: 0;
@@ -240,57 +243,54 @@
 
     #frame-07-stamp {
       position: absolute;
-      bottom: 105.6px;
+      /* .clip pins top/height — release them so the bottom/left safe-pad coords apply;
+         200px keeps the line above the caption keep-out (y≈900) */
+      top: auto;
+      width: auto;
+      height: auto;
+      bottom: 200px;
       left: 105.6px;
+      z-index: 3;
       font-family: 'JetBrains Mono', monospace;
       font-weight: 400;
       font-size: 0.72cqw;
       line-height: 1.5;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #8A94A3;
+      color: rgba(244,239,230,0.7);
       opacity: 0;
     }
   </style>
 
-  <div id="root" data-composition-id="07-bargein" data-width="1920" data-height="1080">
-    <div id="frame-07-bg" class="clip" data-start="0" data-duration="4.78" data-track-index="0"></div>
+  <div data-hf-id="hf-12vt" id="root" data-composition-id="07-bargein" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-98sw" id="frame-07-bg" class="clip" data-start="0" data-duration="4.78" data-track-index="0"></div>
 
     <!-- approved frame video hoisted by assemble-index -->
 
-    <div id="frame-07-overlay" class="clip" data-start="0" data-duration="4.78" data-track-index="2">
-      <div id="frame-07-reply-text" class="frame-07-reply-text">agent mid-reply…</div>
-      <div id="frame-07-interrupt-panel">
-        <div id="frame-07-interrupt-text" class="frame-07-interrupt-text">"wait, stop."</div>
+    <div data-hf-id="hf-xsxl" id="frame-07-overlay" class="clip" data-start="0" data-duration="4.78" data-track-index="2">
+      <div data-hf-id="hf-bob7" id="frame-07-scrim"></div>
+      <div data-hf-id="hf-wnml" id="frame-07-interrupt-panel">
+        <div data-hf-id="hf-o7wr" id="frame-07-interrupt-text" class="frame-07-interrupt-text">"wait, stop."</div>
       </div>
-      <div id="frame-07-status-label" class="frame-07-status-label">reply audio ▮ halted · interrupt</div>
+      <div data-hf-id="hf-4bu0" id="frame-07-status-label" class="frame-07-status-label">reply audio ▮ halted · interrupt</div>
     </div>
 
-    <div id="frame-07-stamp" class="clip" data-start="0" data-duration="4.78" data-track-index="3">
+    <div data-hf-id="hf-3ssh" id="frame-07-stamp" class="clip" data-start="0" data-duration="4.78" data-track-index="3">
       CAPTURE · demo-bargein.mp4
     </div>
   </div>
 
-  <script type="module">
-    import { gsap } from "assets/vendor/gsap.js";
-
+  <script>
     window.__timelines = window.__timelines || {};
     const tl = gsap.timeline({ paused: true });
     window.__timelines["07-bargein"] = tl;
 
-    const replyText = document.getElementById("frame-07-reply-text");
     const interruptPanel = document.getElementById("frame-07-interrupt-panel");
     const interruptText = document.getElementById("frame-07-interrupt-text");
     const statusLabel = document.getElementById("frame-07-status-label");
     const stamp = document.getElementById("frame-07-stamp");
 
-    // Scene 1 (0.0–1.5s): Surface establishes, "agent mid-reply…" appears
-    tl.fromTo(replyText,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-      0.2
-    );
-
+    // Scene 1 (0.0–1.5s): Surface establishes — full-bleed capture reads, stamp lands
     tl.fromTo(stamp,
       { opacity: 0 },
       { opacity: 1, duration: 0.4, ease: "power2.out" },

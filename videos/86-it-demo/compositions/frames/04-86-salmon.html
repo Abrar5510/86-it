@@ -150,7 +150,7 @@
   container-type: size;
   position: relative;
   overflow: hidden;
-  background: #0D0F12;
+  background: #17181C;
 }
 .clip{
   position: absolute;
@@ -160,7 +160,7 @@
   height: 100%;
 }
 .frame-04-bg{
-  background: #0D0F12;
+  background: #17181C;
 }
 .frame-04-video{
   width: 1920px;
@@ -173,6 +173,14 @@
   justify-content: flex-start;
   padding: 180px 106px 0;
   pointer-events: none;
+  z-index: 3;
+}
+.frame-04-scrim{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(1250px 350px at 60px 265px, rgba(23,24,28,0.88) 0%, rgba(23,24,28,0.58) 50%, rgba(23,24,28,0) 100%);
 }
 .frame-04-kicker{
   font-family: 'JetBrains Mono', monospace;
@@ -180,7 +188,7 @@
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #FF8A00;
+  color: #3FBE90;
   opacity: 0;
   transform: translateY(20px);
 }
@@ -191,13 +199,13 @@
   line-height: 0.9;
   letter-spacing: -0.03em;
   text-transform: lowercase;
-  color: #EEF1F5;
+  color: #F4EFE6;
   margin-top: 8px;
   opacity: 0;
   transform: translateY(20px);
 }
 .frame-04-headline .accent{
-  color: #FF8A00;
+  color: #3FBE90;
 }
 .frame-04-subtext{
   font-family: 'Space Grotesk', sans-serif;
@@ -210,15 +218,16 @@
   transform: translateY(20px);
 }
 </style>
-<div id="root" data-composition-id="04-86-salmon" data-width="1920" data-height="1080">
-  <div class="clip frame-04-bg" id="bg" data-start="0" data-duration="8.751" data-track-index="0" style="background:#0D0F12;"></div>
+<div data-hf-id="hf-2ktp" id="root" data-composition-id="04-86-salmon" data-width="1920" data-height="1080">
+  <div data-hf-id="hf-sbt7" class="clip frame-04-bg" id="bg" data-start="0" data-duration="8.751" data-track-index="0" style="background:#17181C;"></div>
   <!-- approved frame video hoisted by assemble-index -->
-  <div class="clip frame-04-overlay" id="overlay" data-start="0" data-duration="8.751" data-track-index="2">
-    <div class="frame-04-kicker" id="kicker">quad view · station · kds · foh · menu</div>
-    <div class="frame-04-headline" id="headline">one sentence.<br><span class="accent">every screen knows.</span></div>
-    <div class="frame-04-subtext" id="subtext">86 salmon → mark_86 propagates to KDS, FOH, and online menu in the same beat</div>
+  <div data-hf-id="hf-6bx6" class="clip frame-04-overlay" id="overlay" data-start="0" data-duration="8.751" data-track-index="2">
+    <div data-hf-id="hf-8eow" class="frame-04-scrim" aria-hidden="true"></div>
+    <div data-hf-id="hf-csxn" class="frame-04-kicker" id="kicker">quad view · station · kds · foh · menu</div>
+    <div data-hf-id="hf-z6uo" class="frame-04-headline" id="headline">one sentence.<br data-hf-id="hf-x5px"><span data-hf-id="hf-wmq0" class="accent">every screen knows.</span></div>
+    <div data-hf-id="hf-78de" class="frame-04-subtext" id="subtext">86 salmon → mark_86 propagates to KDS, FOH, and online menu in the same beat</div>
   </div>
-  <div class="clip frame-04-accent-bar" id="accent-bar" data-start="0.5" data-duration="7.751" data-track-index="3" style="width: 72px; height: 2px; background: #FF8A00; left: 106px; top: 200px;"></div>
+  <div data-hf-id="hf-s7qq" class="clip frame-04-accent-bar" id="accent-bar" data-start="0.5" data-duration="7.751" data-track-index="3" style="width: 72px; height: 2px; background: #3FBE90; left: 106px; top: 200px; z-index: 3;"></div>
 </div>
 <script>
 window.__timelines = window.__timelines || {};

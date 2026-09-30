@@ -146,13 +146,13 @@
     }
 
     :root {
-      --ink-black: #EEF1F5;
-      --ink-black-alt: #E7E6E5;
-      --fire-orange: #FF8A00;
-      --cream: #0D0F12;
-      --cream-muted: #FF5A1F;
-      --cream-hint: #B7B3AF;
-      --border-dark: #D9D8D7;
+      --canvas: #F4EFE6;
+      --canvas-alt: #F4EFE6;
+      --accent-mint: #3FBE90;
+      --ink: #17181C;
+      --accent-mint-alt: #3FBE90;
+      --hint-warm: #B7B3AF;
+      --hairline: #DAD5C9;
       --cqw: 19.2px;
       --cqh: 10.8px;
     }
@@ -163,7 +163,7 @@
       container-type: size;
       position: relative;
       overflow: hidden;
-      background: var(--cream);
+      background: var(--ink);
     }
 
     .clip {
@@ -190,14 +190,14 @@
     /* Top caption - track 1 */
     .frame-08-top-caption {
       position: absolute;
-      left: calc(5.5 * var(--cqw));
+      left: calc(10 * var(--cqw));
       top: calc(5.5 * var(--cqw));
       font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
       font-size: calc(0.72 * var(--cqw));
       font-weight: 400;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--cream-hint);
+      color: rgba(244, 239, 230, 0.7);
       opacity: 0;
       white-space: nowrap;
       z-index: 10;
@@ -206,30 +206,34 @@
     /* Bottom stamp - track 2 */
     .frame-08-stamp {
       position: absolute;
+      top: auto;
       left: 50%;
-      bottom: calc(12 * var(--cqh));
+      width: max-content;
+      height: auto;
+      bottom: calc(18 * var(--cqh));
       font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
       font-size: calc(0.72 * var(--cqw));
       font-weight: 400;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--fire-orange);
+      color: var(--accent-mint);
       opacity: 0;
       white-space: nowrap;
       z-index: 10;
       padding: calc(0.5 * var(--cqw)) calc(1.6 * var(--cqw));
-      border: 1px solid var(--fire-orange);
+      border: 1px solid var(--accent-mint);
       border-radius: 9999px;
     }
 
     /* Accent rule - track 3 */
     .frame-08-accent-rule {
       position: absolute;
+      top: auto;
       left: calc(5.5 * var(--cqw));
-      bottom: calc(16 * var(--cqh));
+      bottom: calc(18 * var(--cqh));
       width: calc(36 * var(--cqw) / 13);
       height: calc(2 * var(--cqw) / 13);
-      background: var(--fire-orange);
+      background: var(--accent-mint);
       opacity: 0;
       transform: scaleX(0);
       transform-origin: left center;
@@ -244,35 +248,57 @@
       transform: translate(-50%, -50%);
       width: 80%;
       height: 12%;
-      border: 2px solid var(--fire-orange);
+      border: 2px solid var(--accent-mint);
       border-radius: calc(1.4 * var(--cqw));
       opacity: 0;
       pointer-events: none;
       z-index: 5;
     }
+
+    /* Graphic overlay layer - rides above the hoisted host video (z-index: 3) - track 5 */
+    .frame-08-overlay {
+      z-index: 3;
+    }
+
+    /* Localized scrim, first child of the overlay: top band carries the mono kicker,
+       bottom band carries the stamp + rule. The demonstrated middle (station dialogue +
+       LIVE EVENT LOG) stays clear — never a uniform full-screen wash. */
+    .frame-08-scrim {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(23, 24, 28, 0.88) 0px, rgba(23, 24, 28, 0.5) 130px, rgba(23, 24, 28, 0) 250px),
+        linear-gradient(0deg, rgba(23, 24, 28, 0.75) 0px, rgba(23, 24, 28, 0.4) 110px, rgba(23, 24, 28, 0) 240px);
+    }
   </style>
 
-  <div id="root" data-composition-id="08-alert" data-width="1920" data-height="1080">
+  <div data-hf-id="hf-f7yg" id="root" data-composition-id="08-alert" data-width="1920" data-height="1080">
     <!-- Track 0: Video background (full duration) -->
-    <div class="clip frame-08-video" id="frame-08-video-wrap" data-track-index="0">
+    <div data-hf-id="hf-tmuo" class="clip frame-08-video" id="frame-08-video-wrap" data-start="0" data-duration="5.721" data-track-index="0">
       <!-- approved frame video hoisted by assemble-index -->
     </div>
 
+    <!-- Track 5: Graphic overlay - localized scrim (first child) over the footage -->
+    <div data-hf-id="hf-aafu" class="clip frame-08-overlay" id="frame-08-overlay" data-start="0" data-duration="5.721" data-track-index="5">
+      <div data-hf-id="hf-yt5t" class="frame-08-scrim"></div>
+    </div>
+
     <!-- Track 1: Top caption "station · idle" -->
-    <div class="clip frame-08-top-caption" id="frame-08-top-caption" data-start="0" data-duration="5.721" data-track-index="1">
+    <div data-hf-id="hf-5gdb" class="clip frame-08-top-caption" id="frame-08-top-caption" data-start="0" data-duration="5.721" data-track-index="1">
       station · idle
     </div>
 
     <!-- Track 2: Bottom stamp "reply.create · proactive · unsolicited" -->
-    <div class="clip frame-08-stamp" id="frame-08-stamp" data-start="2.5" data-duration="3.221" data-track-index="2">
+    <div data-hf-id="hf-fwx9" class="clip frame-08-stamp" id="frame-08-stamp" data-start="2.5" data-duration="3.221" data-track-index="2">
       reply.create · proactive · unsolicited
     </div>
 
     <!-- Track 3: Accent rule stub -->
-    <div class="clip frame-08-accent-rule" id="frame-08-accent-rule" data-start="2.5" data-duration="3.221" data-track-index="3"></div>
+    <div data-hf-id="hf-dmrc" class="clip frame-08-accent-rule" id="frame-08-accent-rule" data-start="2.5" data-duration="3.221" data-track-index="3"></div>
 
     <!-- Track 4: Alert pulse highlight (appears when alert triggers in video) -->
-    <div class="clip frame-08-alert-pulse" id="frame-08-alert-pulse" data-start="1.2" data-duration="2.0" data-track-index="4"></div>
+    <div data-hf-id="hf-2wxv" class="clip frame-08-alert-pulse" id="frame-08-alert-pulse" data-start="1.2" data-duration="2.0" data-track-index="4"></div>
   </div>
 
   <script>

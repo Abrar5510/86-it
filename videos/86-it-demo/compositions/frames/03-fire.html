@@ -146,7 +146,7 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ==== 03-fire — dark register: ground #0D0F12, mark #EEF1F5, accent #FF8A00 ==== */
+/* ==== 03-fire — charcoal register over footage: ground #17181C, mark #F4EFE6, accent #3FBE90 ==== */
 #root{
   position:absolute;
   inset:0;
@@ -155,12 +155,24 @@
   container-type:size;
   overflow:hidden;
   background:transparent;
-  color:#EEF1F5;
+  color:#F4EFE6;
   font-family:"Space Grotesk", system-ui, sans-serif;
 }
 .clip{position:absolute; inset:0;}
 .f03-fire-vid{object-fit:cover;}
-.f03-fire-bg{background:#0D0F12;}
+.f03-fire-bg{background:#17181C;}
+
+/* graphic overlay clip paints above the hoisted host video */
+.f03-fire-ui{z-index: 3;}
+/* localized scrim — top + bottom bands only; the demonstrated band (y270–750) stays clear */
+.f03-fire-scrim{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(to bottom, rgba(23,24,28,0.90) 0%, rgba(23,24,28,0.62) 15%, rgba(23,24,28,0) 25%),
+    linear-gradient(to top, rgba(23,24,28,0.90) 0%, rgba(23,24,28,0.62) 24%, rgba(23,24,28,0) 30%);
+}
 
 /* slide-chrome bars (label left / mark right) */
 .f03-fire-ruletop,
@@ -169,7 +181,7 @@
   left:106px;
   width:1708px;
   height:1px;
-  background:rgba(217,216,215,0.45);
+  background:rgba(218,213,201,0.45);
   transform-origin:left center;
 }
 .f03-fire-ruletop{top:52px;}
@@ -185,7 +197,7 @@
   line-height:1;
   letter-spacing:0.14em;
   text-transform:uppercase;
-  color:#FF8A00;
+  color:#3FBE90;
   white-space:nowrap;
 }
 .f03-fire-cap-s{left:106px;}
@@ -202,7 +214,7 @@
   line-height:1;
   letter-spacing:0.14em;
   text-transform:uppercase;
-  color:#EEF1F5;
+  color:rgba(244,239,230,0.7);
   white-space:nowrap;
 }
 
@@ -213,7 +225,7 @@
   top:105px;
   width:36px;
   height:2px;
-  background:#FF8A00;
+  background:#3FBE90;
   transform-origin:left center;
 }
 
@@ -231,7 +243,7 @@
   white-space:nowrap;
 }
 .f03-fire-quote b{
-  color:#EEF1F5;
+  color:#F4EFE6;
   font-weight:700;
 }
 
@@ -241,7 +253,7 @@
   left:106px;
   top:215px;
   box-sizing:border-box;
-  border:1px solid #FF8A00;
+  border:1px solid #3FBE90;
   border-radius:0;
   padding:7px 15px;
   font-family:"JetBrains Mono", ui-monospace, monospace;
@@ -249,35 +261,26 @@
   font-size:1.05cqw;
   line-height:1.25;
   letter-spacing:0.02em;
-  color:#FF8A00;
+  color:#3FBE90;
   white-space:nowrap;
 }
 
-/* KDS ticket rows (mirror of the capture's board) */
-.f03-fire-tick{
+/* pipeline labels — editorial annotation of the real capture (no mock board) */
+.f03-fire-lab{
   position:absolute;
   left:975px;
-  width:839px;
-  height:40px;
-  box-sizing:border-box;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:2cqw;
-  padding:0 16px;
-  border:1px solid rgba(217,216,215,0.28);
-  background:rgba(238,241,245,0.05);
-  font-family:"Space Grotesk", system-ui, sans-serif;
-  font-size:1.15cqw;
+  font-family:"JetBrains Mono", ui-monospace, monospace;
   font-weight:400;
+  font-size:1cqw;
   line-height:1.2;
-  color:#EEF1F5;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:rgba(244,239,230,0.7);
   white-space:nowrap;
 }
-.f03-fire-t1{top:109px;}
-.f03-fire-t2{top:157px;}
-.f03-fire-t3{top:205px;}
-.f03-fire-time{opacity:0.72;}
+.f03-fire-l1{top:109px;}
+.f03-fire-l2{top:157px;}
+.f03-fire-l3{top:205px;}
 
 /* callout framing ticket 12 in the capture */
 .f03-fire-callout{
@@ -287,7 +290,7 @@
   width:170px;
   height:122px;
   box-sizing:border-box;
-  border:1px solid #FF8A00;
+  border:1px solid #3FBE90;
   background:transparent;
 }
 
@@ -301,40 +304,42 @@
   font-size:0.95cqw;
   line-height:1.2;
   letter-spacing:0.14em;
-  color:#B7B3AF;
+  color:rgba(244,239,230,0.7);
   white-space:nowrap;
 }
 </style>
 
-<div id="root" data-composition-id="03-fire" data-width="1920" data-height="1080">
+<div data-hf-id="hf-lqkh" id="root" data-composition-id="03-fire" data-width="1920" data-height="1080">
 
   <!-- full-bleed ground (never painted on #root) -->
-  <div class="clip f03-fire-bg" data-start="0" data-duration="5.172" data-track-index="0"></div>
+  <div data-hf-id="hf-fr95" class="clip f03-fire-bg" data-start="0" data-duration="5.172" data-track-index="0"></div>
 
   <!-- approved real capture: station transcript + KDS, uncut, muted -->
   <!-- approved frame video hoisted by assemble-index -->
 
   <!-- graphic overlay: the approved storyboard split, dressed -->
-  <div class="clip f03-fire-ui" data-start="0" data-duration="5.172" data-track-index="2">
+  <div data-hf-id="hf-ewkc" class="clip f03-fire-ui" data-start="0" data-duration="5.172" data-track-index="2">
 
-    <div class="f03-fire-ruletop"></div>
+    <div data-hf-id="hf-3797" class="f03-fire-scrim"></div>
 
-    <div class="f03-fire-cap f03-fire-cap-s">station</div>
-    <div class="f03-fire-stub"></div>
-    <div class="f03-fire-quote">&ldquo;<b>fire twelve</b>&rdquo;</div>
-    <div class="f03-fire-pill">tool &middot; fire_ticket(12)</div>
+    <div data-hf-id="hf-s4hq" class="f03-fire-ruletop"></div>
 
-    <div class="f03-fire-cap f03-fire-cap-k">kds</div>
-    <div class="f03-fire-title">03 &middot; fire twelve</div>
+    <div data-hf-id="hf-539y" class="f03-fire-cap f03-fire-cap-s">station</div>
+    <div data-hf-id="hf-ztef" class="f03-fire-stub"></div>
+    <div data-hf-id="hf-4b7m" class="f03-fire-quote">“<b data-hf-id="hf-sfky">fire twelve</b>”</div>
+    <div data-hf-id="hf-uvdq" class="f03-fire-pill">tool · fire_ticket(12)</div>
 
-    <div class="f03-fire-tick f03-fire-t1"><span>table 7</span><span class="f03-fire-time">6:12</span></div>
-    <div class="f03-fire-tick f03-fire-t2"><span>table 12 &#9656; firing</span><span class="f03-fire-time">0:02</span></div>
-    <div class="f03-fire-tick f03-fire-t3"><span>table 4</span><span class="f03-fire-time">11:40</span></div>
+    <div data-hf-id="hf-6nt6" class="f03-fire-cap f03-fire-cap-k">kds</div>
+    <div data-hf-id="hf-qmhu" class="f03-fire-title">03 · fire twelve</div>
 
-    <div class="f03-fire-callout"></div>
+    <div data-hf-id="hf-ucq0" class="f03-fire-lab f03-fire-l1">voice → transcript</div>
+    <div data-hf-id="hf-hlu7" class="f03-fire-lab f03-fire-l2">transcript → tool call</div>
+    <div data-hf-id="hf-yflr" class="f03-fire-lab f03-fire-l3">tool call → ticket 12</div>
 
-    <div class="f03-fire-rulebot"></div>
-    <div class="f03-fire-stamp">CAPTURE &middot; demo-fire-12.mp4</div>
+    <div data-hf-id="hf-7sex" class="f03-fire-callout"></div>
+
+    <div data-hf-id="hf-yk0w" class="f03-fire-rulebot"></div>
+    <div data-hf-id="hf-30du" class="f03-fire-stamp">CAPTURE · demo-fire-12.mp4</div>
 
   </div>
 </div>
@@ -356,22 +361,15 @@
 
   /* Phase 3 — KDS context builds (VO "twelve the ticket") */
   tl.fromTo(".f03-fire-cap-k", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 2.1);
-  tl.fromTo(".f03-fire-t1", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 2.45);
-  tl.fromTo(".f03-fire-t2", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 2.75);
-  tl.fromTo(".f03-fire-t3", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 3.05);
+  tl.fromTo(".f03-fire-l1", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 2.45);
+  tl.fromTo(".f03-fire-l2", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 2.75);
+  tl.fromTo(".f03-fire-l3", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 3.05);
 
   /* Phase 4 — tool call (VO "moves before"; capture logs fire_ticket at ~3.8s) */
   tl.fromTo(".f03-fire-pill", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.65, ease: "power2.out" }, 3.35);
 
   /* Phase 5 — the payoff, on the capture's own flip (4.37s) + VO "he looks up." */
   tl.fromTo(".f03-fire-callout", { opacity: 0, scale: 1.14 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 4.37);
-  tl.to(".f03-fire-t2", {
-    borderColor: "#FF8A00",
-    color: "#FF8A00",
-    backgroundColor: "rgba(255,138,0,0.10)",
-    duration: 0.22,
-    ease: "power2.out"
-  }, 4.37);
 
   /* Phase 6 — footer chrome settles, no exit (root transition owns the out) */
   tl.fromTo(".f03-fire-rulebot", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, 4.62);

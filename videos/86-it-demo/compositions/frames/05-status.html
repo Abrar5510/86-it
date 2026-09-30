@@ -151,9 +151,9 @@
       height: 1080px;
       container-type: size;
       overflow: hidden;
-      background: #0D0F12;
+      background: #17181C;
       font-family: 'Space Grotesk', sans-serif;
-      color: #EEF1F5;
+      color: #F4EFE6;
     }
 
     .clip {
@@ -165,7 +165,7 @@
     }
 
     .frame-05-bg {
-      background: #0D0F12;
+      background: #17181C;
     }
 
     .frame-05-video {
@@ -174,6 +174,7 @@
       object-fit: cover;
     }
 
+    /* graphic overlay rides above the hoisted host video */
     .frame-05-overlay {
       display: flex;
       flex-direction: column;
@@ -181,6 +182,26 @@
       justify-content: flex-start;
       padding: 5.5cqw;
       pointer-events: none;
+      z-index: 3;
+    }
+
+    /* localized scrim — first child; a top-left pool behind kicker/question/stub/label
+       that falls to 0 before the transcript, the stats row and the LIVE EVENT LOG
+       (never a uniform wash over the demonstrated UI). z-index:-1 keeps it under the
+       in-flow copy while it still rides inside the z-index:3 clip, above the footage. */
+    .frame-05-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: radial-gradient(940px 210px at 0 230px,
+        rgba(23, 24, 28, 0.78) 0%,
+        rgba(23, 24, 28, 0.70) 30%,
+        rgba(23, 24, 28, 0.58) 50%,
+        rgba(23, 24, 28, 0.42) 70%,
+        rgba(23, 24, 28, 0.26) 85%,
+        rgba(23, 24, 28, 0.12) 93%,
+        rgba(23, 24, 28, 0) 100%);
     }
 
     .frame-05-kicker {
@@ -189,48 +210,50 @@
       font-weight: 400;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #FF8A00;
+      color: #3FBE90;
       opacity: 0;
       transform: translateY(20px);
+      /* sits under the capture's sub-header rule (y127), clear of its "nothing" pill */
+      margin-top: 1.2cqw;
       margin-bottom: 1cqw;
     }
 
     .frame-05-question {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 4.5cqw;
+      /* fit-to-measure: 4.5cqw ran past the capture's log column (x884) */
+      font-size: 3.8cqw;
       font-weight: 700;
       line-height: 1.1;
       letter-spacing: -0.02em;
       text-transform: lowercase;
-      color: #EEF1F5;
+      color: #F4EFE6;
       opacity: 0;
       transform: translateY(30px);
       max-width: 78cqw;
       margin-bottom: 2cqw;
     }
 
-    .frame-05-reply-panel {
-      background: #161A20;
-      border: 1px solid #2A313B;
-      border-radius: 0;
-      padding: 2cqw 3cqw;
+    /* 2.8s beat — answer rule (chrome ornament, frame.md `rule` 36x2) */
+    .frame-05-stub {
+      width: 36px;
+      height: 2px;
+      background: #3FBE90;
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    /* callout framing the capture's own transcript + spoken reply (real UI, not a restatement) */
+    .frame-05-callout {
+      position: absolute;
+      left: 36px;
+      top: 468px;
+      width: 266px;
+      height: 85px;
+      box-sizing: border-box;
+      border: 1px solid #3FBE90;
+      background: transparent;
       opacity: 0;
-      transform: translateY(30px) scale(0.95);
-      max-width: 78cqw;
-    }
-
-    .frame-05-reply-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 3.8cqw;
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-      text-transform: lowercase;
-      color: #FF8A00;
-    }
-
-    .frame-05-reply-text b {
-      font-weight: 900;
+      transform: scale(0.96);
     }
 
     .frame-05-log-label {
@@ -239,25 +262,26 @@
       font-weight: 400;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #B7B3AF;
+      color: rgba(244, 239, 230, 0.7);
       opacity: 0;
       transform: translateY(20px);
       margin-top: 2cqw;
     }
   </style>
 
-  <div id="root" data-composition-id="05-status" data-width="1920" data-height="1080">
-    <div class="clip frame-05-bg" id="bg" data-start="0" data-duration="5.381" data-track-index="0" style="background:#0D0F12;"></div>
+  <div data-hf-id="hf-xpvx" id="root" data-composition-id="05-status" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-7i7q" class="clip frame-05-bg" id="bg" data-start="0" data-duration="5.381" data-track-index="0" style="background:#17181C;"></div>
 
     <!-- approved frame video hoisted by assemble-index -->
 
-    <div class="clip frame-05-overlay" id="frame-05-overlay" data-start="0" data-duration="5.381" data-track-index="2">
-      <div class="frame-05-kicker" id="frame-05-kicker">station · transcript</div>
-      <div class="frame-05-question" id="frame-05-question">"how long on <b>seven</b>?"</div>
-      <div class="frame-05-reply-panel" id="frame-05-reply-panel">
-        <div class="frame-05-reply-text" id="frame-05-reply-text">"Seven: <b>14 minutes.</b>"</div>
-      </div>
-      <div class="frame-05-log-label" id="frame-05-log-label">ticket_status(7) · spoken reply</div>
+    <div data-hf-id="hf-l5cf" class="clip frame-05-overlay" id="frame-05-overlay" data-start="0" data-duration="5.381" data-track-index="2">
+      <div data-hf-id="hf-s9zu" class="frame-05-scrim" id="frame-05-scrim"></div>
+
+      <div data-hf-id="hf-6ud5" class="frame-05-kicker" id="frame-05-kicker">station · transcript</div>
+      <div data-hf-id="hf-35ta" class="frame-05-question" id="frame-05-question">"how long on <b data-hf-id="hf-yyse">seven</b>?"</div>
+      <div data-hf-id="hf-ur9m" class="frame-05-stub" id="frame-05-stub"></div>
+      <div data-hf-id="hf-e9r8" class="frame-05-log-label" id="frame-05-log-label">ticket_status(7) · spoken reply</div>
+      <div data-hf-id="hf-paw2" class="frame-05-callout" id="frame-05-callout"></div>
     </div>
   </div>
 
@@ -269,8 +293,8 @@
 
       const kicker = document.getElementById('frame-05-kicker');
       const question = document.getElementById('frame-05-question');
-      const replyPanel = document.getElementById('frame-05-reply-panel');
-      const replyText = document.getElementById('frame-05-reply-text');
+      const stub = document.getElementById('frame-05-stub');
+      const callout = document.getElementById('frame-05-callout');
       const logLabel = document.getElementById('frame-05-log-label');
 
       // Scene 1: Input takes focus - kicker appears (0.5s)
@@ -288,17 +312,17 @@
         1.2
       );
 
-      // Scene 3: Submit + machine theater - reply panel appears (2.8s)
-      tl.fromTo(replyPanel,
-        { opacity: 0, y: 30, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' },
+      // Scene 3: Submit + machine theater - answer rule lands (2.8s)
+      tl.fromTo(stub,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.8, ease: 'power3.out' },
         2.8
       );
 
-      // Scene 4: Answer arrives - reply text emphasis (3.2s)
-      tl.fromTo(replyText,
-        { opacity: 0.6 },
-        { opacity: 1, duration: 0.4, ease: 'power2.out' },
+      // Scene 4: Answer arrives - callout frames the capture's own reply (3.2s)
+      tl.fromTo(callout,
+        { opacity: 0, scale: 0.96 },
+        { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' },
         3.2
       );
 

@@ -19,12 +19,12 @@
   State changes use gsap.set({className}) (applied on the engine's frame-by-frame seek);
   never tl.call() callbacks (seek does not fire them → wrong state on render).
 
-  Visual: a protest-poster lower third — an ink-black plate on a single 1px fire-orange
+  Visual: a poster lower third — a warm-charcoal plate on a single 1px mint
   hairline, SHARP corners, NO shadow (broadside's plane is flat, never cast). Massive
   lowercase Barlow 900 as graphic primitive, cream glyphs on ink. Upcoming words sit in
-  faint cream; the current word flips register — a hard flat fire-orange block with ink
+  faint cream; the current word flips register — a hard flat mint block with ink
   reading on top (broadside's signature two-register flip, no blur), the brand's lone
-  accent; spoken words settle to solid cream, the orange block cleared.
+  accent; spoken words settle to solid cream, the mint block cleared.
 -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
 
@@ -65,13 +65,13 @@
     opacity: 0;
   }
 
-  /* THE ink-black plate — single 1px fire-orange hairline (broadside's lone accent),
+  /* THE warm-charcoal plate — single 1px mint hairline (broadside's lone accent),
      SHARP corners (0 radius), NO shadow (the plane is flat) */
   .caption-pill {
     max-width: 80%;
     padding: 18px 44px 22px;
-    background: var(--cap-ink, #111111);
-    border: 1px solid var(--cap-accent, #e85d26);
+    background: var(--cap-ink, #17181C);
+    border: 1px solid var(--cap-accent, #3FBE90);
     border-radius: 0;
   }
   .caption-line {
@@ -91,26 +91,26 @@
   .caption-word {
     display: inline-block;
     padding: 0 0.08em;
-    color: color-mix(in srgb, var(--cap-canvas, #f0ece5) 42%, var(--cap-ink, #111111));
+    color: color-mix(in srgb, var(--cap-canvas, #F4EFE6) 42%, var(--cap-ink, #17181C));
   }
-  /* current word — THE register flip: a hard flat fire-orange block (box-shadow spread =
+  /* current word — THE register flip: a hard flat mint block (box-shadow spread =
      a sharp rectangle w/o layout shift; no blur), ink reading on top — the lone accent */
   .caption-word.is-active {
-    color: var(--cap-ink, #111111);
-    background: var(--cap-accent, #e85d26);
-    box-shadow: 0 0 0 0.06em var(--cap-accent, #e85d26);
+    color: var(--cap-ink, #17181C);
+    background: var(--cap-accent, #3FBE90);
+    box-shadow: 0 0 0 0.06em var(--cap-accent, #3FBE90);
   }
-  /* already spoken — solid cream, the orange block cleared */
+  /* already spoken — solid cream, the mint block cleared */
   .caption-word.is-spoken {
-    color: var(--cap-canvas, #f0ece5);
+    color: var(--cap-canvas, #F4EFE6);
     background: transparent;
     box-shadow: none;
   }
 
   /* optional per-word accents (dormant until a word-classer tags them) */
-  /* brand / key term — fire-orange ink, the cream-on-ink register's only inflection */
+  /* brand / key term — mint ink, the cream-on-ink register's only inflection */
   .caption-word.cap-brand {
-    color: var(--cap-accent, #e85d26);
+    color: var(--cap-accent, #3FBE90);
   }
   /* numerals / data — the IBM Plex Mono chrome voice, uppercase + tracked, recessed */
   .caption-word.cap-num {
@@ -118,13 +118,13 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: color-mix(in srgb, var(--cap-canvas, #f0ece5) 72%, var(--cap-ink, #111111));
+    color: color-mix(in srgb, var(--cap-canvas, #F4EFE6) 72%, var(--cap-ink, #17181C));
   }
-  /* emphasis — a fire-orange hairline underline (no second hue; the lone accent again) */
+  /* emphasis — a mint hairline underline (no second hue; the lone accent again) */
   .caption-word.cap-cta {
     text-decoration: underline;
     text-decoration-thickness: 2px;
-    text-decoration-color: var(--cap-accent-2, #e85d26);
+    text-decoration-color: var(--cap-accent-2, #0F7A57);
     text-underline-offset: 0.1em;
   }
 

@@ -10,7 +10,7 @@ A cook says "86 salmon" into a headset. Within about a second, salmon is greyed 
 | `/foh` | Front of house: what servers can sell right now, kitchen feed |
 | `/menu` | Mock delivery/online ordering page (open it on your phone) |
 
-Docs: [Architecture](docs/ARCHITECTURE.md) · [API & tools](docs/API.md) · [Submission / pitch](docs/SUBMISSION.md) · [Product plan](PLAN.md) · [Build plan](BUILD_PLAN.md)
+Docs: [Architecture](docs/ARCHITECTURE.md) · [API & tools](docs/API.md) · [Submission / pitch](docs/SUBMISSION.md) · [Product plan](PLAN.md) · [Build plan](BUILD_PLAN.md) · [Demo video](videos/86-it-demo/renders/86-it-demo-final.mp4)
 
 ---
 
