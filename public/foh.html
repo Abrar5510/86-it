@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>86 It · Front of House</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
@@ -14,18 +13,18 @@
     <section>
       <div class="foh-bar">
         <label class="field">
-          <span aria-hidden="true">⌕</span>
-          <input id="q" type="search" placeholder="Search the menu…" autocomplete="off">
+          <span data-icon="magnifying-glass"></span>
+          <input id="q" type="search" placeholder="Search the menu" autocomplete="off">
         </label>
         <div class="cat-chips" id="cats"></div>
-        <span class="avail" id="avail">—</span>
+        <span class="avail" id="avail"></span>
       </div>
       <div class="menu-grid" id="grid" aria-live="polite"></div>
     </section>
 
     <aside class="feed">
-      <div class="feed-head" style="margin-bottom:6px">
-        <h2 style="margin:0">Kitchen updates</h2>
+      <div class="feed-head">
+        <h2>Kitchen updates</h2>
         <span id="open-count">0 open</span>
       </div>
       <ol id="feed"></ol>
@@ -34,6 +33,7 @@
 
   <script type="module">
     import { mountChrome } from '/js/chrome.js';
+    import { icon } from '/js/icons.js';
     import { connectBoard, clock, esc } from '/js/board.js';
 
     const chrome = mountChrome({ active: 'foh', title: 'Front of house', outs: true });
@@ -67,7 +67,7 @@
             <span>${esc(i.category)}</span>
             <span class="count">${i.out ? 'sold out' : `${i.count} left`}</span>
           </div>
-          ${i.out ? `<div class="badge">86'd ${i.outAt ? 'at ' + clock(i.outAt) : ''} · don't sell</div>` : ''}
+          ${i.out ? `<div class="badge">86'd${i.outAt ? ' at ' + clock(i.outAt) : ''}. Don't sell.</div>` : ''}
           <div class="stock"><i style="width:${pct}%"></i></div>
         </div>`;
       }).join('') : `<p class="empty"><b>Nothing matches “${esc(q || cat)}”.</b>Clear the search to see the whole menu.</p>`;
