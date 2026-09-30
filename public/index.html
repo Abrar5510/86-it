@@ -5,12 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>86 It · Kitchen voice control</title>
   <meta name="description" content="Say it once — every screen knows. Voice control for the kitchen, built on the AssemblyAI Voice Agent API and Cloudflare Durable Objects.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/app.css">
   <link rel="stylesheet" href="/css/landing.css">
+
+  <!-- OG / social preview. Assets are served from public/, and scrapers need an absolute image URL. -->
+  <meta property="og:title" content="86 It · Kitchen voice control">
+  <meta property="og:description" content="A cook says '86 salmon' into a headset. It's greyed out on the kitchen display, servers' screen and the online menu the moment the transcript lands.">
+  <meta property="og:image" content="https://86-it.rd5510.workers.dev/docs/cover-social.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta property="og:url" content="https://86-it.rd5510.workers.dev/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="86 It · Kitchen voice control">
+  <meta name="twitter:description" content="A cook says '86 salmon' into a headset. It's greyed out on the kitchen display, servers' screen and the online menu the moment the transcript lands.">
+  <meta name="twitter:image" content="https://86-it.rd5510.workers.dev/docs/cover-social.png">
 </head>
 <body>
   <main class="lp">
@@ -32,7 +44,7 @@
         </h1>
 
         <p class="lp-lede anim anim-3">
-          A cook says <b>“86 salmon”</b> into a headset. Within about a second it’s greyed out on the
+          A cook says <b>“86 salmon”</b> into a headset. The moment the transcript lands it’s greyed out on the
           kitchen display, the servers’ screen and the online menu — no ticket printing, no shouting,
           no tapping a greasy screen.
         </p>
@@ -55,7 +67,7 @@
         <div class="lp-facts anim anim-5">
           <div><b>4</b><span>screens, one state</span></div>
           <div><b>10</b><span>voice tools</span></div>
-          <div><b><em>~1s</em></b><span>speech → action</span></div>
+          <div><b><em>&lt;1s</em></b><span>speech → action</span></div>
           <div><b>0</b><span>databases</span></div>
         </div>
       </div>
@@ -105,7 +117,7 @@
         <div class="lp-result">
           <i class="ok"></i>
           Salmon 86’d on KDS · FOH · menu
-          <span class="ms">0.9s</span>
+          <span class="ms">&lt;1s</span>
         </div>
       </div>
     </section>
@@ -129,14 +141,14 @@
         <article class="lp-step">
           <span class="n">03 / ACT</span>
           <h3>The tool fires</h3>
-          <p>Actions run in the station and land in the Durable Object the moment the model calls them.</p>
+          <p>A strict command grammar acts on the transcript at once; the model confirms and handles fuzzy phrasing.</p>
           <span class="code">mark_86 · fire_ticket · <b>flag_allergy</b></span>
         </article>
         <article class="lp-step">
           <span class="n">04 / EVERYWHERE</span>
           <h3>Every screen repaints</h3>
           <p>Kitchen display, servers’ screen and the online menu all update from the same state.</p>
-          <span class="code">kds · foh · menu — <b>0.9s</b></span>
+          <span class="code">kds · foh · menu — <b>&lt;1s</b></span>
         </article>
       </div>
     </section>
@@ -210,9 +222,9 @@
     <section class="lp-screens" aria-label="Results">
       <p class="lp-eyebrow">Measured, <b>not claimed</b></p>
       <div class="lp-results">
-        <div class="lp-stat"><b>96.8<small>%</small></b><span>commands correct across the <b>43-clip eval</b>, clean and under pink noise</span></div>
+        <div class="lp-stat"><b>43<small>/43</small></b><span>clips passed in the <b>clean eval</b>; 42/43 under pink noise</span></div>
         <div class="lp-stat"><b>12<small>/12</small></b><span>chatter lines <b>ignored</b> — zero replies, zero ghost actions</span></div>
-        <div class="lp-stat"><b>15</b><span><b>unit tests</b> over the reducer, fuzzy matching and void safety</span></div>
+        <div class="lp-stat"><b>22</b><span><b>unit tests</b> over the reducer, fuzzy matching and void safety</span></div>
         <div class="lp-stat"><b>100<small>%</small></b><span>of sessions <b>recorded</b> by AssemblyAI and replayable</span></div>
       </div>
     </section>

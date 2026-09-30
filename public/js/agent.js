@@ -1,14 +1,13 @@
 // Voice station on AssemblyAI Voice Agent API: STT + LLM + tool calling + TTS in one WebSocket.
-//   mic -> input.audio -> transcript.user -> instant lane (grammar) -> Kitchen action   (~0 ms after speech end)
+//   mic -> input.audio -> transcript.user -> instant lane (grammar) -> Kitchen action   (as soon as the transcript lands)
 //                                         -> LLM tool.call -> same action, deduped -> tool.result -> reply.audio
-// The instant lane only fires on strict command phrasings (public/js/intent.js); everything else, and every
+// The instant lane only acts on strict command phrasings (public/js/intent.js). Everything else, and every
 // spoken reply, comes from the LLM. eval/replay.js scores the instant lane against recorded sessions.
 import { startAudio } from './audio.js';
 import { parse } from './intent.js';
 import { matchItem } from './match.js';
 
 const BATCH = 2; // worklet chunks are 40 ms; send 80 ms batches
-const VOID_WINDOW_MS = 10_000;
 const DEDUPE_MS = 6000; // the LLM's tool.call lands ~2-4 s after the instant action
 const RESUME_REFUSED = ['session_not_found', 'session_forbidden', 'session_expired'];
 
@@ -68,8 +67,7 @@ export async function startAgent({ board, getItems, log, onTranscript, onLevel, 
   let voiceFocus = true; // dropped if AssemblyAI rejects the field
   let speechEnd = performance.now(); // latency clock: input.speech.stopped
 
-  let pending = null; // { action, at } for a void awaiting yes/no
-  let recent = null; // { key, result: Promise, at } last instant-lane action, for deduping the LLM's call
+  let recent = []; // { key, result: Promise, at } instant-lane actions the LLM hasn't echoed yet, for deduping its calls
   let replyInProgress = false;
   let replyAudioChunks = []; // held until the reply says real words (silent-reply gate)
   let replyHasRealWords = false;
@@ -93,9 +91,13 @@ export async function startAgent({ board, getItems, log, onTranscript, onLevel, 
     },
   });
 
+  // Chunked so a full 80 ms batch (3840 bytes) is one fromCharCode call per 8 KiB block
+  // instead of 3840 concatenations — this runs every 40 ms while the mic is open.
   function toBase64(bytes) {
     let binary = '';
-    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
     return btoa(binary);
   }
 
@@ -110,10 +112,13 @@ export async function startAgent({ board, getItems, log, onTranscript, onLevel, 
     if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify(msg));
   }
 
-  // Same action from both lanes -> same key. Items compare by menu id; free-text args (allergen) are ignored.
+  // Same action from both lanes -> same key. Items compare by menu id; free-text args are compared
+  // after normalising, so the instant lane's "nut" and the LLM's "Nuts" still dedupe to one call
+  // while a different allergen ("shellfish") runs separately instead of being silently dropped.
   function keyOf(a) {
     const item = a.item == null ? '' : matchItem(getItems(), a.item).item?.id ?? a.item;
-    return [a.type, a.table ?? '', item, a.remaining ?? ''].join('|');
+    const allergen = a.allergen ? String(a.allergen).toLowerCase().replace(/[^a-z]+/g, '').replace(/s$/, '') : '';
+    return [a.type, a.table ?? '', item, a.remaining ?? '', allergen].join('|');
   }
 
   // Instant lane: a strict grammar match on the final transcript updates every screen now.
@@ -123,8 +128,9 @@ export async function startAgent({ board, getItems, log, onTranscript, onLevel, 
     if (!action || action.type === 'void_ticket') return;
     if (action.item != null && !matchItem(getItems(), action.item).item) return;
     const key = keyOf(action);
-    recent = { key, result: board.act(action), at: performance.now() };
-    const result = await recent.result;
+    const entry = { key, result: board.act(action), at: performance.now() };
+    recent = recent.filter((r) => entry.at - r.at < DEDUPE_MS).concat(entry);
+    const result = await entry.result;
     log(result.ok ? 'ack' : 'warn', `instant ${action.type} → ${result.say || result.error} ${after()}`);
   }
 
@@ -133,22 +139,19 @@ export async function startAgent({ board, getItems, log, onTranscript, onLevel, 
   async function handleToolCall(callId, name, args) {
     const action = { type: name, ...args };
 
+    // A void only ever runs with confirmed=true, i.e. the model itself reported an explicit yes.
+    // Otherwise answer the confirmation question and stop; the reducer would reject it anyway.
     if (name === 'void_ticket' && args.confirmed !== true) {
-      const live = pending && performance.now() - pending.at < VOID_WINDOW_MS ? pending.action : null;
-      if (!live) {
-        log('tool', `void_ticket(needs confirmation) ${after()}`);
-        pending = { action: { type: 'void_ticket', table: args.table, confirmed: true }, at: performance.now() };
-        return sendResult(callId, { ok: false, error: 'needs_confirmation', say: `Void ${args.table}?` });
-      }
+      log('tool', `void_ticket(needs confirmation) ${after()}`);
+      return sendResult(callId, { ok: false, error: 'needs_confirmation', say: `Void ${args.table}?` });
     }
-    pending = null;
 
-    const hit = recent && recent.key === keyOf(action) && performance.now() - recent.at < DEDUPE_MS ? recent : null;
-    if (hit) recent = null; // one LLM call consumes one instant action
+    const key = keyOf(action);
+    const hit = recent.find((r) => r.key === key && performance.now() - r.at < DEDUPE_MS);
+    if (hit) recent = recent.filter((r) => r !== hit); // one LLM call consumes one instant action
     log('tool', `${name}(${JSON.stringify(args)}) ${after()}${hit ? ' · instant lane already applied' : ''}`);
     const result = await (hit ? hit.result : board.act(action));
     if (!hit) log(result.ok ? 'ack' : 'warn', `${name} → ${result.say || result.error} ${after()}`);
-    if (result.error === 'needs_confirmation') pending = { action, at: performance.now() };
     sendResult(callId, result);
   }
 
@@ -158,7 +161,12 @@ export async function startAgent({ board, getItems, log, onTranscript, onLevel, 
   }
 
   function onMessage(e) {
-    const msg = JSON.parse(e.data);
+    let msg;
+    try {
+      msg = JSON.parse(e.data);
+    } catch {
+      return log('warn', 'unparseable frame dropped');
+    }
 
     switch (msg.type) {
       case 'session.ready':
@@ -232,7 +240,13 @@ export async function startAgent({ board, getItems, log, onTranscript, onLevel, 
 
       case 'reply.audio': {
         if (!msg.data) break;
-        const pcm = new Int16Array(fromBase64(msg.data));
+        const buf = fromBase64(msg.data);
+        // An odd byte count would throw inside Int16Array and abort the rest of this frame.
+        if (buf.byteLength % 2) {
+          log('warn', `reply.audio with an odd byte count (${buf.byteLength})`);
+          break;
+        }
+        const pcm = new Int16Array(buf);
         if (replyHasRealWords) playback.scheduleChunk(pcm);
         else replyAudioChunks.push(pcm);
         break;

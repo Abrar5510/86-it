@@ -55,8 +55,7 @@ export class Kitchen extends DurableObject {
     try { ws.close(code, 'bye'); } catch {}
   }
 
-  // RPC entry point (worker HTTP tools) and WebSocket entry point share this.
-  // `station` is the voice station that issued the action (null for screens and HTTP tools);
+  // `station` is the voice station that issued the action (null for screens);
   // the reducer stamps it on the ticket so late-ticket alerts know who to tell.
   async act(action, station = null) {
     if (action.type === 'reset') {

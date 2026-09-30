@@ -6,8 +6,9 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { initialState, matchItem } from '../src/state.js';
 import { parse } from '../public/js/intent.js';
+import { fileURLToPath } from 'node:url';
 
-const dir = new URL('./', import.meta.url).pathname;
+const dir = fileURLToPath(new URL('./', import.meta.url));
 const menu = JSON.parse(readFileSync(new URL('../data/menu.json', import.meta.url)));
 const { items } = initialState(menu);
 const cases = JSON.parse(readFileSync(`${dir}commands.json`, 'utf8'));

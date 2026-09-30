@@ -5,8 +5,9 @@
 // Noise: drop a real kitchen recording at eval/noise.wav, otherwise synthetic pink noise is used.
 import { execFileSync } from 'node:child_process';
 import { readFileSync, mkdirSync, existsSync, rmSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-const dir = new URL('./', import.meta.url).pathname;
+const dir = fileURLToPath(new URL('./', import.meta.url));
 const out = `${dir}audio/`;
 const commands = JSON.parse(readFileSync(`${dir}commands.json`, 'utf8'));
 const SNR_DB = Number(process.env.NOISE_DB ?? -12); // noise level relative to speech (dB)

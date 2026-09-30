@@ -4,7 +4,7 @@
 
 ### `GET /api/health`
 ```json
-{ "ok": true, "key": true, "toolSecret": true }
+{ "ok": true, "key": true }
 ```
 
 ### `GET /api/token`
@@ -23,27 +23,7 @@ Mints an AssemblyAI Voice Agent token (valid 300 s to connect, session up to 3 h
 ```
 The token request and `wsUrl` are derived from the `AAI_BASE` var (default `https://agents.assemblyai.com`), which `npm run dev:mock` points at the local fake server.
 
-Errors: `500 {"error":"ASSEMBLYAI_API_KEY is not set"}`, `502` if AssemblyAI refuses or can't be reached.
-
-### `GET /api/tools/inventory?item=<name>`
-HTTP tool (owner phone agent). Requires the header `x-tool-secret: <TOOL_SECRET>`, otherwise `401`.
-```json
-{ "ok": true, "item": "Brownie", "remaining": 10, "out": false, "summary": "10 Brownie left." }
-```
-Unknown item: `{ "ok": false, "error": "unknown_item", "options": ["…"], "summary": "Which item?" }`
-
-### `GET /api/tools/report`
-HTTP tool (owner line). Same auth.
-```json
-{
-  "ok": true,
-  "out_of_stock": ["Salmon"],
-  "open_tickets": 4, "done_tickets": 1, "oldest_open_minutes": 14,
-  "low_stock": ["Short Rib (2)"],
-  "recent": ["86 Salmon", "Fired table 12", "…"],
-  "summary": "86 list: Salmon. 4 open tickets, 1 done."
-}
-```
+Errors: `500 {"error":"ASSEMBLYAI_API_KEY is not set"}`, `502` if AssemblyAI refuses or can't be reached, `429` after 60 token requests from one IP in a minute (the endpoint spends the account's credits, so it is metered).
 
 ## Kitchen WebSocket (`/ws`)
 All screens and stations connect here. Messages are JSON.
@@ -75,7 +55,8 @@ State = {
     status: 'new'|'fired'|'held'|'done'|'void',
     lines: Array<{ id, name, qty }>,
     createdAt: number, firedAt?: number, doneAt?: number,
-    allergy: string|null, alerted: boolean
+    allergy: string|null,   // comma-separated list, e.g. "nut, shellfish"
+    alerted: boolean
   }>,
   log: Array<{ at: number, text: string }>,   // newest first, max 40
   nextTicket: number
@@ -83,7 +64,7 @@ State = {
 
 Result = { ok: true, say: string, ...extra } | { ok: false, error: string, say?: string, ...extra }
 ```
-Actions target the **most recent open** ticket (`new` / `fired` / `held`) for a table.
+Actions target the **most recent open** ticket (`new` / `fired` / `held`) for a table. `add_ticket` treats `table` as untrusted input: it is kept only if it is an integer in 1–9999, otherwise the ticket is auto-numbered `100 + nextTicket`. `flag_allergy` appends to `allergy` instead of replacing it, so a ticket keeps every allergen it was given.
 
 ## Actions
 | Action | Args | Success `say` | Errors |
@@ -99,8 +80,7 @@ Actions target the **most recent open** ticket (`new` / `fired` / `held`) for a 
 | `restore_item` | `item`, `count?` (default 10) | `Salmon back on.` | `unknown_item` |
 | `all_day` | `item` | `3 Truffle Fries all day. 2 open tickets.` + `all_day`, `remaining` | `unknown_item` |
 | `inventory_lookup` | `item` | `10 Brownie left.` | `unknown_item` |
-| `add_ticket` | `lines: [{item, qty}]`, `table?`, `source?` | `Ticket 106 in.` + `table` | `unknown_item`, `sold_out` + `item`, `empty_ticket` |
-| `report` | – | summary | – |
+| `add_ticket` | `lines: [{item, qty}]`, `table?`, `source?` | `Ticket 106 in.` + `table` | `unknown_item`, `sold_out` + `item`, `empty_ticket`, `bad_quantity` (qty < 1 or not a number) |
 | `mark_alerted` | `id` | – | internal |
 
 ## Voice agent tools (`agent/station.json`)
@@ -126,11 +106,6 @@ Example exchange on the AssemblyAI socket:
 ← {"type":"transcript.agent","text":"86 salmon.","interrupted":false}
 ```
 
-### Owner phone agent (`agent/owner.json`, stored agent created by `npm run agent:owner`)
-| Tool | Kind | Endpoint |
-|---|---|---|
-| `get_service_report` | HTTP GET | `/api/tools/report` |
-| `inventory_lookup` | HTTP GET | `/api/tools/inventory` |
 
 ## AssemblyAI messages used
 | Direction | Message | Used for |

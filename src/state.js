@@ -87,12 +87,18 @@ export function applyAction(prev, action, now = Date.now()) {
         return ok(`Voided ${t.table}.`);
       });
 
-    case 'flag_allergy':
+    // Allergies accumulate: "12 has a nut allergy" followed by "12 has a shellfish allergy"
+    // must leave both on the ticket, never just the most recent one.
+    case 'flag_allergy': {
       return withTicket((t) => {
-        t.allergy = String(action.allergen || 'allergy').toLowerCase();
+        const allergen = String(action.allergen ?? '').trim().toLowerCase() || 'allergy';
+        const list = t.allergy ? t.allergy.split(', ') : [];
+        if (!list.includes(allergen)) list.push(allergen);
+        t.allergy = list.join(', ');
         log(`Allergy on table ${t.table}: ${t.allergy}`);
         return ok(`${t.table}: ${t.allergy} flagged.`);
       });
+    }
 
     case 'ticket_status':
       return withTicket((t) => {
@@ -138,19 +144,24 @@ export function applyAction(prev, action, now = Date.now()) {
     case 'add_ticket': {
       const lines = [];
       for (const l of action.lines || []) {
+        // Actions arrive over an unauthenticated WebSocket, so quantities and table numbers are
+        // validated here rather than trusted: a negative qty used to *add* stock back.
+        const qty = Math.floor(Number(l.qty ?? 1));
+        if (!Number.isFinite(qty) || qty < 1) return fail(prev, 'bad_quantity', { say: 'How many?' });
         const m = matchItem(state.items, l.item);
         if (!m.item) return fail(prev, 'unknown_item', { options: m.options });
-        if (m.item.out || m.item.count < (l.qty || 1)) return fail(prev, 'sold_out', { item: m.item.name });
-        m.item.count -= l.qty || 1;
+        if (m.item.out || m.item.count < qty) return fail(prev, 'sold_out', { item: m.item.name });
+        m.item.count -= qty;
         if (m.item.count === 0) {
           m.item.out = true;
           m.item.outAt = now;
           log(`86 ${m.item.name} (sold through)`);
         }
-        lines.push({ id: m.item.id, name: m.item.name, qty: l.qty || 1 });
+        lines.push({ id: m.item.id, name: m.item.name, qty });
       }
       if (!lines.length) return fail(prev, 'empty_ticket');
-      const table = Number(action.table) || 100 + state.nextTicket;
+      const wanted = action.table == null ? NaN : Number(action.table);
+      const table = Number.isInteger(wanted) && wanted >= 1 && wanted <= 9999 ? wanted : 100 + state.nextTicket;
       state.tickets.push({
         id: state.nextTicket++, table, lines, status: 'new', source: action.source || 'pos',
         createdAt: action.createdAt ?? now, allergy: null, alerted: false,
@@ -163,18 +174,6 @@ export function applyAction(prev, action, now = Date.now()) {
       const t = state.tickets.find((x) => x.id === action.id);
       if (t) t.alerted = true;
       return ok('');
-    }
-
-    case 'report': {
-      const outs = state.items.filter((i) => i.out).map((i) => i.name);
-      const open = state.tickets.filter((t) => OPEN.has(t.status));
-      const done = state.tickets.filter((t) => t.status === 'done');
-      const oldest = open.reduce((m, t) => Math.max(m, age(t, now)), 0);
-      return ok(`86 list: ${outs.join(', ') || 'nothing'}. ${open.length} open tickets, ${done.length} done.`, {
-        out_of_stock: outs, open_tickets: open.length, done_tickets: done.length, oldest_open_minutes: oldest,
-        low_stock: state.items.filter((i) => !i.out && i.count <= 3).map((i) => `${i.name} (${i.count})`),
-        recent: state.log.slice(0, 10).map((l) => l.text),
-      });
     }
 
     default:

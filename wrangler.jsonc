@@ -14,7 +14,7 @@
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Kitchen"] }],
   "observability": { "enabled": true },
   "rules": [{ "type": "Text", "globs": ["**/*.md"], "fallthrough": true }]
-  // Secrets (not in this file): ASSEMBLYAI_API_KEY, TOOL_SECRET (TOOL_SECRET only for the owner phone line)
+  // Secret (not in this file): ASSEMBLYAI_API_KEY
   //   local:  .dev.vars
   //   prod:   npx wrangler secret put <NAME>
 }

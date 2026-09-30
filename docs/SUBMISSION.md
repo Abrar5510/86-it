@@ -28,15 +28,13 @@ A headset voice station for the line. Cooks speak in their own slang, and the ki
 | *(kitchen chatter)* | Nothing: it stays silent |
 | *(ticket 4 passes 10 minutes)* | The agent speaks up by itself: "Table 4, 12 minutes." |
 
-Stretch goal: the owner calls a phone number and asks "What did we 86 tonight?" (Twilio SIP to a second agent).
-
 ## How we use AssemblyAI
 | Feature | How we use it | Why |
 |---|---|---|
 | **Voice Agent API (single WebSocket)** | The browser streams audio directly, with speech-to-text, LLM and speech in one connection | Lowest latency, and no media server to run |
 | **Inline session config** | Prompt, tools, keyterms and voice are sent in `session.update`, generated from files in git | Config is versioned; a change applies on the next session |
+| **`transcript.user` → instant lane** | A command grammar acts on the final transcript while the LLM is still thinking; the LLM's matching `tool.call` is deduped | Screens update without waiting 2 s for the model, and the Voice Agent still speaks, handles fuzzy phrasing and asks "Void 7?" |
 | **Client-side tools** (10) | Kitchen actions run in the station and go to the Durable Object | The UI updates the moment a tool is called |
-| **Stored agent + HTTP tools** (owner line) | AssemblyAI calls our Worker directly, with an encrypted header secret | Works on a phone call, where there's no browser |
 | **JSON Schema + enums** | Menu items restricted to an enum; integer table numbers; examples in descriptions | The model can't output an item that isn't on the menu |
 | **Keyterms** | Every menu item and alias plus kitchen slang ("86", "all day", "on the fly") | Correct transcription of kitchen vocabulary |
 | **Voice focus (noise suppression)** | `near-field` for a headset in a loud kitchen | Isolates the cook from background noise |
@@ -46,10 +44,10 @@ Stretch goal: the owner calls a phone number and asks "What did we 86 tonight?" 
 | **`session.resume`** | Automatic reconnect, falling back to a new session | Survives Wi-Fi blips mid-service |
 
 ## Architecture
-See [ARCHITECTURE.md](ARCHITECTURE.md). In short: browser ⇄ AssemblyAI for voice; browser ⇄ Cloudflare Durable Object for state; the Durable Object broadcasts to every screen; on the owner phone line, AssemblyAI calls the Worker's HTTP tools.
+See [ARCHITECTURE.md](ARCHITECTURE.md). In short: browser ⇄ AssemblyAI for voice; browser ⇄ Cloudflare Durable Object for state; the Durable Object broadcasts to every screen.
 
 ## Engineering quality
-- 15 unit tests (`npm test`) cover the kitchen logic, fuzzy item matching, void safety, alerts and the session config.
+- 22 unit tests (`npm test`) cover the kitchen logic, fuzzy item matching, void safety, alerts, input validation on WebSocket actions and the session config.
 - A protocol-faithful fake AssemblyAI server (`test/mock-aai.js`) flags protocol violations. The full voice loop was tested against it in the browser: tool calls, result timing, barge-in, chatter, an unknown item, a spoken alert, a dropped connection with resume, a refused resume, and the voice-focus fallback. It recorded 0 violations.
 
 ## Results
@@ -68,7 +66,17 @@ The two misses were both transcription misses, and in both the agent did somethi
 
 It also passed the safety cases: "Void 7" → "Void 7?" (nothing voided), "86 the lobster" → "Which item?", and "86 the fish" → salmon.
 
-> Before quoting these, record real voices (`eval/recorded/`) and a real kitchen noise track (`eval/noise.wav`) and rerun, or label them as synthetic speech.
+> These clips are synthesized speech. Record real voices (`eval/recorded/`) and a real kitchen noise track (`eval/noise.wav`) and rerun before presenting them as field numbers.
+
+### With the instant lane
+The station acts on the final transcript through a strict grammar, and the LLM's matching tool call is deduped. `node eval/replay.js` scores that offline against the same recorded sessions (no new credits): a clip passes if the grammar's action is right, or, where the grammar stays out, if the recorded LLM call was right. A grammar action that is wrong, or that fires on chatter, fails the clip.
+
+| Condition | Commands acted on by the instant lane | Instant lane wrong | Pass, LLM only | Pass, with instant lane | End of speech → action, p50 |
+|---|---|---|---|---|---|
+| Clean | 28 / 29 | 0 | 42 / 43 | **43 / 43** | **0 ms** vs 2.1 s for the LLM's `tool.call` |
+| Pink noise −12 dB | 28 / 29 | 0 | 42 / 43 | **42 / 43** | **0 ms** vs 2.0 s |
+
+"0 ms" is the gap between `input.speech.stopped` and the final transcript reaching the station; add the Durable Object round trip. The remaining noisy miss is a transcription error ("Out of chicken" heard as "I got chicken"), which nothing downstream can recover. Caveat: the grammar was written while looking at these transcripts, so this is a tuned result. Fresh recordings (see below) are the honest test.
 
 ### What we tuned (live, every session recorded)
 Every change below was measured on recorded live sessions: local event logs and audio in `eval/results/`, and AssemblyAI's own recording and timeline in `recordings/`.
@@ -81,7 +89,7 @@ Every change below was measured on recorded live sessions: local event logs and 
 | `execution_mode: hold` | Still sent `reply.started` before the tool call | No gain; reverted |
 | Shorter prompt | Same 3 commands | No speed gain; kept the detailed prompt |
 | `min_silence` 400 ms | "86 salmon" split into two turns | No gain; kept the defaults |
-| Bring-your-own faster LLM (via AssemblyAI LLM Gateway) | Only allowed on stored agents; on this account the only available gateway model has no tool support | Not possible; stayed on the managed model |
+| Bring-your-own faster LLM (via AssemblyAI LLM Gateway) | Only allowed on stored agents, which can't declare client tools; on this account the only available gateway model has no tool support | Not possible; stayed on the managed model |
 | Silent-reply gate | On chatter the model returned "\uFEFF", "&nbsp;", "<blank>", "empty"… and the TTS voiced them | Station holds reply audio until real words arrive and drops junk |
 | "Dash" rule for chatter + menu nicknames + number homophones in prompt | First full run failed "86 the fish" (model didn't know the nickname) and "fire for" (mishearing of "four") | See final results |
 | "Un-86 X" → "X is back on" | In noise, "un-86 the soup" was heard as "86, the soup" and marked it **out** | Restore with "…is back on"; "un-86" is a documented limitation |
@@ -93,7 +101,7 @@ First full run (before the last prompt fixes): clean **28/31** commands, 12/12 c
 - **Price:** per location per month, with a hardware bundle (headset + tablet) as an option.
 - **Distribution:** an add-on for POS and kitchen-display vendors (Toast, Square, Lightspeed). The `act()` interface is where their inventory APIs plug in.
 - **Value:** fewer refunds and comps on dishes that are already gone, faster ticket times, allergy flags that can't be missed, and a timestamped 86 log for managers (from the AssemblyAI session timeline).
-- **Next:** multiple stations per kitchen, multi-location dashboards, and manager analytics (what runs out, when).
+- **Next:** an owner phone line ("what did we 86 tonight?"), multiple stations per kitchen, multi-location dashboards, and manager analytics (what runs out, when).
 
 ## Demo script (3:00)
 | Time | Beat | Screen |
@@ -113,18 +121,25 @@ First full run (before the last prompt fixes): clean **28/31** commands, 12/12 c
 - Bring a speaker playing kitchen noise, the headset, a phone showing `/menu`, and a phone hotspot.
 - Record a backup video beforehand.
 
-## Slides (6)
-1. **86 It:** "Say it once. Every screen knows."
-2. **Problem:** the 86 problem, with sourced numbers.
-3. **Live demo.**
-4. **How it works:** the diagram, plus the AssemblyAI feature table above.
-5. **Results:** the eval table.
-6. **Business:** buyer, pricing, POS add-on, roadmap.
+## Slides
+[`docs/86-it-deck.pdf`](86-it-deck.pdf): 14 pages (12 main slides plus two "what we tuned" detail slides). The source is the HyperFrames deck in [`deck/`](../deck/): run `npx hyperframes present deck` for the live version with presenter notes.
+1. Cover: "Say it once. Every screen knows."
+2. The problem, with sourced numbers
+3. The solution (real capture of the three screens)
+4. The vocabulary
+5. Live demo
+6. How it works
+7. How we use AssemblyAI
+8. Results (LLM only vs with the instant lane)
+9. Engineering quality
+10. Business
+11. Being upfront (limits and next steps)
+12. Close, plus the two tuning detail slides
 
 ## Limitations (be upfront)
 - One restaurant per deployment, with no auth on the demo screens.
 - Every station receives every alert.
 - The POS is a mock; stock lives in the Durable Object.
 - The eval uses synthesized speech (macOS `say`) and synthetic pink noise unless you record real clips.
-- The screen updates about 2–4 s after the end of speech, mostly LLM time on the managed model. That's fast enough for a kitchen, but not instant.
+- The instant lane only covers the phrasings in `public/js/intent.js`. Anything else goes through the LLM, and the screen then updates about 2–4 s after the end of speech (mostly LLM time on the managed model). Voids always go through the LLM, which asks "Void 7?" first.
 - "Un-86 X" is unreliable in noise (it can be heard as "86 X"); use "X is back on".

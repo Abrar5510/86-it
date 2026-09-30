@@ -99,12 +99,38 @@ test('dueAlerts only for fired, old, unannounced tickets', () => {
   assert.equal(dueAlerts(s, NOW + ALERT_AFTER_MS).length, 1); // table 15 later
 });
 
-test('report summarises the night', () => {
+test('add_ticket validates quantities: a negative qty must not add stock', () => {
+  const s = seeded();
+  const before = s.items.find((i) => i.id === 'salmon').count;
+  for (const qty of [-500, 0, -1, NaN, 'lots']) {
+    const { state, result } = applyAction(s, { type: 'add_ticket', lines: [{ item: 'salmon', qty }], table: 3 }, NOW);
+    assert.equal(result.ok, false, `qty ${qty} should be rejected`);
+    assert.equal(result.error, 'bad_quantity');
+    assert.equal(state, s, 'a rejected order must leave the state untouched');
+  }
+  assert.equal(s.items.find((i) => i.id === 'salmon').count, before);
+  assert.equal(s.tickets.length, 5);
+});
+
+test('add_ticket sanitises the table number instead of trusting it', () => {
+  const s = seeded();
+  for (const table of [-5, 0, 1.7, 1e9, 'abc']) {
+    const { result } = applyAction(s, { type: 'add_ticket', lines: [{ item: 'fries' }], table }, NOW);
+    assert.equal(result.ok, true, `table ${table} should fall back to an auto number`);
+    assert.ok(result.table >= 100 && Number.isInteger(result.table), `got ${result.table}`);
+  }
+  // An explicit, sane table number is still honoured.
+  assert.equal(applyAction(s, { type: 'add_ticket', lines: [{ item: 'fries' }], table: '12' }, NOW).result.table, 12);
+});
+
+test('flag_allergy accumulates instead of overwriting the previous allergen', () => {
   let s = seeded();
-  s = applyAction(s, { type: 'mark_86', item: 'salmon' }, NOW).state;
-  const r = applyAction(s, { type: 'report' }, NOW).result;
-  assert.deepEqual(r.out_of_stock, ['Salmon']);
-  assert.equal(r.open_tickets, 5);
+  s = applyAction(s, { type: 'flag_allergy', table: 4, allergen: 'Nut' }, NOW).state;
+  s = applyAction(s, { type: 'flag_allergy', table: 4, allergen: 'shellfish' }, NOW).state;
+  assert.equal(s.tickets.find((t) => t.table === 4).allergy, 'nut, shellfish');
+  // Repeating the same allergen does not duplicate it.
+  s = applyAction(s, { type: 'flag_allergy', table: 4, allergen: 'NUT' }, NOW).state;
+  assert.equal(s.tickets.find((t) => t.table === 4).allergy, 'nut, shellfish');
 });
 
 test('fire_ticket records the owning station for alert routing', () => {

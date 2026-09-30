@@ -8,7 +8,6 @@
     "test": "node --test src/*.test.js",
     "eval:clips": "node eval/make-clips.js",
     "eval": "node eval/run.js",
-    "agent:owner": "node scripts/agent.js",
     "mock": "node test/mock-aai.js",
     "dev:mock": "wrangler dev --var AAI_BASE:http://localhost:9901",
     "eval:mock": "AAI_BASE=http://localhost:9901 node eval/run.js --only 86-salmon",

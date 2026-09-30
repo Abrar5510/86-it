@@ -33,9 +33,13 @@ test('transcript variants: digits, hyphens, apostrophes, homophones', () => {
   assert.equal(t('Fire twenty-one')?.table, 21);
   assert.equal(t("Where's 9 at?")?.type, 'ticket_status');
   assert.equal(t("12's up")?.type, 'bump_ticket');
+  assert.equal(t('Table 9 off.')?.type, 'bump_ticket');
   assert.equal(t('Un-86 the soup')?.type, 'restore_item');
   assert.equal(t('I got chicken'), undefined);
   assert.equal(t("I'll be back"), undefined);
+  // The off-the-fire phrasing is anchored to a bare table, so chatter still matches nothing.
+  assert.equal(t('These batteries are off'), undefined);
+  assert.equal(t('Turn the grill off'), undefined);
 });
 
 test('void needs a yes', () => {

@@ -3,9 +3,10 @@
 //   npm run sessions:save -- --id sess_x  -> one session
 // Saved to recordings/<created_at>_<id>/ : session.json + one file per artifact.
 import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const API = 'https://agents.assemblyai.com/v1/sessions';
-const ROOT = new URL('../recordings/', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('../recordings/', import.meta.url));
 const EXT = { audio: 'ogg', timeline: 'json', metadata: 'json' };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

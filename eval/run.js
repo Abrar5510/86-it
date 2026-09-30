@@ -10,6 +10,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { initialState, applyAction, matchItem, rushTickets } from '../src/state.js';
 import { sessionConfig } from '../src/session.js';
+import { fileURLToPath } from 'node:url';
 
 const wav = (pcm) => {
   const h = Buffer.alloc(44);
@@ -20,7 +21,7 @@ const wav = (pcm) => {
   return Buffer.concat([h, pcm]);
 };
 
-const dir = new URL('./', import.meta.url).pathname;
+const dir = fileURLToPath(new URL('./', import.meta.url));
 if (existsSync('.dev.vars')) process.loadEnvFile('.dev.vars');
 const { ASSEMBLYAI_API_KEY, AAI_BASE = 'https://agents.assemblyai.com' } = process.env;
 if (!ASSEMBLYAI_API_KEY) {

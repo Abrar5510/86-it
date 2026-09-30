@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>86 It — pitch deck</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Space Grotesk";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Space Grotesk";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2") format("woff2");
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0b0c0e;
+      }
+      body {
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ---------- scene shells ---------- */
+      .scene {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+      .scene.charcoal {
+        background: #17181c;
+        color: #f4efe6;
+        --accent: #e8440f;
+        --hair: rgba(244, 239, 230, 0.16);
+        --muted: rgba(244, 239, 230, 0.62);
+        --soft: rgba(244, 239, 230, 0.84);
+        --panel: rgba(244, 239, 230, 0.05);
+      }
+      .scene.cream {
+        background: #f4efe6;
+        color: #17181c;
+        --accent: #c2400e;
+        --hair: rgba(23, 24, 28, 0.2);
+        --muted: rgba(23, 24, 28, 0.66);
+        --soft: rgba(23, 24, 28, 0.78);
+        --panel: rgba(23, 24, 28, 0.05);
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 64px 120px 72px;
+      }
+
+      /* ---------- chrome (40px floor) ---------- */
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border-bottom: 1px solid var(--hair);
+        padding-bottom: 18px;
+      }
+      .kicker {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-weight: 700;
+        font-size: 40px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .pageno {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .botbar {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+        border-top: 1px solid var(--hair);
+        padding-top: 16px;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .botbar .hint {
+        flex: none;
+        color: var(--accent);
+        border: 1px solid var(--accent);
+        padding: 6px 22px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      /* ---------- type ---------- */
+      .claim {
+        font-size: 76px;
+        font-weight: 700;
+        line-height: 1.06;
+        letter-spacing: -0.028em;
+        max-width: 1640px;
+        margin-top: 32px;
+      }
+      .claim .hi { color: var(--accent); }
+      .lede {
+        font-size: 48px;
+        line-height: 1.3;
+        color: var(--soft);
+        max-width: 1560px;
+        margin-top: 24px;
+      }
+      .lede .hi { color: var(--accent); }
+      .note {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        line-height: 1.3;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 20px;
+      }
+
+      /* ---------- stat cards ---------- */
+      .stats { display: flex; gap: 54px; margin-top: 40px; }
+      .stat { flex: 1; border-top: 1px solid var(--hair); padding-top: 22px; }
+      .stat .val {
+        font-size: 84px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.035em;
+        color: var(--accent);
+      }
+      .stat .val.sm { font-size: 62px; letter-spacing: -0.03em; }
+      .stat .lbl { font-size: 48px; line-height: 1.26; margin-top: 16px; }
+      .stat .src {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        line-height: 1.35;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 14px;
+      }
+
+      /* ---------- say / do table ---------- */
+      .rows { margin-top: 20px; border-top: 1px solid var(--hair); }
+      .row {
+        display: flex;
+        gap: 36px;
+        align-items: baseline;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--hair);
+      }
+      .row .say {
+        width: 680px;
+        flex: none;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 44px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--accent);
+      }
+      .row .does { font-size: 44px; line-height: 1.2; color: var(--soft); }
+      .rows.beats .row .say { width: 150px; }
+
+      /* ---------- two column blocks ---------- */
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 56px;
+        margin-top: 24px;
+      }
+      .block { border-top: 1px solid var(--hair); padding-top: 14px; }
+      .block .blabel {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-weight: 700;
+        font-size: 40px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .block .btext { font-size: 44px; line-height: 1.25; margin-top: 8px; }
+
+      /* ---------- flow diagram ---------- */
+      .flow { margin-top: 30px; padding-left: 100px; position: relative; }
+      .flow::before {
+        content: "";
+        position: absolute;
+        left: 26px;
+        top: 14px;
+        bottom: 14px;
+        width: 1px;
+        background: var(--hair);
+      }
+      .frow { position: relative; display: flex; align-items: baseline; gap: 24px; padding: 6px 0; }
+      .fnum {
+        position: absolute;
+        left: -100px;
+        top: 8px;
+        width: 60px;
+        text-align: center;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-weight: 700;
+        font-size: 40px;
+        color: var(--accent);
+        background: #17181c;
+        padding: 2px 0;
+      }
+      .fname { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+      .fdesc { font-size: 40px; line-height: 1.3; color: var(--soft); }
+      .farrow {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+        padding: 6px 0 6px 2px;
+      }
+
+      /* ---------- results table ---------- */
+      table.ev { width: 100%; border-collapse: collapse; margin-top: 24px; }
+      table.ev th {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-weight: 400;
+        font-size: 40px;
+        line-height: 1.25;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: left;
+        vertical-align: bottom;
+        padding: 0 24px 14px 0;
+        border-bottom: 1px solid var(--hair);
+      }
+      table.ev td {
+        font-size: 48px;
+        padding: 10px 24px 10px 0;
+        border-bottom: 1px solid var(--hair);
+        vertical-align: baseline;
+      }
+      table.ev td.big {
+        font-size: 56px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: var(--accent);
+      }
+      table.ev td.metric { color: var(--soft); }
+
+      /* ---------- compare panels ---------- */
+      .compare {
+        display: flex;
+        gap: 0;
+        margin-top: 30px;
+        border-top: 1px solid var(--hair);
+      }
+      .cpanel { flex: 1; padding: 28px 44px 28px 0; }
+      .cpanel + .cpanel { border-left: 1px solid var(--hair); padding-left: 44px; padding-right: 0; }
+      .cpanel.payoff { background: var(--accent); color: #f4efe6; padding: 28px 44px; border-left: none; margin-left: 44px; }
+      .cpanel .plabel {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-weight: 700;
+        font-size: 40px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .cpanel.payoff .plabel { color: rgba(244, 239, 230, 0.85); }
+      .cpanel .ptext { font-size: 44px; line-height: 1.25; margin-top: 14px; }
+
+      /* ---------- bars ---------- */
+      .bars { margin-top: 36px; display: flex; flex-direction: column; gap: 30px; }
+      .barline .barlbl {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--soft);
+        margin-bottom: 12px;
+      }
+      .barline .barval { font-size: 48px; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+      .bartrack { height: 44px; background: var(--panel); border-left: 1px solid var(--hair); }
+      .barfill { height: 100%; background: var(--muted); }
+      .barfill.accent { background: var(--accent); }
+
+      /* ---------- cover + close ---------- */
+      .display {
+        font-size: 250px;
+        font-weight: 700;
+        line-height: 0.86;
+        letter-spacing: -0.045em;
+        margin-top: 44px;
+      }
+      .tagline {
+        font-size: 88px;
+        font-weight: 700;
+        line-height: 1.02;
+        letter-spacing: -0.035em;
+        margin-top: 36px;
+      }
+      .endline {
+        font-size: 132px;
+        font-weight: 700;
+        line-height: 0.98;
+        letter-spacing: -0.04em;
+        margin-top: 48px;
+      }
+      .endline .hi { color: var(--accent); }
+
+      /* ---------- capture panels ---------- */
+      .cap {
+        position: absolute;
+        border: 1px solid var(--hair);
+        background: #000;
+        overflow: hidden;
+      }
+      .cap video { display: block; width: 100%; height: 100%; object-fit: cover; }
+      .caplbl {
+        position: absolute;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        line-height: 1.3;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .stack { position: absolute; display: flex; flex-direction: column; gap: 0; }
+      .sitem { border-top: 1px solid var(--hair); padding: 18px 0; }
+      .sitem .sname { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+      .sitem .stext { font-size: 40px; line-height: 1.25; color: var(--soft); margin-top: 6px; }
+
+      .links { display: flex; gap: 44px; margin-top: 42px; flex-wrap: wrap; }
+      .link {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 40px;
+        letter-spacing: 0.06em;
+        color: var(--soft);
+        border-top: 1px solid var(--hair);
+        padding-top: 14px;
+      }
+      .link b { color: var(--accent); font-weight: 700; }
+    </style>
+  </head>
+  <body data-composition-id="root" data-start="0" data-duration="140" data-width="1920" data-height="1080">
+    <script type="application/hyperframes-slideshow+json">
+      {
+        "slides": [
+          {
+            "sceneId": "cover",
+            "notes": "Open cold: 'A cook says one sentence and every screen in the building agrees.' This is 86 It — kitchen voice control built on the AssemblyAI Voice Agent API. Live at 86-it.rd5510.workers.dev. Budget 20 seconds here."
+          },
+          {
+            "sceneId": "problem",
+            "notes": "Lead with the pain, not the company. Reveal the three stats one at a time. 75% off-premises = the screens ARE the storefront; cancellations track the rating and two in a row can auto-pause the store. Land the last line in the footer: cooks cannot tap screens with greasy gloves, and a kitchen is too loud for a normal voice assistant.",
+            "fragments": [15, 17, 19]
+          },
+          {
+            "sceneId": "salmon",
+            "notes": "Real capture, no mock-up. Say the line as the clip plays: '86 salmon' → salmon greys out on the kitchen display, the servers' screen and the online menu at the same moment. The spoken reply is only a confirmation; the screens already moved. Point at the latency line: the instant lane acts on the final transcript (0 ms after end of speech in the replay); the LLM alone took about 2.1 s."
+          },
+          {
+            "sceneId": "commands",
+            "notes": "This is the whole vocabulary — eight rows, three presses. Enums restrict the LLM to menu items; keyterms carry the slang into the transcript. Emphasise the last two: chatter produces no tool call and no spoken reply, and the late-ticket alert speaks unprompted. Void only acts after a 'yes'.",
+            "fragments": [34, 36, 38]
+          },
+          {
+            "sceneId": "live",
+            "notes": "Demo beat — run this on the live site while the slide is up. Open /station, click Seed dinner rush about 12 minutes before you present, allow the mic. Full script: 'Fire twelve.' (ticket 12 turns orange) · 'Eighty-six salmon.' (three screens grey out) · 'How long on seven?' → 'Seven: 14 minutes.' · a teammate talks football — nothing happens · interrupt the agent mid-sentence — it stops instantly · late-ticket alert: 'Table 4, 12 minutes.' Bring a speaker with kitchen noise, the headset, a phone on /menu and a hotspot. Push-to-talk is Space if the noise triggers the agent."
+          },
+          {
+            "sceneId": "flow",
+            "notes": "Walk the rail top to bottom: audio goes straight from the browser to AssemblyAI (one WebSocket, no media server); the tool call comes back to the station, which dispatches it to the Durable Object; the Durable Object owns state and broadcasts it to every screen. Key line: a strict grammar acts on the transcript at once, while the LLM is still thinking; its own tool call for the same command arrives 2–4 s later and is deduped. Screens change on the broadcast, before the agent speaks — the spoken reply is only a confirmation."
+          },
+          {
+            "sceneId": "features",
+            "notes": "Six AssemblyAI features, three presses. The point: we did not build speech, latency, noise handling or reconnect — we wired up the platform. Keyterms cover the slang, the menu enum stops the LLM inventing dishes, voice focus isolates the cook.",
+            "fragments": [64, 66.5, 69]
+          },
+          {
+            "sceneId": "results",
+            "notes": "43 clips — 31 commands and 12 chatter lines — each in a fresh session, live API, min_latency, voice focus near-field. LLM alone: 42/43 in both conditions. With the instant lane: 43/43 clean, 42/43 in pink noise at −12 dB, all 12 chatter lines ignored, zero spoken replies on chatter (replayed offline with node eval/replay.js, no credits). The one noisy miss is a mishearing ('I got chicken') that fails safe; safety cases pass ('Void 7' asks first). Be upfront: speech is synthesized with macOS say, and the grammar was written while looking at these transcripts, so a fresh recording is the honest test. The footer button opens the tuning detail if they ask how we got these numbers.",
+            "fragments": [74, 77],
+            "hotspots": [
+              {
+                "id": "tune",
+                "label": "How did we get these numbers?",
+                "target": "tuning",
+                "region": { "x": 64, "y": 86, "w": 31, "h": 9 }
+              }
+            ]
+          },
+          {
+            "sceneId": "quality",
+            "notes": "Engineering quality: 22 unit tests over the kitchen reducer, fuzzy matching, void safety, alerts and session config; a protocol-faithful fake AssemblyAI that flags violations (binary frame, non-session.update opener, unknown tool.result, overlapping replies); 86 recorded sessions with AssemblyAI's own recording and timeline. The mock let us test the whole voice loop without spending credits."
+          },
+          {
+            "sceneId": "business",
+            "notes": "Buyer: the owner or kitchen manager. Price: per location per month, optional headset + tablet bundle. Distribution: an add-on for POS and KDS vendors — Toast, Square, Lightspeed — and the act() interface is exactly where their inventory APIs plug in. Value: fewer refunds and comps, faster ticket times, allergy flags, a timestamped 86 log. Next: multiple stations per kitchen, multi-location dashboards, manager analytics. Two presses for the two rows.",
+            "fragments": [94, 97]
+          },
+          {
+            "sceneId": "limits",
+            "notes": "Be upfront before they find it: one restaurant per deployment, no auth on the demo screens, the instant lane covers fixed phrasings only (anything else goes through the LLM at 2–4 s), mock POS, synthesized eval audio, and 'Un-86 X' is unreliable in noise (say 'X is back on'). Then flip to the right column — the fixes are already scoped: Durable Object keyed by restaurant id, auth, an owner phone line, real voices, Toast/Square inventory behind act()."
+          },
+          {
+            "sceneId": "close",
+            "notes": "Land the line, then the links: the live site, docs/SUBMISSION.md for the full write-up, and the 2:16 demo video with narration as the backup. Then questions."
+          }
+        ],
+        "slideSequences": [
+          {
+            "id": "tuning",
+            "label": "What we tuned",
+            "slides": [
+              {
+                "sceneId": "tune-reply",
+                "notes": "The docs suggested waiting for reply.done before sending tool.result. The recorded timelines showed the ~2 s of transition audio after tool.call is SILENT — waiting only delayed every confirmation. Sending immediately made confirmations ~2 s sooner with no errors in any session. Also measured and reverted: execution_mode: hold (no gain), a shorter prompt (no speed gain), min_silence 400 ms (split turns, kept defaults)."
+              },
+              {
+                "sceneId": "tune-latency",
+                "notes": "A/B on 3 commands: balanced 2.85–4.3 s vs min_latency 2.2–3.7 s end of speech to action — 0.6–1 s faster at the same accuracy. The prompt fixes that DID land: chatter silence rule, menu nicknames ('the fish' → salmon), number homophones ('fire four'), and a silent-reply gate that drops invisible-character replies the TTS would otherwise voice."
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- ============ 01 · cover (cream) ============ -->
+    <div data-hf-id="hf-xx2y" id="scene-cover" class="scene cream" data-composition-id="cover" data-start="0" data-duration="10" data-label="86 It — say it once" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-u2yl" id="slide-0" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-mndw" class="topbar">
+          <span data-hf-id="hf-wr8j" class="kicker" id="cover-kicker">Voice control for restaurant kitchens</span>
+          <span data-hf-id="hf-y4ia" class="pageno">Submission · 2026</span>
+        </div>
+        <div data-hf-id="hf-yeow">
+          <div data-hf-id="hf-r1en" class="display" id="cover-title">86&#160;it<svg viewBox="0 0 100 143" aria-hidden="true" style="height:.82em;width:auto;margin-left:.12em;vertical-align:-.04em"><path d="M50 0 C 72 32, 98 54, 98 90 C 98 121, 76 143, 50 143 C 24 143, 2 121, 2 90 C 2 60, 24 42, 33 24 C 37 47, 51 55, 56 45 C 62 33, 57 14, 50 0 Z" fill="#e8440f"/><path d="M50 62 C 62 76, 72 86, 72 101 C 72 116, 62 126, 50 126 C 38 126, 28 116, 28 101 C 28 86, 40 76, 50 62 Z" fill="#f4c26b"/></svg></div>
+          <div data-hf-id="hf-91t6" class="tagline" id="cover-tag">Say it once. Every screen knows.</div>
+          <p data-hf-id="hf-lpki" class="lede" id="cover-lead">
+            Built on the AssemblyAI Voice Agent API. A cook says “86 salmon” into a headset —
+            the moment the transcript lands, the kitchen display, the servers’ screen and the
+            online ordering page all agree.
+          </p>
+        </div>
+        <div data-hf-id="hf-1a8i" class="botbar" id="cover-foot">
+          <span data-hf-id="hf-5dg6">86-it.rd5510.workers.dev</span>
+          <span data-hf-id="hf-7wmu">README · SUBMISSION · ARCHITECTURE</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 02 · problem (charcoal) ============ -->
+    <div data-hf-id="hf-5f2e" id="scene-problem" class="scene charcoal" data-composition-id="problem" data-start="10" data-duration="10" data-label="The problem" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-3keh" id="slide-10" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-qwf0" class="topbar">
+          <span data-hf-id="hf-c516" class="kicker">The problem</span>
+          <span data-hf-id="hf-a6hp" class="pageno">02 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-iv3y" class="claim" id="p-claim">
+          When a kitchen runs out, the news travels by shouting —
+          <span data-hf-id="hf-ijxm" class="hi">and the apps keep selling it.</span>
+        </h2>
+        <div data-hf-id="hf-rhep" class="stats">
+          <div data-hf-id="hf-lu0p" class="stat" id="p-s1">
+            <div data-hf-id="hf-3sqe" class="val">≈75%</div>
+            <div data-hf-id="hf-oa24" class="lbl">of US restaurant traffic is off-premises — the screens are the storefront.</div>
+            <div data-hf-id="hf-lbkm" class="src">NRA, Off-Premises Trends 2025</div>
+          </div>
+          <div data-hf-id="hf-rzqi" class="stat" id="p-s2">
+            <div data-hf-id="hf-y3v2" class="val">1.5–3%</div>
+            <div data-hf-id="hf-62w1" class="lbl">of US online orders were cancelled in 2023 — and cancellations track the rating.</div>
+            <div data-hf-id="hf-a83j" class="src">Otter, 2023 order data</div>
+          </div>
+          <div data-hf-id="hf-vxuj" class="stat" id="p-s3">
+            <div data-hf-id="hf-hhna" class="val sm">4.5★ → 4.0★</div>
+            <div data-hf-id="hf-28ur" class="lbl">average rating below 2% cancellations vs above 8% — two in a row can pause the store.</div>
+            <div data-hf-id="hf-3ocg" class="src">Otter, December 2023</div>
+          </div>
+        </div>
+        <div data-hf-id="hf-jk1y" class="botbar">
+          <span data-hf-id="hf-34ez">Greasy gloves can’t tap screens</span>
+          <span data-hf-id="hf-6om1">Too loud for a voice assistant</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 03 · the capture (charcoal) ============ -->
+    <div data-hf-id="hf-0u13" id="scene-salmon" class="scene charcoal" data-composition-id="salmon" data-start="20" data-duration="10" data-label="86 salmon — real capture" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-zjrb" id="slide-20" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-pphx" class="topbar">
+          <span data-hf-id="hf-ig8p" class="kicker">The solution · real capture</span>
+          <span data-hf-id="hf-2i60" class="pageno">03 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-w6h5" class="claim" id="sal-claim">
+          One sentence — “86 salmon” — and <span data-hf-id="hf-ve80" class="hi">every screen changes in the same moment.</span>
+        </h2>
+        <div data-hf-id="hf-qbjt" class="stack" id="sal-stack" style="right: 120px; top: 360px; width: 700px">
+          <div data-hf-id="hf-nt1y" class="sitem">
+            <div data-hf-id="hf-fmo0" class="sname">Kitchen display</div>
+            <div data-hf-id="hf-i94v" class="stext">Salmon greys out — the line stops cooking it.</div>
+          </div>
+          <div data-hf-id="hf-rbui" class="sitem">
+            <div data-hf-id="hf-bhyz" class="sname">Servers’ screen</div>
+            <div data-hf-id="hf-5xuh" class="stext">Front of house can no longer sell it.</div>
+          </div>
+          <div data-hf-id="hf-rq5j" class="sitem">
+            <div data-hf-id="hf-jpuw" class="sname">Online menu</div>
+            <div data-hf-id="hf-3g4m" class="stext">Delivery pages reject it the same instant.</div>
+          </div>
+        </div>
+        <div data-hf-id="hf-gm4k" class="caplbl" style="left: 120px; top: 792px">One utterance → three screens</div>
+        <div data-hf-id="hf-jlld" class="note" id="sal-note" style="position: absolute; left: 120px; top: 856px; max-width: 860px; margin-top: 0">
+          0 ms instant · 2.1 s LLM
+        </div>
+      </section>
+      <div data-hf-id="hf-7rr2" class="cap" style="left: 120px; top: 360px; width: 840px; height: 420px">
+        <video data-hf-id="hf-k91y" id="sal-video" src="assets/demo/demo-86-salmon.mp4" muted playsinline preload="auto" data-start="0" data-duration="10"></video>
+      </div>
+    </div>
+
+    <!-- ============ 04 · commands (cream) ============ -->
+    <div data-hf-id="hf-cylz" id="scene-commands" class="scene cream" data-composition-id="commands" data-start="30" data-duration="10" data-label="What a cook can say" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-dqyl" id="slide-30" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-q3sy" class="topbar">
+          <span data-hf-id="hf-8nfn" class="kicker">The vocabulary</span>
+          <span data-hf-id="hf-256j" class="pageno">04 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-6ff3" class="claim" id="cmd-claim">
+          Cooks speak kitchen slang; the system answers in <span data-hf-id="hf-l8bc" class="hi">one to five words.</span>
+        </h2>
+        <div data-hf-id="hf-hnc7" class="rows">
+          <div data-hf-id="hf-lshc" class="row" id="cmd-r1">
+            <span data-hf-id="hf-mhr6" class="say">86 salmon</span>
+            <span data-hf-id="hf-9j9v" class="does">Greys out on KDS, servers’ screen, menu.</span>
+          </div>
+          <div data-hf-id="hf-ugd7" class="row" id="cmd-r2">
+            <span data-hf-id="hf-cz0k" class="say">two short rib left</span>
+            <span data-hf-id="hf-8gxq" class="does">Count updates everywhere, item flagged low.</span>
+          </div>
+          <div data-hf-id="hf-qi96" class="row" id="cmd-r3">
+            <span data-hf-id="hf-yrv5" class="say">fire 12 · bump 4 · hold 9</span>
+            <span data-hf-id="hf-lbbz" class="does">The ticket moves on the kitchen display.</span>
+          </div>
+          <div data-hf-id="hf-7qjh" class="row" id="cmd-r4">
+            <span data-hf-id="hf-f3j3" class="say">how long on 7?</span>
+            <span data-hf-id="hf-hl69" class="does">“Seven: 14 minutes.” · “All day: three.”</span>
+          </div>
+          <div data-hf-id="hf-6yvo" class="row" id="cmd-r5">
+            <span data-hf-id="hf-rmip" class="say">12 has a nut allergy</span>
+            <span data-hf-id="hf-rr9q" class="does">A red banner appears on ticket 12.</span>
+          </div>
+          <div data-hf-id="hf-hudb" class="row" id="cmd-r6">
+            <span data-hf-id="hf-47l5" class="say">void 7 → “yes”</span>
+            <span data-hf-id="hf-jm1a" class="does">“Void 7?” first — nothing until “yes”.</span>
+          </div>
+          <div data-hf-id="hf-dw9a" class="row" id="cmd-r7">
+            <span data-hf-id="hf-d26n" class="say">kitchen chatter</span>
+            <span data-hf-id="hf-a8hh" class="does">Silence: no tool call, no spoken reply.</span>
+          </div>
+          <div data-hf-id="hf-dzqp" class="row" id="cmd-r8">
+            <span data-hf-id="hf-wgo0" class="say">ticket passes 10 min</span>
+            <span data-hf-id="hf-sx7e" class="does">Speaks unprompted: “Table 4, 12 minutes.”</span>
+          </div>
+        </div>
+        <div data-hf-id="hf-pi6i" class="botbar">
+          <span data-hf-id="hf-is7j">Enums restrict the LLM to menu items</span>
+          <span data-hf-id="hf-g41y">Keyterms carry the slang</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 05 · live demo (charcoal) ============ -->
+    <div data-hf-id="hf-h9qg" id="scene-live" class="scene charcoal" data-composition-id="live" data-start="40" data-duration="10" data-label="Live demo" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-r5jj" id="slide-40" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-s3c3" class="topbar">
+          <span data-hf-id="hf-0fdz" class="kicker">Live demo</span>
+          <span data-hf-id="hf-phf2" class="pageno">05 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-yhvw" class="claim" id="live-claim">
+          The same voice loop is <span data-hf-id="hf-fszf" class="hi">deployed and live</span> — this is what runs on stage.
+        </h2>
+        <div data-hf-id="hf-gdei" class="rows beats" style="max-width: 900px" id="live-rows">
+          <div data-hf-id="hf-thy4" class="row">
+            <span data-hf-id="hf-p8ci" class="say">0:20</span>
+            <span data-hf-id="hf-1nbv" class="does">“Fire twelve.” → ticket 12 turns orange.</span>
+          </div>
+          <div data-hf-id="hf-lt04" class="row">
+            <span data-hf-id="hf-mpp0" class="say">0:40</span>
+            <span data-hf-id="hf-e8bc" class="does">“Eighty-six salmon.” → three screens grey out.</span>
+          </div>
+          <div data-hf-id="hf-km31" class="row">
+            <span data-hf-id="hf-1a9s" class="say">1:25</span>
+            <span data-hf-id="hf-6deh" class="does">A teammate talks football — nothing happens.</span>
+          </div>
+          <div data-hf-id="hf-l0e2" class="row">
+            <span data-hf-id="hf-d067" class="say">1:55</span>
+            <span data-hf-id="hf-clnm" class="does">Late-ticket alert: “Table 4, 12 minutes.”</span>
+          </div>
+        </div>
+        <div data-hf-id="hf-pwhj" class="botbar">
+          <span data-hf-id="hf-54ss" style="color: var(--accent)">https://86-it.rd5510.workers.dev/station</span>
+          <span data-hf-id="hf-74f8">Backup video · 2:16</span>
+        </div>
+      </section>
+      <div data-hf-id="hf-46us" class="cap" style="right: 120px; top: 430px; width: 760px; height: 428px">
+        <video data-hf-id="hf-uv30" id="fire-video" src="assets/demo/demo-fire-12.mp4" muted playsinline preload="auto" data-start="0" data-duration="10"></video>
+      </div>
+      <div data-hf-id="hf-dwzq" class="caplbl" style="right: 120px; top: 874px; width: 760px; text-align: left">
+        Turns orange mid-reply
+      </div>
+    </div>
+
+    <!-- ============ 06 · how it works (charcoal) ============ -->
+    <div data-hf-id="hf-x7a7" id="scene-flow" class="scene charcoal" data-composition-id="flow" data-start="50" data-duration="10" data-label="How it works" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-z4zd" id="slide-50" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-shn4" class="topbar">
+          <span data-hf-id="hf-p1iv" class="kicker">How it works</span>
+          <span data-hf-id="hf-txdl" class="pageno">06 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-48hm" class="claim" id="flow-claim">
+          One WebSocket carries the voice; <span data-hf-id="hf-6aa1" class="hi">one Durable Object owns the state</span> and fans it out.
+        </h2>
+        <div data-hf-id="hf-g4nr" class="flow" id="flow-rail">
+          <div data-hf-id="hf-dbbe" class="frow">
+            <span data-hf-id="hf-bucg" class="fnum">01</span>
+            <span data-hf-id="hf-ap6s" class="fname">Station</span>
+            <span data-hf-id="hf-r44u" class="fdesc">— browser + headset: 24 kHz PCM16 streams.</span>
+          </div>
+          <div data-hf-id="hf-cjel" class="farrow">↓ input.audio, streamed as the cook speaks</div>
+          <div data-hf-id="hf-2rf2" class="frow">
+            <span data-hf-id="hf-anfd" class="fnum">02</span>
+            <span data-hf-id="hf-4ok1" class="fname">AssemblyAI Voice Agent</span>
+            <span data-hf-id="hf-klyu" class="fdesc">— STT, turn detection, LLM + 10 tools, TTS.</span>
+          </div>
+          <div data-hf-id="hf-bui5" class="farrow">↓ transcript → instant lane acts; LLM call deduped</div>
+          <div data-hf-id="hf-35q3" class="frow">
+            <span data-hf-id="hf-b1qe" class="fnum">03</span>
+            <span data-hf-id="hf-jx5f" class="fname">Worker + Durable Object</span>
+            <span data-hf-id="hf-cwan" class="fdesc">— tokens, authoritative state, fan-out.</span>
+          </div>
+          <div data-hf-id="hf-1acv" class="farrow">↓ state broadcast to every open socket</div>
+          <div data-hf-id="hf-3k14" class="frow">
+            <span data-hf-id="hf-9utb" class="fnum">04</span>
+            <span data-hf-id="hf-ndrp" class="fname">Every screen</span>
+            <span data-hf-id="hf-3n1n" class="fdesc">— kitchen display, servers’ board, online menu.</span>
+          </div>
+        </div>
+        <p data-hf-id="hf-erw7" class="lede" id="flow-note" style="margin-top: 24px">
+          Screens change on the broadcast — <span data-hf-id="hf-u9j3" class="hi">before</span> the agent speaks.
+        </p>
+        <div data-hf-id="hf-qask" class="botbar">
+          <span data-hf-id="hf-snm6">Grammar first · LLM confirms</span>
+          <span data-hf-id="hf-m7je">Temp token, key stays server-side</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 07 · AssemblyAI features (cream) ============ -->
+    <div data-hf-id="hf-usw3" id="scene-features" class="scene cream" data-composition-id="features" data-start="60" data-duration="10" data-label="How we use AssemblyAI" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-qpkf" id="slide-60" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-raq1" class="topbar">
+          <span data-hf-id="hf-mj9z" class="kicker">How we use AssemblyAI</span>
+          <span data-hf-id="hf-3eb8" class="pageno">07 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-qzgd" class="claim" id="feat-claim">
+          Every hard part of voice is an AssemblyAI feature we wired up — <span data-hf-id="hf-1y07" class="hi">not code we wrote.</span>
+        </h2>
+        <div data-hf-id="hf-nybs" class="grid2" id="feat-grid" style="margin-top: 16px">
+          <div data-hf-id="hf-e2p9" class="block" id="feat-b1">
+            <div data-hf-id="hf-fx7j" class="blabel">Voice Agent API</div>
+            <div data-hf-id="hf-o6do" class="btext">One WebSocket: STT, LLM, speech, turn detection.</div>
+          </div>
+          <div data-hf-id="hf-i0ta" class="block" id="feat-b2">
+            <div data-hf-id="hf-q3ud" class="blabel">Inline session config</div>
+            <div data-hf-id="hf-3m3k" class="btext">Prompt, 10 tools and keyterms in session.update.</div>
+          </div>
+          <div data-hf-id="hf-lyxb" class="block" id="feat-b3">
+            <div data-hf-id="hf-z79c" class="blabel">Keyterms + menu enums</div>
+            <div data-hf-id="hf-6sgs" class="btext">Slang transcribes; enums stop invented dishes.</div>
+          </div>
+          <div data-hf-id="hf-px1c" class="block" id="feat-b4">
+            <div data-hf-id="hf-muhu" class="blabel">Voice focus · near-field</div>
+            <div data-hf-id="hf-g8an" class="btext">Isolates the cook from a loud line, every time.</div>
+          </div>
+          <div data-hf-id="hf-swax" class="block" id="feat-b5">
+            <div data-hf-id="hf-outv" class="blabel">min_latency + barge-in</div>
+            <div data-hf-id="hf-262k" class="btext">Fast transcription; the cook can cut the agent off.</div>
+          </div>
+          <div data-hf-id="hf-wuey" class="block" id="feat-b6">
+            <div data-hf-id="hf-pq3i" class="blabel">reply.create + resume</div>
+            <div data-hf-id="hf-vef8" class="btext">Unprompted alerts; survives a Wi-Fi blip.</div>
+          </div>
+        </div>
+        <div data-hf-id="hf-qp3l" class="botbar">
+          <span data-hf-id="hf-k0vm">Temp tokens from /api/token</span>
+          <span data-hf-id="hf-h1cy">Client tools declared inline</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 08 · results (charcoal) ============ -->
+    <div data-hf-id="hf-wn6y" id="scene-results" class="scene charcoal" data-composition-id="results" data-start="70" data-duration="10" data-label="Results" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-5v8l" id="slide-70" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-rp12" class="topbar">
+          <span data-hf-id="hf-t06v" class="kicker">Results · 43-clip eval</span>
+          <span data-hf-id="hf-evtz" class="pageno">08 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-w822" class="claim" id="res-claim">
+          <span data-hf-id="hf-qpcg" class="hi">43 of 43 clips pass</span> — 42 of 43 in noise.
+        </h2>
+        <table data-hf-id="hf-y83h" class="ev" id="res-table">
+          <colgroup data-hf-id="hf-8528">
+            <col data-hf-id="hf-bjzr" style="width: 720px">
+            <col data-hf-id="hf-2dp0" style="width: 460px">
+            <col data-hf-id="hf-2233" style="width: 500px">
+          </colgroup>
+          <thead data-hf-id="hf-zd89">
+            <tr data-hf-id="hf-p3r7">
+              <th data-hf-id="hf-61t9">43-clip eval</th>
+              <th data-hf-id="hf-zbmi">Clean</th>
+              <th data-hf-id="hf-nxx8">Pink noise −12 dB</th>
+            </tr>
+          </thead>
+          <tbody data-hf-id="hf-bsvf">
+            <tr data-hf-id="hf-ddj7">
+              <td data-hf-id="hf-lzud" class="metric">Pass · LLM only</td>
+              <td data-hf-id="hf-xxu5" class="big">42 / 43</td>
+              <td data-hf-id="hf-edvl" class="big">42 / 43</td>
+            </tr>
+            <tr data-hf-id="hf-ckx5">
+              <td data-hf-id="hf-f7gp" class="metric">Pass · + instant lane</td>
+              <td data-hf-id="hf-mh4r" class="big">43 / 43</td>
+              <td data-hf-id="hf-ys57" class="big">42 / 43</td>
+            </tr>
+            <tr data-hf-id="hf-cz86">
+              <td data-hf-id="hf-phqg" class="metric">Chatter ignored</td>
+              <td data-hf-id="hf-ipiq" class="big">12 / 12</td>
+              <td data-hf-id="hf-a7hy" class="big">12 / 12</td>
+            </tr>
+            <tr data-hf-id="hf-c6m4">
+              <td data-hf-id="hf-0ti1" class="metric">Speech → action (p50)</td>
+              <td data-hf-id="hf-eo6o">0 ms · LLM 2.1 s</td>
+              <td data-hf-id="hf-9g3y">0 ms · LLM 2.0 s</td>
+            </tr>
+            <tr data-hf-id="hf-bsb3">
+              <td data-hf-id="hf-24zr" class="metric">Spoken confirm (p50)</td>
+              <td data-hf-id="hf-ry1j">4.9 s</td>
+              <td data-hf-id="hf-0wje">4.2 s</td>
+            </tr>
+          </tbody>
+        </table>
+        <p data-hf-id="hf-fv1g" class="lede" id="res-note" style="margin-top: 20px">
+          The one noisy miss was a mishearing — and it failed <span data-hf-id="hf-tl3l" class="hi">safe</span>.
+        </p>
+        <div data-hf-id="hf-r3em" class="botbar">
+          <span data-hf-id="hf-h0f3" id="res-foot">43 clips · synthesized speech</span>
+          <span data-hf-id="hf-x6u9" class="hint" id="res-hint">How did we get these? →</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 09 · engineering quality (cream) ============ -->
+    <div data-hf-id="hf-497a" id="scene-quality" class="scene cream" data-composition-id="quality" data-start="80" data-duration="10" data-label="Engineering quality" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-q8on" id="slide-80" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-nbnr" class="topbar">
+          <span data-hf-id="hf-h1c8" class="kicker">Engineering quality</span>
+          <span data-hf-id="hf-r396" class="pageno">09 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-61rj" class="claim" id="q-claim">
+          22 unit tests and a protocol-faithful fake <span data-hf-id="hf-42j7" class="hi">caught violations before we spent a credit.</span>
+        </h2>
+        <div data-hf-id="hf-4ff2" class="stats" id="q-stats">
+          <div data-hf-id="hf-xa0m" class="stat">
+            <div data-hf-id="hf-9gmr" class="val">22</div>
+            <div data-hf-id="hf-78vl" class="lbl">unit tests over the kitchen reducer, fuzzy matching, void safety and alerts.</div>
+            <div data-hf-id="hf-si86" class="src">npm test · node --test</div>
+          </div>
+          <div data-hf-id="hf-tx7e" class="stat">
+            <div data-hf-id="hf-vns7" class="val">0</div>
+            <div data-hf-id="hf-wc2b" class="lbl">protocol violations across a full voice loop: tools, barge-in, chatter, resume.</div>
+            <div data-hf-id="hf-to7f" class="src">GET :9901/stats → violations: []</div>
+          </div>
+          <div data-hf-id="hf-ubif" class="stat">
+            <div data-hf-id="hf-dmpn" class="val">86</div>
+            <div data-hf-id="hf-2kdi" class="lbl">sessions recorded with AssemblyAI’s own recording and timeline.</div>
+            <div data-hf-id="hf-e82m" class="src">recordings/ · eval/results/</div>
+          </div>
+        </div>
+        <div data-hf-id="hf-rhpn" class="botbar">
+          <span data-hf-id="hf-ypjx">The mock flags protocol violations</span>
+          <span data-hf-id="hf-f0ch">On every recorded session</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 10 · business (charcoal) ============ -->
+    <div data-hf-id="hf-9woe" id="scene-business" class="scene charcoal" data-composition-id="business" data-start="90" data-duration="10" data-label="Business" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-l18p" id="slide-90" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-npys" class="topbar">
+          <span data-hf-id="hf-8qa8" class="kicker">Business</span>
+          <span data-hf-id="hf-9wnc" class="pageno">10 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-xw41" class="claim" id="biz-claim">
+          Per-location subscriptions, sold through <span data-hf-id="hf-i0zj" class="hi">the POS vendors restaurants already run.</span>
+        </h2>
+        <div data-hf-id="hf-6ldu" class="grid2">
+          <div data-hf-id="hf-t76m" class="block" id="biz-b1">
+            <div data-hf-id="hf-lhyb" class="blabel">Buyer</div>
+            <div data-hf-id="hf-cmqk" class="btext">The owner or kitchen manager, for independents and groups.</div>
+          </div>
+          <div data-hf-id="hf-p92l" class="block" id="biz-b2">
+            <div data-hf-id="hf-ad4h" class="blabel">Price</div>
+            <div data-hf-id="hf-nu2f" class="btext">Per location per month, optional headset + tablet bundle.</div>
+          </div>
+          <div data-hf-id="hf-ohes" class="block" id="biz-b3">
+            <div data-hf-id="hf-u9rq" class="blabel">Distribution</div>
+            <div data-hf-id="hf-32uf" class="btext">An add-on for POS/KDS vendors: Toast, Square, Lightspeed.</div>
+          </div>
+          <div data-hf-id="hf-bywb" class="block" id="biz-b4">
+            <div data-hf-id="hf-rlz1" class="blabel">Value</div>
+            <div data-hf-id="hf-td0y" class="btext">Fewer refunds, faster tickets, allergy flags, a timestamped 86 log.</div>
+          </div>
+        </div>
+        <div data-hf-id="hf-pmb1" class="note" id="biz-road">
+          Next: multi-station kitchens · multi-location dashboards · manager analytics
+        </div>
+        <div data-hf-id="hf-rw0o" class="botbar">
+          <span data-hf-id="hf-d21v">Demo POS is a mock</span>
+          <span data-hf-id="hf-jiof">One Durable Object per restaurant</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 11 · limits (cream) ============ -->
+    <div data-hf-id="hf-x6bt" id="scene-limits" class="scene cream" data-composition-id="limits" data-start="100" data-duration="10" data-label="Limits and next" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-da11" id="slide-100" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-gszo" class="topbar">
+          <span data-hf-id="hf-q1xd" class="kicker">Being upfront</span>
+          <span data-hf-id="hf-3m3x" class="pageno">11 / 12</span>
+        </div>
+        <h2 data-hf-id="hf-o41a" class="claim" id="lim-claim">What is honestly <span data-hf-id="hf-5x7v" class="hi">not finished yet.</span></h2>
+        <div data-hf-id="hf-bl0i" class="grid2" style="gap: 20px 76px; align-items: start">
+          <div data-hf-id="hf-y7yw">
+            <div data-hf-id="hf-rs4b" class="block">
+              <div data-hf-id="hf-g7ad" class="blabel">Limits today</div>
+            </div>
+            <div data-hf-id="hf-w7wo" class="rows" id="lim-rows-a" style="border-top: none; margin-top: 6px">
+              <div data-hf-id="hf-yh9q" class="row" id="lim-r1"><span data-hf-id="hf-rnl1" class="does">One restaurant per deployment; no auth.</span></div>
+              <div data-hf-id="hf-uj5p" class="row" id="lim-r2"><span data-hf-id="hf-vlg6" class="does">The instant lane covers fixed phrasings only.</span></div>
+              <div data-hf-id="hf-trhw" class="row" id="lim-r3"><span data-hf-id="hf-r23m" class="does">The POS is a mock.</span></div>
+              <div data-hf-id="hf-h8zf" class="row" id="lim-r4"><span data-hf-id="hf-mc1d" class="does">Eval used synthesized speech.</span></div>
+              <div data-hf-id="hf-dave" class="row" id="lim-r5"><span data-hf-id="hf-pqnv" class="does">Off-grammar speech takes 2–4 s; “Un-86 X” is flaky.</span></div>
+            </div>
+          </div>
+          <div data-hf-id="hf-x11t">
+            <div data-hf-id="hf-qusb" class="block">
+              <div data-hf-id="hf-x5i5" class="blabel">Next</div>
+            </div>
+            <div data-hf-id="hf-2cvz" class="rows" id="lim-rows-b" style="border-top: none; margin-top: 6px">
+              <div data-hf-id="hf-9crd" class="row" id="lim-r6"><span data-hf-id="hf-a6op" class="does">Key the Durable Object by restaurant id.</span></div>
+              <div data-hf-id="hf-8l3k" class="row" id="lim-r7"><span data-hf-id="hf-dxd5" class="does">Add auth to the demo screens.</span></div>
+              <div data-hf-id="hf-w2l3" class="row" id="lim-r8"><span data-hf-id="hf-wr6g" class="does">An owner phone line: “what did we 86 tonight?”</span></div>
+              <div data-hf-id="hf-pwva" class="row" id="lim-r9"><span data-hf-id="hf-ap2u" class="does">Real voices and noise in the eval.</span></div>
+              <div data-hf-id="hf-jdbu" class="row" id="lim-r10"><span data-hf-id="hf-whzm" class="does">Toast / Square inventory via act().</span></div>
+            </div>
+          </div>
+        </div>
+        <div data-hf-id="hf-sabp" class="botbar">
+          <span data-hf-id="hf-q0m0">Not hidden from the write-up</span>
+          <span data-hf-id="hf-cuql">docs/SUBMISSION.md → Limitations</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ 12 · close (charcoal) ============ -->
+    <div data-hf-id="hf-brih" id="scene-close" class="scene charcoal" data-composition-id="close" data-start="110" data-duration="10" data-label="Close" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-ej49" id="slide-110" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-geon" class="topbar">
+          <span data-hf-id="hf-gtvj" class="kicker">86 It</span>
+          <span data-hf-id="hf-mexa" class="pageno">Thanks — questions?</span>
+        </div>
+        <div data-hf-id="hf-xfcu">
+          <div data-hf-id="hf-acz1" class="endline" id="end-line">
+            <div data-hf-id="hf-0xq1">Say it once.</div>
+            <div data-hf-id="hf-2yy6" class="hi">Every screen knows.</div>
+          </div>
+          <div data-hf-id="hf-p5qs" class="links" id="end-links">
+            <span data-hf-id="hf-lh8e" class="link"><b data-hf-id="hf-4ddb">Live</b> 86-it.rd5510.workers.dev</span>
+            <span data-hf-id="hf-1o6i" class="link"><b data-hf-id="hf-uv4m">Write-up</b> docs/SUBMISSION.md</span>
+            <span data-hf-id="hf-vox3" class="link"><b data-hf-id="hf-deng">Video</b> 86-it-demo-final.mp4 · 2:16</span>
+          </div>
+        </div>
+        <div data-hf-id="hf-somq" class="botbar">
+          <span data-hf-id="hf-l5os">Voice control for kitchens</span>
+          <span data-hf-id="hf-4rvg">AssemblyAI Voice Agent API</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ branch 01 · tuning: tool results (charcoal) ============ -->
+    <div data-hf-id="hf-6z6r" id="scene-tune-reply" class="scene charcoal" data-composition-id="tune-reply" data-start="120" data-duration="10" data-label="Tuning — send tool results immediately" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-i3sh" id="slide-120" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-g0dm" class="topbar">
+          <span data-hf-id="hf-w9zb" class="kicker">What we tuned · 1 of 2</span>
+          <span data-hf-id="hf-ico8" class="pageno">Detail</span>
+        </div>
+        <h2 data-hf-id="hf-ez80" class="claim" id="tr-claim">
+          Sending tool results immediately <span data-hf-id="hf-jcgu" class="hi">cut two seconds of dead air</span> from every confirmation.
+        </h2>
+        <div data-hf-id="hf-5gk3" class="compare" id="tr-compare">
+          <div data-hf-id="hf-3ddv" class="cpanel">
+            <div data-hf-id="hf-6uf5" class="plabel">What the docs suggested</div>
+            <div data-hf-id="hf-h3qj" class="ptext">Wait for reply.done before sending tool.result — the agent may be speaking a transition.</div>
+          </div>
+          <div data-hf-id="hf-0clc" class="cpanel payoff">
+            <div data-hf-id="hf-s001" class="plabel">What the timelines showed</div>
+            <div data-hf-id="hf-sfwo" class="ptext">That transition is silent. We send tool.result immediately: confirmations ~2 s sooner, zero errors in any recorded session.</div>
+          </div>
+        </div>
+        <div data-hf-id="hf-4qlf" class="note" id="tr-foot">
+          Measured and reverted: execution_mode hold · shorter prompt · min_silence 400 ms
+        </div>
+        <div data-hf-id="hf-b8y6" class="botbar">
+          <span data-hf-id="hf-vnew">Evidence: eval/results + recordings</span>
+          <span data-hf-id="hf-o44z">← returns to results</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ branch 02 · tuning: latency (charcoal) ============ -->
+    <div data-hf-id="hf-v73p" id="scene-tune-latency" class="scene charcoal" data-composition-id="tune-latency" data-start="130" data-duration="10" data-label="Tuning — min_latency" data-width="1920" data-height="1080">
+      <section data-hf-id="hf-amwl" id="slide-130" class="clip slide" data-start="0" data-duration="10" data-track-index="1">
+        <div data-hf-id="hf-fm2l" class="topbar">
+          <span data-hf-id="hf-yupo" class="kicker">What we tuned · 2 of 2</span>
+          <span data-hf-id="hf-8mn4" class="pageno">Detail</span>
+        </div>
+        <h2 data-hf-id="hf-2al6" class="claim" id="tl-claim">
+          transcription_mode: min_latency <span data-hf-id="hf-zm5u" class="hi">bought 0.6–1 s</span> — at the same accuracy.
+        </h2>
+        <div data-hf-id="hf-trsf" class="bars" id="tl-bars">
+          <div data-hf-id="hf-js7h" class="barline">
+            <div data-hf-id="hf-u4cn" class="barlbl"><span data-hf-id="hf-0hpq">balanced mode · 3-command A/B</span><span data-hf-id="hf-zaud" class="barval">2.85 – 4.3 s</span></div>
+            <div data-hf-id="hf-577o" class="bartrack"><div data-hf-id="hf-nev0" class="barfill" style="width: 100%"></div></div>
+          </div>
+          <div data-hf-id="hf-x0w1" class="barline">
+            <div data-hf-id="hf-30rr" class="barlbl"><span data-hf-id="hf-z4g8">min_latency · same 3 commands</span><span data-hf-id="hf-92zf" class="barval">2.2 – 3.7 s</span></div>
+            <div data-hf-id="hf-9kho" class="bartrack"><div data-hf-id="hf-lw2f" class="barfill accent" style="width: 68%"></div></div>
+          </div>
+        </div>
+        <p data-hf-id="hf-kb6m" class="lede" id="tl-note" style="margin-top: 24px; font-size: 44px">
+          Prompt fixes that landed: chatter gets silence, menu nicknames (“the fish” → salmon),
+          number homophones, and a silent-reply gate.
+        </p>
+        <div data-hf-id="hf-aun5" class="botbar">
+          <span data-hf-id="hf-t8k3">Measured on recorded sessions</span>
+          <span data-hf-id="hf-641y">logs + AssemblyAI timeline</span>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        /* Root timeline: spans the whole 0–140s deck. The runtime discovers the
+           scene timelines above and nests them into this one at their data-start. */
+        var root = gsap.timeline({ paused: true });
+        root.to({}, { duration: 140 }, 0);
+        window.__timelines["root"] = root;
+        function scene(id, build) {
+          var tl = gsap.timeline({ paused: true });
+          build(tl);
+          window.__timelines[id] = tl;
+        }
+        function inAt(tl, sel, at, dy) {
+          tl.fromTo(
+            sel,
+            { opacity: 0, y: dy === undefined ? 22 : dy },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+            at
+          );
+        }
+
+        /* 01 cover — 0 → 10 */
+        scene("cover", function (tl) {
+          inAt(tl, "#cover-kicker", 0.4, 14);
+          inAt(tl, "#cover-title", 0.7, 44);
+          inAt(tl, "#cover-tag", 1.5, 26);
+          inAt(tl, "#cover-lead", 2.1, 20);
+          inAt(tl, "#cover-foot", 2.6, 12);
+        });
+
+        /* 02 problem — 10 → 20, holds at 15 / 17 / 19 (local 5 / 7 / 9) */
+        scene("problem", function (tl) {
+          inAt(tl, "#p-claim", 0.4, 28);
+          inAt(tl, "#p-s1", 4.4, 26);
+          inAt(tl, "#p-s2", 6.4, 26);
+          inAt(tl, "#p-s3", 8.4, 26);
+        });
+
+        /* 03 salmon capture — 20 → 30 */
+        scene("salmon", function (tl) {
+          inAt(tl, "#sal-claim", 0.4, 28);
+          tl.fromTo("#sal-stack .sitem", { opacity: 0, x: 26 }, { opacity: 1, x: 0, duration: 0.5, stagger: 0.22, ease: "power2.out" }, 1.4);
+          inAt(tl, "#sal-note", 3.2, 16);
+        });
+
+        /* 04 commands — 30 → 40, holds at 34 / 36 / 38 (local 4 / 6 / 8) */
+        scene("commands", function (tl) {
+          inAt(tl, "#cmd-claim", 0.4, 28);
+          tl.fromTo(["#cmd-r1", "#cmd-r2", "#cmd-r3"], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: "power2.out" }, 3.1);
+          tl.fromTo(["#cmd-r4", "#cmd-r5", "#cmd-r6"], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: "power2.out" }, 5.1);
+          tl.fromTo(["#cmd-r7", "#cmd-r8"], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: "power2.out" }, 7.1);
+        });
+
+        /* 05 live demo — 40 → 50 */
+        scene("live", function (tl) {
+          inAt(tl, "#live-claim", 0.4, 28);
+          tl.fromTo("#live-rows .row", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.16, ease: "power2.out" }, 1.4);
+        });
+
+        /* 06 flow — 50 → 60 */
+        scene("flow", function (tl) {
+          inAt(tl, "#flow-claim", 0.4, 28);
+          tl.fromTo("#flow-rail .frow, #flow-rail .farrow", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.28, ease: "power2.out" }, 1.4);
+          inAt(tl, "#flow-note", 4.2, 18);
+        });
+
+        /* 07 features — 60 → 70, holds at 64 / 66.5 / 69 (local 4 / 6.5 / 9) */
+        scene("features", function (tl) {
+          inAt(tl, "#feat-claim", 0.4, 28);
+          tl.fromTo(["#feat-b1", "#feat-b2"], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.14, ease: "power2.out" }, 3.3);
+          tl.fromTo(["#feat-b3", "#feat-b4"], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.14, ease: "power2.out" }, 5.8);
+          tl.fromTo(["#feat-b5", "#feat-b6"], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.14, ease: "power2.out" }, 8.3);
+        });
+
+        /* 08 results — 70 → 80, holds at 74 / 77 (local 4 / 7) */
+        scene("results", function (tl) {
+          inAt(tl, "#res-claim", 0.4, 28);
+          inAt(tl, "#res-table", 2.4, 24);
+          inAt(tl, "#res-note", 6.2, 20);
+          inAt(tl, "#res-foot", 6.4, 14);
+          inAt(tl, "#res-hint", 6.4, 12);
+        });
+
+        /* 09 quality — 80 → 90 */
+        scene("quality", function (tl) {
+          inAt(tl, "#q-claim", 0.4, 28);
+          tl.fromTo("#q-stats .stat", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.3, ease: "power2.out" }, 1.4);
+        });
+
+        /* 10 business — 90 → 100, holds at 94 / 97 (local 4 / 7) */
+        scene("business", function (tl) {
+          inAt(tl, "#biz-claim", 0.4, 28);
+          tl.fromTo(["#biz-b1", "#biz-b2"], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.14, ease: "power2.out" }, 3.3);
+          tl.fromTo(["#biz-b3", "#biz-b4"], { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.14, ease: "power2.out" }, 6.3);
+          inAt(tl, "#biz-road", 6.4, 16);
+        });
+
+        /* 11 limits — 100 → 110 */
+        scene("limits", function (tl) {
+          inAt(tl, "#lim-claim", 0.4, 28);
+          tl.fromTo("#lim-rows-a .row, #lim-rows-b .row", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.1, ease: "power2.out" }, 1.4);
+        });
+
+        /* 12 close — 110 → 120 */
+        scene("close", function (tl) {
+          inAt(tl, "#end-line", 0.5, 40);
+          tl.fromTo("#end-links .link", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.18, ease: "power2.out" }, 1.6);
+        });
+
+        /* branch 01 — 120 → 130 */
+        scene("tune-reply", function (tl) {
+          inAt(tl, "#tr-claim", 0.4, 28);
+          tl.fromTo("#tr-compare .cpanel", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.3, ease: "power2.out" }, 1.5);
+          inAt(tl, "#tr-foot", 3.4, 16);
+        });
+
+        /* branch 02 — 130 → 140 */
+        scene("tune-latency", function (tl) {
+          inAt(tl, "#tl-claim", 0.4, 28);
+          tl.fromTo("#tl-bars .barline", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.3, ease: "power2.out" }, 1.5);
+          inAt(tl, "#tl-note", 3.4, 18);
+        });
+      })();
+    </script>
+  </body>
+</html>

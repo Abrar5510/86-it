@@ -1,8 +1,8 @@
 // Kitchen command grammar: final transcript -> kitchen action, or null for chatter.
-// Replaces the LLM on the hot path. Every rule is anchored on a command word ("fire", "86", "all day"…)
-// so ordinary talk ("my locker is number twelve", "the salmon looks good") matches nothing.
-// ponytail: fixed phrasings only; unmatched speech is ignored. Add an LLM fallback if real cooks
-// phrase things this grammar misses (eval/commands.json is the test set).
+// This is the station's instant lane: it acts on the final transcript without waiting for the LLM, which still
+// speaks the reply and handles anything the grammar doesn't match. Every rule is anchored on a command word
+// ("fire", "86", "all day"…) so ordinary talk ("my locker is number twelve", "the salmon looks good") matches nothing.
+// Limitation: fixed phrasings only. Unmatched speech falls through to the LLM; eval/commands.json is the test set.
 import { matchItem, norm } from './match.js';
 
 const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
@@ -37,6 +37,8 @@ const TABLE_RULES = [
   [new RegExp(`\\bhold ${TABLE}\\b`), (m) => ({ type: 'hold_ticket', table: num(m[1]) })],
   [new RegExp(`\\b(?:bump|sold) ${TABLE}\\b`), (m) => ({ type: 'bump_ticket', table: num(m[1]) })],
   [new RegExp(`^${TABLE} (?:is |s )?up$`), (m) => ({ type: 'bump_ticket', table: num(m[1]) })],
+  // "12 is off" — off the fire, i.e. away. Anchored to a bare table so chatter can't reach it.
+  [new RegExp(`^${TABLE} (?:is |s )?off$`), (m) => ({ type: 'bump_ticket', table: num(m[1]) })],
   [new RegExp(`^${TABLE} (?:is )?out the window$`), (m) => ({ type: 'bump_ticket', table: num(m[1]) })],
   [new RegExp(`\\b(?:void|kill) ${TABLE}\\b`), (m) => ({ type: 'void_ticket', table: num(m[1]), confirmed: false })],
   [new RegExp(`^${TABLE} (?:has|got) (?:an? )?(.+?) allergy$`), (m) => ({ type: 'flag_allergy', table: num(m[1]), allergen: m[2] })],
@@ -92,6 +94,3 @@ export function parse(text, items, pending = null) {
   }
   return null;
 }
-
-// Keyterms for the streaming model: menu names and nicknames, plus kitchen slang.
-export const SLANG = ['86', 'eighty-six', 'all day', 'fire', 'bump', 'on the fly', 'void', 'allergy', 'table', 'out the window'];
