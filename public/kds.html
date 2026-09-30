@@ -6,54 +6,173 @@
   <title>86 It · Kitchen</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-  <header class="top">
-    <span class="brand"><b>86</b> It · Kitchen display</span>
-    <span class="dot" id="dot"></span>
-    <nav class="nav">
-      <a href="/station">Station</a>
-      <a href="/kds" aria-current="page">Kitchen</a>
-      <a href="/foh">Front of house</a>
-      <a href="/menu">Online menu</a>
-    </nav>
-  </header>
-  <div class="eighty-six" id="outs" aria-live="polite"></div>
-  <main class="tickets" id="tickets" aria-live="polite"></main>
+  <main class="kds">
+    <div class="kds-main">
+      <div class="toolbar">
+        <div class="tabs" role="tablist" id="tabs">
+          <button role="tab" aria-selected="true" data-filter="all">All <b id="c-all">0</b></button>
+          <button role="tab" aria-selected="false" data-filter="fired">Fired <b id="c-fired">0</b></button>
+          <button role="tab" aria-selected="false" data-filter="late">Late <b id="c-late">0</b></button>
+        </div>
+        <span class="hint">voice: “fire 7” · “bump 12” — or tap a ticket</span>
+      </div>
+      <section class="tickets" id="tickets" aria-live="polite"></section>
+    </div>
+
+    <aside class="side">
+      <section class="panel pad">
+        <h2>Service</h2>
+        <div class="kpis">
+          <div class="kpi"><b id="k-open">0</b><span>open</span></div>
+          <div class="kpi warm"><b id="k-warn">0</b><span>5–10 min</span></div>
+          <div class="kpi hot"><b id="k-late">0</b><span>late</span></div>
+          <div class="kpi"><b id="k-oldest">–</b><span>oldest</span></div>
+        </div>
+      </section>
+      <section class="panel pad">
+        <h2>All day</h2>
+        <ul class="allday" id="allday"><li><span class="name">Nothing on yet</span></li></ul>
+      </section>
+    </aside>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
+    import { mountChrome } from '/js/chrome.js';
     import { connectBoard, minutesSince, esc } from '/js/board.js';
 
+    const chrome = mountChrome({ active: 'kds', title: 'Kitchen display', outs: true });
+
     const OPEN = ['new', 'fired', 'held'];
-    const LATE_MIN = 10;
+    const LATE_MIN = 10;      // matches ALERT_AFTER_MS in src/state.js
+    const WARN_MIN = 5;
     let last = null;
-    let prevStatus = null; // null until first render, so the initial paint doesn't flash
+    let filter = 'all';
+    let prevStatus = null;    // null until first render, so the first paint doesn't flash
+    const board = connectBoard({ onState: render, onStatus: chrome.setStatus });
+
+    const ageOf = (t) => Math.max(0, (Date.now() - t.createdAt) / 1000);
+    const mmss = (secs) => `${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(Math.floor(secs % 60)).padStart(2, '0')}`;
 
     function render(state) {
       last = state;
-      const outIds = new Set(state.items.filter((i) => i.out).map((i) => i.id));
-      document.getElementById('outs').innerHTML = '<span class="label">86</span>' +
-        (state.items.filter((i) => i.out).map((i) => `<span class="chip out">${esc(i.name)}</span>`).join('') || '<span class="chip">nothing</span>');
-
+      chrome.setOuts(state);
       const open = state.tickets.filter((t) => OPEN.includes(t.status)).sort((a, b) => a.createdAt - b.createdAt);
+      const outIds = new Set(state.items.filter((i) => i.out).map((i) => i.id));
+
+      // KPIs
+      const late = open.filter((t) => minutesSince(t.createdAt) >= LATE_MIN);
+      const warn = open.filter((t) => { const m = minutesSince(t.createdAt); return m >= WARN_MIN && m < LATE_MIN; });
+      document.getElementById('k-open').textContent = open.length;
+      document.getElementById('k-warn').textContent = warn.length;
+      document.getElementById('k-late').textContent = late.length;
+      document.getElementById('k-oldest').textContent = open.length ? `${minutesSince(open[0].createdAt)}m` : '–';
+      document.getElementById('c-all').textContent = open.length;
+      document.getElementById('c-fired').textContent = open.filter((t) => t.status === 'fired').length;
+      document.getElementById('c-late').textContent = late.length;
+
+      // Tabs
+      const shown = open.filter((t) =>
+        filter === 'all' ? true : filter === 'fired' ? t.status === 'fired' : minutesSince(t.createdAt) >= LATE_MIN);
+
       const el = document.getElementById('tickets');
-      el.innerHTML = open.length ? open.map((t) => {
+      el.innerHTML = shown.length ? shown.map((t) => {
         const age = minutesSince(t.createdAt);
         const changed = prevStatus && prevStatus.get(t.id) !== `${t.status}|${t.allergy}`;
-        return `<article class="ticket ${t.status} ${age >= LATE_MIN ? 'late' : ''} ${changed ? 'flash' : ''}">
+        return `<article class="ticket ${t.status} ${age >= LATE_MIN ? 'late' : age >= WARN_MIN ? 'warn' : ''} ${changed ? 'flash' : ''}"
+            data-id="${t.id}" data-table="${t.table}" data-created="${t.createdAt}" tabindex="0">
           ${t.allergy ? `<div class="allergy">⚠ ${esc(t.allergy)}</div>` : ''}
-          <div class="head"><span class="table">${t.table}${t.source === 'online' ? '<span class="src">online</span>' : ''}</span><span class="age">${age}m</span></div>
-          <div class="status">${t.status}</div>
+          <div class="head">
+            <span class="table">${t.table}${t.source === 'online' ? '<span class="src">online</span>' : ''}</span>
+            <span class="age">${mmss(ageOf(t))}</span>
+          </div>
+          <div class="meta"><span class="status ${t.status}">${t.status}</span></div>
           <ul>${t.lines.map((l) => `<li class="${outIds.has(l.id) ? 'gone' : ''}"><b>${l.qty}</b>${esc(l.name)}</li>`).join('')}</ul>
+          <div class="actions">
+            <button class="btn sm amber" data-act="fire" ${t.status === 'fired' ? 'disabled' : ''}>Fire</button>
+            <button class="btn sm ghost" data-act="hold" ${t.status === 'held' ? 'disabled' : ''}>Hold</button>
+            <button class="btn sm primary" data-act="bump">Bump</button>
+          </div>
+          <div class="agebar"><i></i></div>
         </article>`;
-      }).join('') : '<p class="empty">No open tickets. Hit “Seed dinner rush” on the station.</p>';
+      }).join('') : `<p class="empty"><b>${open.length ? 'Nothing matches this filter.' : 'No open tickets.'}</b>${open.length ? 'Switch back to All.' : 'Hit “Seed dinner rush” on the station, or say “Fire 12”.'}</p>`;
       prevStatus = new Map(state.tickets.map((t) => [t.id, `${t.status}|${t.allergy}`]));
+
+      renderAllDay(state, open);
+      tick();
     }
 
-    connectBoard({ onState: render, onStatus: (on) => document.getElementById('dot').classList.toggle('on', on) });
-    setInterval(() => last && render(last), 30_000); // keep ages fresh
+    function renderAllDay(state, open) {
+      const tally = new Map();
+      for (const t of open) for (const l of t.lines) {
+        const row = tally.get(l.id) || { name: l.name, qty: 0 };
+        row.qty += l.qty;
+        tally.set(l.id, row);
+      }
+      const rows = [...tally.values()].sort((a, b) => b.qty - a.qty);
+      document.getElementById('allday').innerHTML = rows.length
+        ? rows.map((r) => {
+            const gone = state.items.find((i) => i.name === r.name)?.out;
+            return `<li class="${gone ? 'gone' : ''}"><b>${r.qty}</b><span class="name ${gone ? 'gone' : ''}">${esc(r.name)}</span>${gone ? '<span class="chip out">86</span>' : ''}</li>`;
+          }).join('')
+        : '<li><span class="name">Nothing on yet</span></li>';
+    }
+
+    // Ages tick every second without re-rendering the cards (keeps taps and hovers stable).
+    function tick() {
+      for (const el of document.querySelectorAll('.ticket[data-created]')) {
+        const secs = ageOf({ createdAt: Number(el.dataset.created) });
+        const mins = secs / 60;
+        const ageEl = el.querySelector('.age');
+        if (ageEl) ageEl.textContent = mmss(secs);
+        el.classList.toggle('warn', mins >= WARN_MIN && mins < LATE_MIN);
+        el.classList.toggle('late', mins >= LATE_MIN);
+        const bar = el.querySelector('.agebar i');
+        if (bar) bar.style.width = `${Math.min(100, (mins / LATE_MIN) * 100)}%`;
+      }
+    }
+    setInterval(tick, 1000);
+
+    // Toast with an optional action button (undo).
+    const toastEl = document.getElementById('toast');
+    let toastTimer;
+    function toast(text, actionLabel, onAction) {
+      toastEl.textContent = text;
+      if (actionLabel) {
+        const b = document.createElement('button');
+        b.textContent = actionLabel;
+        b.onclick = () => { toastEl.classList.remove('show'); onAction(); };
+        toastEl.append(b);
+      }
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 5000);
+    }
+
+    document.getElementById('tickets').addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-act]');
+      const card = e.target.closest('.ticket');
+      if (!btn || !card) return;
+      e.stopPropagation();
+      const table = card.dataset.table;
+      const act = btn.dataset.act;
+      const r = await board.act({ type: `${act}_ticket`, table });
+      if (!r.ok) return toast(r.say || `Could not ${act} table ${table}`);
+      toast(`Table ${table} ${act === 'bump' ? 'bumped' : act === 'fire' ? 'fired' : 'held'}`, 'Undo', () =>
+        board.act({ type: 'reopen_ticket', table }));
+    });
+
+    document.getElementById('tabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-filter]');
+      if (!btn) return;
+      filter = btn.dataset.filter;
+      for (const b of document.querySelectorAll('#tabs button')) b.setAttribute('aria-selected', String(b === btn));
+      if (last) render(last);
+    });
   </script>
 </body>
 </html>

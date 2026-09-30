@@ -91,6 +91,7 @@ Actions target the **most recent open** ticket (`new` / `fired` / `held`) for a 
 | `fire_ticket` | `table` | `Fired 12.` | `no_open_ticket` |
 | `hold_ticket` | `table` | `Holding 9.` | `no_open_ticket` |
 | `bump_ticket` | `table` | `Bumped 4.` | `no_open_ticket` |
+| `reopen_ticket` | `table` | `Table 4 back on.` | `no_finished_ticket` (nothing to put back for that table) |
 | `void_ticket` | `table`, `confirmed` | `Voided 7.` | `needs_confirmation` (if `confirmed !== true`), `no_open_ticket` |
 | `flag_allergy` | `table`, `allergen` | `12: nuts flagged.` | `no_open_ticket` |
 | `ticket_status` | `table` | `7: 14 minutes, fired.` + `minutes`, `status`, `items`, `allergy` | `no_open_ticket` |

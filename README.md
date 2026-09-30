@@ -5,9 +5,10 @@ A cook says "86 salmon" into a headset. Within about a second, salmon is greyed 
 
 | Page | What it is |
 |---|---|
-| `/station` | The cook's voice station: mic, live transcript, event log with latency |
-| `/kds` | Kitchen display: tickets, ages, allergy banners, 86 bar |
-| `/foh` | Front of house: what servers can sell right now, kitchen feed |
+| `/` | Landing page with a live board: the 86 list, open tickets and the last kitchen events |
+| `/station` | The cook's voice station: mic **or typed commands**, live transcript, event log with latency |
+| `/kds` | Kitchen display: tickets with ages, allergy banners, 86 bar, all-day tally — tap a ticket to fire/hold/bump (with undo) |
+| `/foh` | Front of house: what servers can sell right now, search + category filters, kitchen feed |
 | `/menu` | Mock delivery/online ordering page (open it on your phone) |
 
 Docs: [Architecture](docs/ARCHITECTURE.md) · [API & tools](docs/API.md) · [Submission / pitch](docs/SUBMISSION.md) · [Product plan](PLAN.md) · [Build plan](BUILD_PLAN.md) · [Demo video](videos/86-it-demo/renders/86-it-demo-final.mp4)
@@ -33,7 +34,7 @@ cp .dev.vars.example .dev.vars      # then fill in ASSEMBLYAI_API_KEY
 npm test                            # unit tests
 npm run dev                         # http://localhost:8787
 ```
-Open `/station`, click **Seed dinner rush**, click **Start**, allow the mic, and say "Fire twelve." Open `/kds`, `/foh` and `/menu` in other windows to watch them update.
+Open `/station`, click **Seed dinner rush**, click **Start**, allow the mic, and say "Fire twelve." Open `/kds`, `/foh` and `/menu` in other windows to watch them update. No mic (or no API key yet)? Type the same commands into the command line on `/station` — it runs the same instant grammar.
 
 The station sends its whole agent config (prompt, tools, keyterms, voice) when each session starts, so there's no agent to create first. Change `agent/prompt.md` or `agent/station.json`, restart, and the next session uses the new config.
 
@@ -103,10 +104,11 @@ src/worker.js        routes: /api/token, /api/tools/*, /api/health, /ws → Dura
 src/kitchen.js       Kitchen Durable Object: state, WebSocket fan-out, late-ticket alarm
 src/state.js         pure reducer + fuzzy item matching (shared by DO, tests, eval)
 src/session.js       builds the station's inline session config (shared by Worker, eval, tests)
-public/station.html  voice station       public/js/agent.js  AssemblyAI session logic
-public/kds.html      kitchen display     public/js/audio.js  mic capture + playback
-public/foh.html      front of house      public/js/board.js  Durable Object client
-public/menu.html     online menu
+public/index.html     landing page (live board)  public/js/agent.js   AssemblyAI session logic
+public/station.html   voice station              public/js/audio.js   mic capture + playback
+public/kds.html       kitchen display            public/js/board.js   Durable Object client
+public/foh.html       front of house             public/js/chrome.js  shared header + 86 strip
+public/menu.html      online menu                public/js/intent.js  command grammar (typed + voice)
 agent/               station config + prompt, owner phone agent config
 scripts/agent.js     create/update the owner phone agent via REST
 eval/                clips, runner, results

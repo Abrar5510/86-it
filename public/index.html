@@ -3,22 +3,271 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>86 It</title>
+  <title>86 It · Kitchen voice control</title>
+  <meta name="description" content="Say it once — every screen knows. Voice control for the kitchen, built on the AssemblyAI Voice Agent API and Cloudflare Durable Objects.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/landing.css">
 </head>
 <body>
-  <main style="max-width:720px;margin:0 auto;padding:48px 16px">
-    <h1 class="brand" style="font-size:56px;margin:0"><b>86</b> It</h1>
-    <p style="font-size:20px;color:var(--muted)">Kitchen voice control. Say it once — every screen knows.</p>
-    <div class="menu-grid" style="margin-top:32px">
-      <a class="item" href="/station" style="text-decoration:none"><div class="name">🎙️ Station</div><div class="meta">Talk to the kitchen</div></a>
-      <a class="item" href="/kds" style="text-decoration:none"><div class="name">🔥 Kitchen display</div><div class="meta">Tickets</div></a>
-      <a class="item" href="/foh" style="text-decoration:none"><div class="name">🍽️ Front of house</div><div class="meta">What servers can sell</div></a>
-      <a class="item" href="/menu" style="text-decoration:none"><div class="name">🛵 Online menu</div><div class="meta">What delivery customers see</div></a>
-    </div>
+  <main class="lp">
+
+    <!-- ── hero ─────────────────────────────────────────── -->
+    <section class="lp-hero">
+      <div>
+        <span class="lp-pill anim anim-1"><i class="lp-dot"></i> Live · kitchen voice control</span>
+
+        <h1 class="lp-h1 anim anim-2">
+          <span class="lp-lockup">
+            <span>86 <span class="it">IT</span></span>
+            <svg class="flame" viewBox="0 0 100 143" aria-hidden="true">
+              <path d="M50 0 C 72 32, 98 54, 98 90 C 98 121, 76 143, 50 143 C 24 143, 2 121, 2 90 C 2 60, 24 42, 33 24 C 37 47, 51 55, 56 45 C 62 33, 57 14, 50 0 Z" fill="#ff9f0a"/>
+              <path d="M50 62 C 62 76, 72 86, 72 101 C 72 116, 62 126, 50 126 C 38 126, 28 116, 28 101 C 28 86, 40 76, 50 62 Z" fill="#ffe9a8"/>
+            </svg>
+          </span>
+          <span class="lp-tag">Say it once. <i>Every screen knows.</i></span>
+        </h1>
+
+        <p class="lp-lede anim anim-3">
+          A cook says <b>“86 salmon”</b> into a headset. Within about a second it’s greyed out on the
+          kitchen display, the servers’ screen and the online menu — no ticket printing, no shouting,
+          no tapping a greasy screen.
+        </p>
+
+        <div class="lp-cta anim anim-4">
+          <a class="lp-btn primary" href="/station">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>
+            </svg>
+            Start the voice station
+          </a>
+          <a class="lp-btn ghost" href="/kds">
+            Open the kitchen display
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="lp-facts anim anim-5">
+          <div><b>4</b><span>screens, one state</span></div>
+          <div><b>10</b><span>voice tools</span></div>
+          <div><b><em>~1s</em></b><span>speech → action</span></div>
+          <div><b>0</b><span>databases</span></div>
+        </div>
+      </div>
+
+      <!-- live board, dressed as a KDS ticket -->
+      <div class="lp-board-wrap anim anim-3">
+        <div class="lp-board">
+          <div class="lp-board-head">
+            <h2>Live board</h2>
+            <span class="live" id="p-live"><i class="dot"></i><span class="live-txt">connecting</span></span>
+          </div>
+
+          <div class="lp-board-body">
+            <div class="lp-brow">
+              <span class="lbl">86 list</span>
+              <span class="val" id="p-outs">—</span>
+            </div>
+            <div class="lp-brow">
+              <span class="lbl">Tickets</span>
+              <span class="val">
+                <b class="mono" id="p-open">0</b> open · oldest <b class="mono" id="p-oldest">–</b>
+              </span>
+            </div>
+            <div class="lp-brow">
+              <span class="lbl">Last words</span>
+              <span class="val">
+                <ol class="lp-feed-mini" id="p-feed"><li>Waiting for the kitchen…</li></ol>
+              </span>
+            </div>
+          </div>
+
+          <div class="lp-board-foot">
+            <span>Kitchen Durable Object</span>
+            <span>fan-out · kds · foh · menu</span>
+            <span class="bar"><i></i></span>
+          </div>
+        </div>
+
+        <div class="lp-say">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>
+          </svg>
+          “86 salmon”
+          <span class="who">COOK</span>
+        </div>
+
+        <div class="lp-result">
+          <i class="ok"></i>
+          Salmon 86’d on KDS · FOH · menu
+          <span class="ms">0.9s</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── the loop ─────────────────────────────────────── -->
+    <section class="lp-loop">
+      <p class="lp-eyebrow">The loop <b>01 → 04</b></p>
+      <div class="lp-steps">
+        <article class="lp-step">
+          <span class="n">01 / HEAR</span>
+          <h3>Straight from the mic</h3>
+          <p>The headset streams 24 kHz audio from the browser itself — no media server, no phone app.</p>
+          <span class="code">audio → <b>one WebSocket</b></span>
+        </article>
+        <article class="lp-step">
+          <span class="n">02 / UNDERSTAND</span>
+          <h3>It knows the slang</h3>
+          <p>Speech-to-text, LLM and speech on one connection, with keyterms for every dish and call-out.</p>
+          <span class="code">prompt · <b>10 tools</b> · keyterms · voice focus</span>
+        </article>
+        <article class="lp-step">
+          <span class="n">03 / ACT</span>
+          <h3>The tool fires</h3>
+          <p>Actions run in the station and land in the Durable Object the moment the model calls them.</p>
+          <span class="code">mark_86 · fire_ticket · <b>flag_allergy</b></span>
+        </article>
+        <article class="lp-step">
+          <span class="n">04 / EVERYWHERE</span>
+          <h3>Every screen repaints</h3>
+          <p>Kitchen display, servers’ screen and the online menu all update from the same state.</p>
+          <span class="code">kds · foh · menu — <b>0.9s</b></span>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── commands ─────────────────────────────────────── -->
+    <section class="lp-commands">
+      <p class="lp-eyebrow">What the line says <b>/</b> what happens</p>
+      <div class="lp-cmd-grid">
+        <div class="lp-cmd"><span class="says">“86 salmon”</span><span class="does">Salmon greys out on the KDS, the servers’ screen and the online menu — <b>same moment</b></span></div>
+        <div class="lp-cmd"><span class="says">“Fire 12” / “Bump 4”</span><span class="does">The ticket <b>moves on</b> the kitchen display</span></div>
+        <div class="lp-cmd"><span class="says">“How long on 7?”</span><span class="does">“Seven: <b>14 minutes.</b>”</span></div>
+        <div class="lp-cmd"><span class="says">“All day fries”</span><span class="does">“Three fries <b>all day.</b>”</span></div>
+        <div class="lp-cmd"><span class="says">“Twelve has a nut allergy”</span><span class="does">A red banner lands on <b>ticket 12</b></span></div>
+        <div class="lp-cmd"><span class="says">“Void 7” → “yes”</span><span class="does">Asks first — <b>only then</b> it acts</span></div>
+        <div class="lp-cmd silent"><span class="says">(kitchen chatter)</span><span class="does"><b>Nothing.</b> The agent stays silent</span></div>
+        <div class="lp-cmd silent"><span class="says">(ticket passes 10 min)</span><span class="does">Speaks up on its own: <b>“Table 4, 12 minutes.”</b></span></div>
+      </div>
+    </section>
+
+    <!-- ── screens ──────────────────────────────────────── -->
+    <section class="lp-screens">
+      <p class="lp-eyebrow">Four screens, <b>one Durable Object</b></p>
+      <div class="lp-screen-grid">
+        <a class="lp-screen" href="/station">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>
+            </svg>
+          </span>
+          <h3>Station</h3>
+          <p>The cook’s voice station: live transcript, event log with latency, every command lands here first.</p>
+          <span class="route"><span>/station</span><span class="go">→</span></span>
+        </a>
+
+        <a class="lp-screen" href="/kds">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <rect x="2.5" y="4" width="19" height="13.5" rx="2.5"/><path d="M6.5 8.5h7M6.5 12h10.5M8.5 21h7M12 17.5V21"/>
+            </svg>
+          </span>
+          <h3>Kitchen display</h3>
+          <p>Tickets with ages that turn amber then red, allergy banners, an all-day tally — tap to bump.</p>
+          <span class="route"><span>/kds</span><span class="go">→</span></span>
+        </a>
+
+        <a class="lp-screen" href="/foh">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.4"/>
+            </svg>
+          </span>
+          <h3>Front of house</h3>
+          <p>What servers can sell right now, how many are left, and the kitchen feed as it happens.</p>
+          <span class="route"><span>/foh</span><span class="go">→</span></span>
+        </a>
+
+        <a class="lp-screen" href="/menu">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10 6.5h4M9 15.5h6M12 12v6.5"/>
+            </svg>
+          </span>
+          <h3>Online menu</h3>
+          <p>The delivery customer’s view. Sold-out dishes grey out mid-order and the cart loses them.</p>
+          <span class="route"><span>/menu</span><span class="go">→</span></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ── results ──────────────────────────────────────── -->
+    <section class="lp-screens" aria-label="Results">
+      <p class="lp-eyebrow">Measured, <b>not claimed</b></p>
+      <div class="lp-results">
+        <div class="lp-stat"><b>96.8<small>%</small></b><span>commands correct across the <b>43-clip eval</b>, clean and under pink noise</span></div>
+        <div class="lp-stat"><b>12<small>/12</small></b><span>chatter lines <b>ignored</b> — zero replies, zero ghost actions</span></div>
+        <div class="lp-stat"><b>15</b><span><b>unit tests</b> over the reducer, fuzzy matching and void safety</span></div>
+        <div class="lp-stat"><b>100<small>%</small></b><span>of sessions <b>recorded</b> by AssemblyAI and replayable</span></div>
+      </div>
+    </section>
+
+    <!-- ── footer ───────────────────────────────────────── -->
+    <footer class="lp-foot">
+      <span class="name">86 IT — kitchen voice control</span>
+      <nav>
+        <a href="/station">Station</a>
+        <a href="/kds">Kitchen</a>
+        <a href="/foh">Front of house</a>
+        <a href="/menu">Online menu</a>
+      </nav>
+      <span class="push" id="health">checking server…</span>
+      <span class="stack">AssemblyAI × Cloudflare</span>
+    </footer>
   </main>
+
+  <script type="module">
+    import { mountChrome } from '/js/chrome.js';
+    import { connectBoard, minutesSince, clock, esc } from '/js/board.js';
+
+    const chrome = mountChrome({ active: '' });
+
+    const live = document.getElementById('p-live');
+    const outs = document.getElementById('p-outs');
+
+    connectBoard({
+      onStatus(on) {
+        chrome.setStatus(on);
+        live.classList.toggle('on', on);
+        live.classList.toggle('off', !on);
+        live.querySelector('.live-txt').textContent = on ? 'live' : 'reconnecting';
+      },
+      onState(state) {
+        const out = state.items.filter((i) => i.out);
+        const low = state.items.filter((i) => !i.out && i.count <= 3);
+        outs.innerHTML = (out.map((i) => `<span class="chip out">${esc(i.name)}</span>`).join('') || '<span class="chip">nothing 86\'d yet</span>') +
+          low.map((i) => `<span class="chip low">${esc(i.name)} · ${i.count}</span>`).join('');
+
+        const open = state.tickets.filter((t) => ['new', 'fired', 'held'].includes(t.status));
+        const oldest = open.reduce((m, t) => Math.max(m, minutesSince(t.createdAt)), 0);
+        document.getElementById('p-open').textContent = open.length;
+        document.getElementById('p-oldest').textContent = open.length ? `${oldest}m` : '–';
+
+        document.getElementById('p-feed').innerHTML = state.log.slice(0, 4)
+          .map((l) => `<li><time>${clock(l.at)}</time><span>${esc(l.text)}</span></li>`).join('') || '<li>Quiet so far.</li>';
+      },
+    });
+
+    fetch('/api/health').then((r) => r.json()).then((h) => {
+      document.getElementById('health').innerHTML = h.ok
+        ? `<span class="chip ${h.key ? 'low' : ''}">${h.key ? 'server ready' : 'no API key'}</span>`
+        : '<span class="chip out">server error</span>';
+    }).catch(() => { document.getElementById('health').textContent = 'offline'; });
+  </script>
 </body>
 </html>

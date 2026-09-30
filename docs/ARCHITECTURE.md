@@ -67,6 +67,17 @@ The screens update when the Durable Object broadcasts, before the agent even spe
 - **Proactive alerts:** a DO `alert` triggers `reply.create { instructions }`, but only while the station is idle. Otherwise it retries every 2.5 s (up to 12 times) until the agent's transcript confirms the alert was spoken.
 - **Resilience:** if the socket closes, the station reconnects with a fresh token and sends `session.resume` within the 30 s grace window (conversation context is kept). If the resume is refused, or the window has passed, it starts a new session.
 
+### Screens (`public/*.html`, `public/js/chrome.js`, `public/js/board.js`)
+Static HTML with no build step. Every screen (and the landing page) shares two modules:
+- **`connectBoard({ onState, onAlert, onStatus })`** — one Durable Object WebSocket per screen, auto-reconnecting with exponential backoff, plus `act(action) → Promise<Result>` (5 s timeout, queued while the socket is down).
+- **`mountChrome({ active, title, outs })`** — the header (brand, live/reconnecting status, nav, clock) and, where it matters, the 86 strip. Screens call `chrome.setStatus()` from `onStatus` and `chrome.setOuts(state)` from `onState`.
+
+Per screen:
+- **Station** — the mic and the typed command line run the *same* instant grammar (`public/js/intent.js`), so a command lands even with no microphone and no AssemblyAI key (void confirmations are tracked separately from the voice lane's). Latency stats and the sparkline are read off `ack` lines; push-to-talk and volume persist in `localStorage`.
+- **KDS** — tickets with mm:ss ages that go green → amber (5 min) → red (10 min, the same threshold as `ALERT_AFTER_MS`) with a progress bar to the alert, `Fire / Hold / Bump` per ticket with a 5 s **Undo** toast (`reopen_ticket`), All / Fired / Late filters, service KPIs and an all-day tally. Ages tick in place every second instead of re-rendering the board, so a tap is never lost.
+- **Front of house** — search and category filters, stock bars with a low-stock state, and a kitchen feed colour-coded by entry type.
+- **Online menu** — quantity steppers capped by stock, an itemised cart, a sold-out banner, and anything that sells out while sitting in a cart is removed with a toast.
+
 ### Worker (`src/worker.js`)
 | Route | Purpose |
 |---|---|

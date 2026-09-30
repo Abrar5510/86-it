@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <radialGradient id="glowGreen" cx="0.22" cy="0.06" r="0.75">
+      <stop offset="0" stop-color="#0f7a57" stop-opacity="0.42"/>
+      <stop offset="0.55" stop-color="#0f7a57" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#0f7a57" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowOrange" cx="0.92" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#ff8a00" stop-opacity="0.26"/>
+      <stop offset="0.6" stop-color="#ff8a00" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#ff8a00" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.78">
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff5f00"/>
+      <stop offset="0.55" stop-color="#ff8a00"/>
+      <stop offset="1" stop-color="#ffc23d"/>
+    </linearGradient>
+    <linearGradient id="cardGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#232723"/>
+      <stop offset="1" stop-color="#1a1d1b"/>
+    </linearGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#2e322d" stroke-width="1"/>
+    </pattern>
+    <g id="micIcon">
+      <rect x="-15" y="-46" width="30" height="46" rx="15" fill="#3fbe90"/>
+      <path d="M-23 -2 A 23 23 0 0 0 23 -2" fill="none" stroke="#3fbe90" stroke-width="5" stroke-linecap="round"/>
+      <line x1="0" y1="21" x2="0" y2="33" stroke="#3fbe90" stroke-width="5" stroke-linecap="round"/>
+    </g>
+  </defs>
+
+  <!-- ===== background ===== -->
+  <rect width="1920" height="1080" fill="#17181c"/>
+  <rect width="1920" height="1080" fill="url(#grid)" opacity="0.4"/>
+  <rect width="1920" height="1080" fill="url(#glowGreen)"/>
+  <rect width="1920" height="1080" fill="url(#glowOrange)"/>
+  <rect width="1920" height="1080" fill="url(#vignette)"/>
+
+  <!-- ===== left column ===== -->
+  <!-- live chip -->
+  <rect x="120" y="120" width="442" height="48" rx="24" fill="#1d201e" stroke="#2e322d" stroke-width="2"/>
+  <circle cx="150" cy="144" r="7" fill="#22c55e"/>
+  <text x="170" y="151" font-family="Menlo" font-size="19" letter-spacing="2.4" fill="#f0efe9">LIVE · KITCHEN VOICE CONTROL</text>
+
+  <!-- title -->
+  <text x="118" y="372" font-family="Arial Black" font-size="212" letter-spacing="-4" fill="#f0efe9">86<tspan fill="#3fbe90" dx="34">IT</tspan></text>
+  <!-- flame accent -->
+  <g transform="translate(674 200) scale(1.05)">
+    <path d="M50 0 C 72 32, 98 54, 98 90 C 98 121, 76 143, 50 143 C 24 143, 2 121, 2 90 C 2 60, 24 42, 33 24 C 37 47, 51 55, 56 45 C 62 33, 57 14, 50 0 Z" fill="url(#flame)"/>
+    <path d="M50 62 C 62 76, 72 86, 72 101 C 72 116, 62 126, 50 126 C 38 126, 28 116, 28 101 C 28 86, 40 76, 50 62 Z" fill="#ffe9a8" opacity="0.92"/>
+  </g>
+
+  <!-- tagline -->
+  <text x="122" y="452" font-family="Helvetica Neue" font-weight="700" font-size="48" fill="#f0efe9">Say it once. Every screen knows.</text>
+
+  <!-- body -->
+  <text x="122" y="522" font-family="Helvetica Neue" font-size="27" fill="#a8aea6">A cook says “86 salmon” into a headset. Within a second, salmon is greyed</text>
+  <text x="122" y="562" font-family="Helvetica Neue" font-size="27" fill="#a8aea6">out on the kitchen display, the servers’ screen and the online menu.</text>
+
+  <!-- stack chips -->
+  <rect x="120" y="608" width="372" height="52" rx="26" fill="#1d201e" stroke="#0f7a57" stroke-width="2"/>
+  <text x="146" y="641" font-family="Menlo" font-size="18" letter-spacing="1.6" fill="#3fbe90">ASSEMBLYAI VOICE AGENT API</text>
+
+  <rect x="508" y="608" width="446" height="52" rx="26" fill="#1d201e" stroke="#2e322d" stroke-width="2"/>
+  <text x="534" y="641" font-family="Menlo" font-size="18" letter-spacing="1.6" fill="#a8aea6">CLOUDFLARE WORKERS + DO</text>
+
+  <rect x="120" y="676" width="432" height="52" rx="26" fill="#1d201e" stroke="#2e322d" stroke-width="2"/>
+  <text x="146" y="709" font-family="Menlo" font-size="18" letter-spacing="1.6" fill="#a8aea6">ONE WEBSOCKET, NO MEDIA SERVER</text>
+
+  <rect x="568" y="676" width="300" height="52" rx="26" fill="#1d201e" stroke="#2e322d" stroke-width="2"/>
+  <text x="594" y="709" font-family="Menlo" font-size="18" letter-spacing="1.6" fill="#a8aea6">10 CLIENT-SIDE TOOLS</text>
+
+  <!-- voice pipeline panel -->
+  <rect x="120" y="756" width="920" height="150" rx="16" fill="#1d201e" stroke="#2e322d" stroke-width="2"/>
+  <text x="152" y="794" font-family="Menlo" font-size="15" letter-spacing="2.4" fill="#8e958d">VOICE STATION · LIVE TRANSCRIPT</text>
+  <text x="1008" y="794" text-anchor="end" font-family="Menlo" font-size="15" letter-spacing="2.4" fill="#3fbe90">LATENCY 0.9s</text>
+
+  <g transform="translate(178 858) scale(0.82)">
+    <use href="#micIcon"/>
+  </g>
+
+  <!-- waveform -->
+  <g fill="#3fbe90">
+    <rect x="238" y="834" width="7" height="16" rx="3.5"/>
+    <rect x="252" y="826" width="7" height="32" rx="3.5"/>
+    <rect x="266" y="812" width="7" height="60" rx="3.5"/>
+    <rect x="280" y="830" width="7" height="24" rx="3.5"/>
+    <rect x="294" y="804" width="7" height="76" rx="3.5"/>
+    <rect x="308" y="820" width="7" height="44" rx="3.5"/>
+    <rect x="322" y="798" width="7" height="88" rx="3.5"/>
+    <rect x="336" y="824" width="7" height="36" rx="3.5"/>
+    <rect x="350" y="810" width="7" height="64" rx="3.5"/>
+    <rect x="364" y="836" width="7" height="12" rx="3.5"/>
+    <rect x="378" y="822" width="7" height="40" rx="3.5"/>
+    <rect x="392" y="802" width="7" height="80" rx="3.5"/>
+    <rect x="406" y="830" width="7" height="24" rx="3.5"/>
+    <rect x="420" y="838" width="7" height="8" rx="4"/>
+  </g>
+
+  <text x="458" y="856" font-family="Menlo" font-size="26" letter-spacing="0.4" fill="#f0efe9">“86 salmon” <tspan fill="#8e958d">→</tspan> <tspan fill="#3fbe90">86</tspan> <tspan fill="#8e958d">→</tspan> <tspan fill="#a8aea6">kds · foh · menu</tspan></text>
+
+  <!-- ===== right column: KDS ticket ===== -->
+  <rect x="1150" y="140" width="650" height="560" rx="18" fill="url(#cardGlow)" stroke="#2e322d" stroke-width="2"/>
+  <!-- header -->
+  <path d="M1150 158 A18 18 0 0 1 1168 140 H1782 A18 18 0 0 1 1800 158 V216 H1150 Z" fill="#0f7a57"/>
+  <text x="1184" y="192" font-family="Menlo" font-weight="bold" font-size="30" fill="#ffffff">T12</text>
+  <text x="1290" y="192" font-family="Menlo" font-size="22" fill="#bfe9d8">DINNER RUSH</text>
+  <text x="1766" y="192" text-anchor="end" font-family="Menlo" font-weight="bold" font-size="30" fill="#ffffff">03:12</text>
+
+  <!-- allergy banner -->
+  <rect x="1174" y="236" width="602" height="50" rx="8" fill="#ef4444"/>
+  <text x="1475" y="270" text-anchor="middle" font-family="Menlo" font-weight="bold" font-size="24" letter-spacing="3" fill="#ffffff">PEANUT ALLERGY</text>
+
+  <!-- status row -->
+  <rect x="1182" y="306" width="140" height="40" rx="20" fill="#ff8a00" fill-opacity="0.16" stroke="#ff8a00" stroke-width="1.5"/>
+  <text x="1252" y="333" text-anchor="middle" font-family="Menlo" font-weight="bold" font-size="19" letter-spacing="2" fill="#ff8a00">FIRED</text>
+  <text x="1344" y="333" font-family="Menlo" font-size="19" letter-spacing="1.6" fill="#8e958d">SERVER MAYA</text>
+
+  <!-- line 1: 86'd salmon -->
+  <text x="1182" y="414" font-family="Menlo" font-weight="bold" font-size="27" fill="#3fbe90">2×</text>
+  <text x="1252" y="414" font-family="Menlo" font-size="27" fill="#8e958d">SALMON</text>
+  <line x1="1248" y1="405" x2="1353" y2="405" stroke="#8e958d" stroke-width="3"/>
+  <rect x="1682" y="388" width="86" height="38" rx="19" fill="#ef4444"/>
+  <text x="1725" y="414" text-anchor="middle" font-family="Menlo" font-weight="bold" font-size="21" letter-spacing="1" fill="#ffffff">86</text>
+  <line x1="1182" y1="440" x2="1768" y2="440" stroke="#2e322d" stroke-width="2"/>
+
+  <!-- line 2 -->
+  <text x="1182" y="494" font-family="Menlo" font-weight="bold" font-size="27" fill="#3fbe90">1×</text>
+  <text x="1252" y="494" font-family="Menlo" font-size="27" fill="#f0efe9">CALAMARI</text>
+  <line x1="1182" y1="520" x2="1768" y2="520" stroke="#2e322d" stroke-width="2"/>
+
+  <!-- actions -->
+  <rect x="1182" y="546" width="124" height="50" rx="10" fill="#ff8a00"/>
+  <text x="1244" y="578" text-anchor="middle" font-family="Menlo" font-weight="bold" font-size="21" fill="#17181c">Fire</text>
+
+  <rect x="1320" y="546" width="124" height="50" rx="10" fill="none" stroke="#3a3f39" stroke-width="2"/>
+  <text x="1382" y="578" text-anchor="middle" font-family="Menlo" font-weight="bold" font-size="21" fill="#8e958d">Hold</text>
+
+  <rect x="1458" y="546" width="124" height="50" rx="10" fill="#0f7a57"/>
+  <text x="1520" y="578" text-anchor="middle" font-family="Menlo" font-weight="bold" font-size="21" fill="#ffffff">Bump</text>
+
+  <!-- footer -->
+  <text x="1182" y="646" font-family="Menlo" font-size="18" letter-spacing="1.4" fill="#8e958d">ORDERED 18:42 · SEAT 4</text>
+  <text x="1768" y="646" text-anchor="end" font-family="Menlo" font-size="18" letter-spacing="1.4" fill="#3fbe90">UPDATED IN 0.9s</text>
+
+  <!-- age bar -->
+  <rect x="1174" y="672" width="602" height="8" rx="4" fill="#2e322d"/>
+  <rect x="1174" y="672" width="372" height="8" rx="4" fill="#ff8a00"/>
+
+  <!-- utterance pill -->
+  <rect x="1060" y="730" width="460" height="110" rx="55" fill="#0f7a57"/>
+  <g transform="translate(1128 790) scale(0.72)">
+    <g fill="#ffffff">
+      <rect x="-15" y="-46" width="30" height="46" rx="15"/>
+      <path d="M-23 -2 A 23 23 0 0 0 23 -2" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+      <line x1="0" y1="21" x2="0" y2="33" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+    </g>
+  </g>
+  <text x="1178" y="797" font-family="Menlo" font-weight="bold" font-size="34" fill="#ffffff">“86 salmon”</text>
+  <text x="1494" y="796" text-anchor="end" font-family="Menlo" font-size="17" letter-spacing="2" fill="#bfe9d8">COOK</text>
+
+  <!-- result chip -->
+  <rect x="1150" y="866" width="650" height="84" rx="42" fill="#1d201e" stroke="#2e322d" stroke-width="2"/>
+  <circle cx="1194" cy="908" r="9" fill="#22c55e"/>
+  <text x="1222" y="916" font-family="Menlo" font-size="22" letter-spacing="1.4" fill="#f0efe9">SALMON 86’D ON KDS · FOH · MENU</text>
+  <text x="1764" y="916" text-anchor="end" font-family="Menlo" font-weight="bold" font-size="22" fill="#3fbe90">0.9s</text>
+
+  <!-- ===== footer band ===== -->
+  <line x1="120" y1="962" x2="1800" y2="962" stroke="#2e322d" stroke-width="2"/>
+  <text x="120" y="1018" font-family="Menlo" font-size="22" letter-spacing="5" fill="#8e958d">86 · FIRE · BUMP · HOLD · ALL DAY · VOID</text>
+  <text x="1800" y="1018" text-anchor="end" font-family="Menlo" font-size="22" letter-spacing="4" fill="#8e958d">BUILT ON ASSEMBLYAI · CLOUDFLARE</text>
+</svg>

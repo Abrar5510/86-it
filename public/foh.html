@@ -6,46 +6,97 @@
   <title>86 It · Front of House</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-  <header class="top">
-    <span class="brand"><b>86</b> It · Front of house</span>
-    <span class="dot" id="dot"></span>
-    <nav class="nav">
-      <a href="/station">Station</a>
-      <a href="/kds">Kitchen</a>
-      <a href="/foh" aria-current="page">Front of house</a>
-      <a href="/menu">Online menu</a>
-    </nav>
-  </header>
   <main class="foh">
     <section>
+      <div class="foh-bar">
+        <label class="field">
+          <span aria-hidden="true">⌕</span>
+          <input id="q" type="search" placeholder="Search the menu…" autocomplete="off">
+        </label>
+        <div class="cat-chips" id="cats"></div>
+        <span class="avail" id="avail">—</span>
+      </div>
       <div class="menu-grid" id="grid" aria-live="polite"></div>
     </section>
+
     <aside class="feed">
-      <h2>Kitchen updates</h2>
+      <div class="feed-head" style="margin-bottom:6px">
+        <h2 style="margin:0">Kitchen updates</h2>
+        <span id="open-count">0 open</span>
+      </div>
       <ol id="feed"></ol>
     </aside>
   </main>
 
   <script type="module">
+    import { mountChrome } from '/js/chrome.js';
     import { connectBoard, clock, esc } from '/js/board.js';
 
+    const chrome = mountChrome({ active: 'foh', title: 'Front of house', outs: true });
+
+    let state = null;
     let prevOut = null;
-    function render(state) {
-      document.getElementById('grid').innerHTML = state.items.map((i) => `
-        <div class="item ${i.out ? 'out' : ''} ${i.out && prevOut && !prevOut.has(i.id) ? 'flash' : ''}">
+    let q = '';
+    let cat = '';
+
+    const kind = (text) =>
+      /^86 /.test(text) ? 'k-86' :
+      /back on|left$/.test(text) ? 'k-back' :
+      /allerg/i.test(text) ? 'k-allergy' :
+      /ticket|Fired|Bumped|Held|Voided|New/.test(text) ? 'k-ticket' : '';
+
+    function render() {
+      if (!state) return;
+      chrome.setOuts(state);
+      const items = state.items.filter((i) =>
+        (!cat || i.category === cat) &&
+        (!q || i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q)));
+      const shown = items.length ? items : [];
+      const inStock = state.items.filter((i) => !i.out).length;
+      document.getElementById('avail').textContent = `${inStock}/${state.items.length} available`;
+
+      document.getElementById('grid').innerHTML = shown.length ? shown.map((i) => {
+        const pct = i.count <= 0 ? 0 : Math.max(6, Math.min(100, (i.count / 30) * 100));
+        return `<div class="item ${i.out ? 'out' : ''} ${!i.out && i.count <= 3 ? 'low' : ''} ${i.out && prevOut && !prevOut.has(i.id) ? 'flash' : ''}">
           <div class="name">${esc(i.name)}</div>
-          <div class="meta"><span>${esc(i.category)}</span><span>${i.out ? '0' : i.count} left</span></div>
+          <div class="meta">
+            <span>${esc(i.category)}</span>
+            <span class="count">${i.out ? 'sold out' : `${i.count} left`}</span>
+          </div>
           <div class="badge">86'd ${i.outAt ? 'at ' + clock(i.outAt) : ''} · don't sell</div>
-        </div>`).join('');
+          <div class="stock"><i style="width:${pct}%"></i></div>
+        </div>`;
+      }).join('') : `<p class="empty"><b>Nothing matches “${esc(q || cat)}”.</b>Clear the search to see the whole menu.</p>`;
       prevOut = new Set(state.items.filter((i) => i.out).map((i) => i.id));
-      document.getElementById('feed').innerHTML = state.log.map((l) => `<li><time>${clock(l.at)}</time><span>${esc(l.text)}</span></li>`).join('') || '<li>Quiet so far.</li>';
+
+      document.getElementById('feed').innerHTML = state.log.map((l) =>
+        `<li class="${kind(l.text)}"><i></i><time>${clock(l.at)}</time><span>${esc(l.text)}</span></li>`).join('') || '<li><i></i><span>Quiet so far.</span></li>';
+      const open = state.tickets.filter((t) => ['new', 'fired', 'held'].includes(t.status)).length;
+      document.getElementById('open-count').textContent = `${open} open`;
+      renderCats();
     }
 
-    connectBoard({ onState: render, onStatus: (on) => document.getElementById('dot').classList.toggle('on', on) });
+    function renderCats() {
+      if (!state) return;
+      const cats = [...new Set(state.items.map((i) => i.category))];
+      document.getElementById('cats').innerHTML =
+        `<button aria-pressed="${cat === ''}" data-cat="">All</button>` +
+        cats.map((c) => `<button aria-pressed="${cat === c}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+    }
+
+    connectBoard({ onState: (s) => { state = s; render(); }, onStatus: chrome.setStatus });
+
+    document.getElementById('q').addEventListener('input', (e) => { q = e.target.value.trim().toLowerCase(); render(); });
+    document.getElementById('cats').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-cat]');
+      if (!b) return;
+      cat = b.dataset.cat;
+      render();
+    });
   </script>
 </body>
 </html>

@@ -7,23 +7,31 @@
   <title>Ember &amp; Oak · Order online</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛵</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/app.css">
-  <style>body { background: #f4f4f5; color-scheme: light; }</style>
 </head>
-<body>
+<body class="light">
   <div class="phone">
     <header>
       <h1>Ember &amp; Oak</h1>
       <div class="sub">Delivery · 25–35 min · <span id="live">connecting…</span></div>
     </header>
+    <div id="sold-banner"></div>
     <div id="list" aria-live="polite"></div>
-    <div class="cart"><button id="order" disabled>Add items</button></div>
+    <div class="cart">
+      <ul class="lines" id="cart-lines"></ul>
+      <div class="totals"><span>Subtotal</span><b id="cart-total">$0.00</b></div>
+      <button class="place" id="order" disabled>Add items</button>
+      <button class="clear" id="clear" hidden>clear cart</button>
+    </div>
   </div>
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
+    import { mountChrome } from '/js/chrome.js';
     import { connectBoard, esc } from '/js/board.js';
+
+    const chrome = mountChrome({ active: 'menu', title: 'Online menu' });
 
     const cart = new Map();
     let state = null;
@@ -31,36 +39,101 @@
       const t = document.getElementById('toast');
       t.textContent = text;
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2200);
+      clearTimeout(t._h);
+      t._h = setTimeout(() => t.classList.remove('show'), 2400);
     };
 
+    const find = (id) => state?.items.find((i) => i.id === id);
+
     function render() {
+      if (!state) return;
+      const byId = new Map(state.items.map((i) => [i.id, i]));
+
+      // Anything that sold out while it sat in the cart has to leave the cart.
+      for (const [id, qty] of [...cart]) {
+        const item = byId.get(id);
+        if (!item || item.out) {
+          cart.delete(id);
+          if (item) toast(`${item.name} just sold out — removed from your cart`);
+        } else if (qty > item.count) {
+          cart.set(id, item.count);
+        }
+      }
+
       const cats = [...new Set(state.items.map((i) => i.category))];
-      for (const [id] of cart) if (state.items.find((i) => i.id === id)?.out) cart.delete(id);
-      document.getElementById('list').innerHTML = cats.map((c) => `<div class="cat">${esc(c)}</div>` +
-        state.items.filter((i) => i.category === c).map((i) => `
-          <div class="dish ${i.out ? 'out' : ''}">
-            <div><div class="n">${esc(i.name)}</div><div class="p">$${i.price}</div></div>
-            <button data-id="${i.id}" ${i.out ? 'disabled' : ''}>${i.out ? 'Sold out' : cart.get(i.id) ? `Added ×${cart.get(i.id)}` : 'Add'}</button>
-          </div>`).join('')).join('');
+      document.getElementById('list').innerHTML = cats.map((c) => {
+        const dishes = state.items.filter((i) => i.category === c);
+        return `<div class="cat">${esc(c)}</div>` + dishes.map((i) => {
+          const qty = cart.get(i.id) || 0;
+          const lastOne = !i.out && i.count <= 3;
+          const control = i.out
+            ? '<span class="soldout">Sold out</span>'
+            : qty
+              ? `<div class="qty">
+                   <button data-dec="${i.id}" aria-label="Remove one ${esc(i.name)}">−</button>
+                   <b>${qty}</b>
+                   <button data-inc="${i.id}" aria-label="Add one ${esc(i.name)}" ${qty >= i.count ? 'disabled' : ''}>+</button>
+                 </div>`
+              : `<button class="add" data-inc="${i.id}" ${i.count <= 0 ? 'disabled' : ''}>Add</button>`;
+          return `<div class="dish ${i.out ? 'out' : ''}">
+            <div>
+              <div class="n">${esc(i.name)}</div>
+              <div class="p">$${i.price}<span class="left ${lastOne ? 'low' : ''}">${i.out ? 'sold out' : lastOne ? `only ${i.count} left` : `${i.count} left`}</span></div>
+            </div>
+            ${control}
+          </div>`;
+        }).join('');
+      }).join('');
+
+      // Sold-out banner
+      const out = state.items.filter((i) => i.out);
+      document.getElementById('sold-banner').innerHTML = out.length
+        ? `<div class="sold-banner">Off the menu right now: <b>${out.map((i) => esc(i.name)).join('</b>, <b>')}</b> — the kitchen called it.</div>`
+        : '';
+
+      // Cart
+      const lines = [...cart];
+      document.getElementById('cart-lines').innerHTML = lines.map(([id, qty]) => {
+        const i = byId.get(id);
+        return `<li><span class="n">${esc(i.name)}</span><span class="c">×${qty}</span><span class="c">$${(i.price * qty).toFixed(2)}</span><button class="rm" data-rm="${id}" aria-label="Remove ${esc(i.name)}">✕</button></li>`;
+      }).join('');
       const n = [...cart.values()].reduce((a, b) => a + b, 0);
-      const total = [...cart].reduce((s, [id, q]) => s + q * state.items.find((i) => i.id === id).price, 0);
+      const total = lines.reduce((s, [id, qty]) => s + qty * byId.get(id).price, 0);
+      document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
       const btn = document.getElementById('order');
       btn.disabled = !n;
-      btn.textContent = n ? `Place order · ${n} item${n > 1 ? 's' : ''} · $${total}` : 'Add items';
+      btn.textContent = n ? `Place order · ${n} item${n > 1 ? 's' : ''}` : 'Add items';
+      document.getElementById('clear').hidden = !n;
     }
 
     const board = connectBoard({
       onState(s) { state = s; render(); },
-      onStatus(on) { document.getElementById('live').textContent = on ? 'live menu' : 'reconnecting…'; },
+      onStatus(on) {
+        chrome.setStatus(on);
+        document.getElementById('live').textContent = on ? 'live menu' : 'reconnecting…';
+      },
     });
 
-    document.getElementById('list').onclick = (e) => {
-      const id = e.target.closest('button[data-id]')?.dataset.id;
-      if (!id) return;
-      cart.set(id, (cart.get(id) || 0) + 1);
+    const setQty = (id, delta) => {
+      const item = find(id);
+      if (!item || item.out) return;
+      const next = Math.min(item.count, Math.max(0, (cart.get(id) || 0) + delta));
+      if (next === 0) cart.delete(id);
+      else cart.set(id, next);
       render();
     };
+
+    document.getElementById('list').addEventListener('click', (e) => {
+      const inc = e.target.closest('button[data-inc]');
+      const dec = e.target.closest('button[data-dec]');
+      if (inc) setQty(inc.dataset.inc, 1);
+      else if (dec) setQty(dec.dataset.dec, -1);
+    });
+    document.getElementById('cart-lines').addEventListener('click', (e) => {
+      const rm = e.target.closest('button[data-rm]');
+      if (rm) { cart.delete(rm.dataset.rm); render(); }
+    });
+    document.getElementById('clear').onclick = () => { cart.clear(); render(); };
 
     document.getElementById('order').onclick = async () => {
       const lines = [...cart].map(([item, qty]) => ({ item, qty }));

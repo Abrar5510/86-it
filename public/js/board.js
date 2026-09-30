@@ -1,8 +1,10 @@
 // Shared client for the Kitchen Durable Object. Every screen uses this.
 //   const board = connectBoard({ onState, onAlert, onStatus });
 //   const result = await board.act({ type: 'mark_86', item: 'salmon' });
+// `station` identifies a voice station (kds/foh/menu pass nothing and are plain screens).
+// Late-ticket alerts are routed to the station that fired the ticket.
 
-export function connectBoard({ onState = () => {}, onAlert = () => {}, onStatus = () => {} } = {}) {
+export function connectBoard({ station = '', onState = () => {}, onAlert = () => {}, onStatus = () => {} } = {}) {
   let ws;
   let seq = 0;
   let retry = 0;
@@ -10,7 +12,8 @@ export function connectBoard({ onState = () => {}, onAlert = () => {}, onStatus 
   const queue = [];
 
   function open() {
-    ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`);
+    const q = station ? `?station=${encodeURIComponent(station)}` : '';
+    ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws${q}`);
     ws.onopen = () => {
       retry = 0;
       onStatus(true);

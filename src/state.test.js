@@ -53,6 +53,16 @@ test('fire / hold / bump lifecycle', () => {
   assert.equal(result.error, 'no_open_ticket');
 });
 
+test('reopen_ticket brings a bumped ticket back', () => {
+  let s = seeded();
+  s = applyAction(s, { type: 'bump_ticket', table: 12 }, NOW).state;
+  const { state, result } = applyAction(s, { type: 'reopen_ticket', table: '12' }, NOW);
+  assert.deepEqual([result.ok, result.say], [true, 'Table 12 back on.']);
+  assert.equal(state.tickets.find((t) => t.table === 12).status, 'new');
+  assert.equal(applyAction(state, { type: 'fire_ticket', table: 12 }, NOW).result.ok, true);
+  assert.equal(applyAction(s, { type: 'reopen_ticket', table: 99 }, NOW).result.error, 'no_finished_ticket');
+});
+
 test('void requires confirmation', () => {
   const s = seeded();
   const r1 = applyAction(s, { type: 'void_ticket', table: 7 }, NOW);
@@ -95,4 +105,18 @@ test('report summarises the night', () => {
   const r = applyAction(s, { type: 'report' }, NOW).result;
   assert.deepEqual(r.out_of_stock, ['Salmon']);
   assert.equal(r.open_tickets, 5);
+});
+
+test('fire_ticket records the owning station for alert routing', () => {
+  let s = seeded();
+  assert.equal(s.tickets.find((t) => t.table === 4).station, undefined);
+  s = applyAction(s, { type: 'fire_ticket', table: 4, station: 'expo' }, NOW).state;
+  assert.equal(s.tickets.find((t) => t.table === 4).station, 'expo');
+  // A screen tap carries no station and must not clear ownership.
+  s = applyAction(s, { type: 'hold_ticket', table: 4 }, NOW).state;
+  s = applyAction(s, { type: 'fire_ticket', table: 4 }, NOW).state;
+  assert.equal(s.tickets.find((t) => t.table === 4).station, 'expo');
+  // A different station firing the ticket takes over the alert.
+  s = applyAction(s, { type: 'fire_ticket', table: 4, station: 'line' }, NOW).state;
+  assert.equal(s.tickets.find((t) => t.table === 4).station, 'line');
 });

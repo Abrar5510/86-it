@@ -47,6 +47,8 @@ export function applyAction(prev, action, now = Date.now()) {
       return withTicket((t) => {
         t.status = 'fired';
         t.firedAt = now;
+        // Which voice station fired it owns its late-ticket alert (screens don't set one).
+        if (action.station) t.station = action.station;
         log(`Fired table ${t.table}`);
         return ok(`Fired ${t.table}.`);
       });
@@ -65,6 +67,17 @@ export function applyAction(prev, action, now = Date.now()) {
         log(`Bumped table ${t.table}`);
         return ok(`Bumped ${t.table}.`);
       });
+
+    // Undo: put a ticket that left the board (or was fired/held) back as a fresh "new" ticket.
+    case 'reopen_ticket': {
+      const t = [...state.tickets].reverse().find((x) => x.table === Number(action.table) && ['new', 'fired', 'held', 'done', 'void'].includes(x.status));
+      if (!t || t.status === 'new') return fail(prev, 'no_finished_ticket', { say: `Nothing to put back for ${action.table}.` });
+      t.status = 'new';
+      t.doneAt = null;
+      t.alerted = false;
+      log(`Reopened table ${t.table}`);
+      return ok(`Table ${t.table} back on.`, { table: t.table });
+    }
 
     case 'void_ticket':
       if (action.confirmed !== true) return fail(prev, 'needs_confirmation', { say: `Void ${action.table}?` });

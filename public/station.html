@@ -6,33 +6,50 @@
   <title>86 It · Station</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-  <header class="top">
-    <span class="brand"><b>86</b> It</span>
-    <span class="dot" id="board-dot" title="Kitchen board connection"></span>
-    <nav class="nav">
-      <a href="/station" aria-current="page">Station</a>
-      <a href="/kds" target="kds">Kitchen</a>
-      <a href="/foh" target="foh">Front of house</a>
-      <a href="/menu" target="menu">Online menu</a>
-    </nav>
-  </header>
-
-  <div class="eighty-six" id="outs"></div>
-
   <main class="station">
     <section class="panel mic" id="mic-panel">
-      <button class="orb" id="orb" aria-label="Start voice station">Start</button>
+      <div class="orb-wrap" id="orb-wrap">
+        <button class="orb" id="orb" aria-label="Start voice station">Start</button>
+      </div>
       <div class="phase" id="phase">offline</div>
-      <div class="said" id="said" aria-live="polite"></div>
+      <p class="ptt-hint">station <b class="mono" id="station-id">line</b> · <a id="station-other" href="/station?id=expo">open a second station →</a></p>
+
+      <div class="said" id="said" aria-live="polite">
+        <p class="said-empty" id="said-empty">Transcript lands here — start the station, or type a command below.</p>
+      </div>
+
       <div class="stats">
         <div class="stat"><b id="st-cmd">0</b><span>commands</span></div>
         <div class="stat"><b id="st-lat">–</b><span>median speech→action</span></div>
         <div class="stat"><b id="st-open">0</b><span>open tickets</span></div>
       </div>
+
+      <div class="spark" id="spark" aria-hidden="true"></div>
+      <div class="spark-legend"><span>last 20 latencies</span><span id="spark-max"></span></div>
+
+      <form class="cmdline" id="cmd-form" autocomplete="off">
+        <div class="row">
+          <label class="field">
+            <span class="mono" aria-hidden="true">❯</span>
+            <input id="cmd" type="text" placeholder="type a command — “fire 12”" aria-label="Type a kitchen command">
+          </label>
+          <button class="btn primary" type="submit">Run</button>
+        </div>
+        <div class="chips-row" id="chips">
+          <button type="button">Fire 12</button>
+          <button type="button">Hold 9</button>
+          <button type="button">Bump 9</button>
+          <button type="button">86 salmon</button>
+          <button type="button">How long on 7?</button>
+          <button type="button">All day fries</button>
+        </div>
+        <p class="ptt-hint">Same instant grammar as the mic — runs even with no microphone and no AssemblyAI key.</p>
+      </form>
+
       <div class="controls">
         <label class="toggle"><input type="checkbox" id="ptt"> Push-to-talk (hold Space)</label>
         <label class="toggle">Voice <input type="range" id="vol" min="0" max="1" step="0.1" value="1"></label>
@@ -42,18 +59,35 @@
         <button class="btn" id="reset">Reset</button>
         <button class="btn" id="save-log" title="Download the full event log (session ids included)">Download log</button>
       </div>
-      <p class="ptt-hint">Try: “Fire 12” · “86 salmon” · “How long on 7?” · “Two short rib left” · “All day fries”</p>
+      <p class="ptt-hint">Voice: “Fire 12” · “86 salmon” · “How long on 7?” · “Two short rib left” · “All day fries”</p>
     </section>
 
-    <section class="panel">
-      <h2>Live event log</h2>
+    <section class="panel log-panel">
+      <div class="log-head">
+        <h2>Live event log</h2>
+        <span class="chip" id="log-count">0 events</span>
+      </div>
       <ol class="log" id="log"></ol>
+      <p class="log-empty" id="log-empty">Nothing yet. Start the station for the live session log, or run a command on the left.</p>
     </section>
   </main>
 
   <script type="module">
+    import { mountChrome } from '/js/chrome.js';
     import { connectBoard, esc } from '/js/board.js';
     import { startAgent } from '/js/agent.js';
+    import { parse } from '/js/intent.js';
+
+    const chrome = mountChrome({ active: 'station', title: 'Voice station', outs: true });
+
+    // /station?id=expo → a second station with its own AssemblyAI session, sharing one kitchen.
+    const stationId = (() => {
+      const id = new URLSearchParams(location.search).get('id');
+      return /^[\w-]{1,24}$/.test(id || '') ? id : 'line';
+    })();
+    document.getElementById('station-id').textContent = stationId;
+    document.getElementById('station-other').href = stationId === 'line' ? '/station?id=expo' : '/station';
+    document.getElementById('station-other').textContent = stationId === 'line' ? 'open a second station →' : 'back to the main station →';
 
     const $ = (id) => document.getElementById(id);
     const logEl = $('log');
@@ -64,28 +98,45 @@
     let alertPending = null; // alert text the agent hasn't been confirmed to have spoken yet
 
     function log(kind, text) {
+      document.getElementById('log-empty')?.setAttribute('hidden', '');
       fullLog.push({ at: new Date().toISOString(), kind, text });
       const li = document.createElement('li');
       li.innerHTML = `<time>${new Date().toLocaleTimeString([], { hour12: false })}</time><span class="k k-${kind}">${kind}</span><span>${esc(text)}</span>`;
       logEl.prepend(li);
       while (logEl.children.length > 200) logEl.lastChild.remove();
+      $('log-count').textContent = `${fullLog.length} events`;
+
+      if (kind !== 'ack') return;
+      commands++;
+      $('st-cmd').textContent = commands;
       const ms = /\+(\d+)ms after speech end$/.exec(text);
-      if (kind === 'ack' && ms) {
-        commands++;
+      if (ms) {
         latencies.push(Number(ms[1]));
         const sorted = [...latencies].sort((a, b) => a - b);
-        $('st-cmd').textContent = commands;
         $('st-lat').textContent = `${sorted[sorted.length >> 1]}ms`;
+        renderSpark();
       }
     }
 
+    // Latency sparkline: one bar per speech→action measurement, newest on the right.
+    function renderSpark() {
+      const bars = latencies.slice(-20);
+      const max = Math.max(1000, ...bars);
+      $('spark').innerHTML = bars.length
+        ? bars.map((v) => `<i class="${v > 1500 ? 'hot' : ''}" style="height:${Math.max(8, Math.round((v / max) * 100))}%" title="${v}ms"></i>`).join('')
+        : Array(20).fill('<i style="height:2px;opacity:.2"></i>').join('');
+      $('spark-max').textContent = bars.length ? `${max}ms max` : 'no speech yet';
+    }
+    renderSpark();
+    log('info', `station "${stationId}" — its own session; late-ticket alerts for tickets it fires are routed here`);
+
     let items = [];
     const board = connectBoard({
-      onStatus: (on) => $('board-dot').classList.toggle('on', on),
+      station: stationId,
+      onStatus: chrome.setStatus,
       onState(state) {
         items = state.items;
-        $('outs').innerHTML = '<span class="label">86</span>' + (state.items.filter((i) => i.out).map((i) => `<span class="chip out">${esc(i.name)}</span>`).join('') || '<span class="chip">nothing</span>') +
-          state.items.filter((i) => !i.out && i.count <= 3).map((i) => `<span class="chip low">${esc(i.name)} · ${i.count}</span>`).join('');
+        chrome.setOuts(state);
         $('st-open').textContent = state.tickets.filter((t) => ['new', 'fired', 'held'].includes(t.status)).length;
       },
       onAlert(a) {
@@ -109,6 +160,7 @@
     const said = $('said');
     let partial = null;
     function onTranscript(who, text, final, interrupted) {
+      document.getElementById('said-empty')?.remove();
       if (who === 'user' && !final) {
         partial ||= said.appendChild(document.createElement('p'));
         partial.className = 'user partial';
@@ -124,12 +176,13 @@
       const p = partial && who === 'user' ? partial : document.createElement('p');
       partial = null;
       p.className = who;
-      p.textContent = (who === 'agent' ? '→ ' : '') + text + (interrupted ? ' …' : '');
+      p.textContent = text + (interrupted ? ' …' : '');
       said.appendChild(p);
       while (said.children.length > 4) said.firstChild.remove();
     }
 
     const orb = $('orb');
+    const orbWrap = $('orb-wrap');
     function onPhase(p) {
       $('phase').textContent = p;
       orb.classList.toggle('speaking', p === 'speaking');
@@ -149,7 +202,11 @@
       try {
         agent = await startAgent({
           board, log, onTranscript, onPhase, getItems: () => items,
-          onLevel: (l) => orb.style.setProperty('--lvl', Math.min(1, l * 6).toFixed(2)),
+          onLevel: (l) => {
+            const v = Math.min(1, l * 6).toFixed(2);
+            orb.style.setProperty('--lvl', v);
+            orbWrap.style.setProperty('--lvl', v);
+          },
         });
         agent.setMuted($('ptt').checked);
         agent.setVolume(Number($('vol').value));
@@ -163,12 +220,70 @@
       }
     };
 
-    // Push-to-talk: hold Space (or a USB foot pedal mapped to Space).
+    // ── typed command line: the same instant lane, no mic required ──
+    let typedPending = null; // a void awaiting yes/no typed at the keyboard
+
+    async function runTyped(raw) {
+      const text = raw.trim();
+      if (!text) return;
+      onTranscript('user', text, true);
+      log('user', `typed: ${text}`);
+      if (!items.length) return log('warn', 'menu not loaded yet');
+
+      const parsed = parse(text, items, typedPending);
+      if (!parsed) return log('info', `no command matched “${text}”`);
+      if (parsed.reply) {
+        typedPending = null;
+        onTranscript('agent', parsed.reply, true);
+        log('agent', parsed.reply);
+        return;
+      }
+
+      const action = parsed.action;
+      // A yes/no only matters for the void we're waiting on; any other command retires it.
+      const confirms = typedPending && action.type === 'void_ticket' && action.confirmed === true;
+      if (!confirms) typedPending = null;
+      const result = await board.act(action);
+      if (result.error === 'needs_confirmation') {
+        typedPending = { ...action, confirmed: true };
+        onTranscript('agent', result.say, true);
+        log('agent', result.say);
+      } else if (!result.ok) {
+        log('warn', `${action.type} → ${result.error}${result.options ? ` (${result.options.join(', ')})` : ''}`);
+      } else {
+        typedPending = null;
+        log('ack', `${action.type} → ${result.say} (typed)`);
+        if (result.say) onTranscript('agent', result.say, true);
+      }
+    }
+
+    $('cmd-form').onsubmit = (e) => {
+      e.preventDefault();
+      const input = $('cmd');
+      runTyped(input.value);
+      input.value = '';
+      input.focus();
+    };
+    $('chips').onclick = (e) => {
+      const b = e.target.closest('button');
+      if (b) runTyped(b.textContent);
+    };
+
+    // ── push-to-talk + preferences ──
+    const prefs = (() => { try { return JSON.parse(localStorage.getItem('86it:prefs') || '{}'); } catch { return {}; } })();
     const ptt = $('ptt');
+    const vol = $('vol');
+    if (prefs.ptt) { ptt.checked = true; document.body.classList.add('ptt-on'); }
+    if (prefs.vol != null) vol.value = prefs.vol;
+    const savePrefs = () => {
+      try { localStorage.setItem('86it:prefs', JSON.stringify({ ptt: ptt.checked, vol: Number(vol.value) })); } catch {}
+    };
+
     ptt.onchange = () => {
       ptt.blur();
       document.body.classList.toggle('ptt-on', ptt.checked);
       agent?.setMuted(ptt.checked);
+      savePrefs();
     };
     const key = (down) => (e) => {
       if (e.code !== 'Space' || !ptt.checked || e.target.tagName === 'INPUT' && e.target.type !== 'checkbox') return;
@@ -178,7 +293,7 @@
     };
     addEventListener('keydown', key(true));
     addEventListener('keyup', key(false));
-    $('vol').oninput = (e) => agent?.setVolume(Number(e.target.value));
+    vol.oninput = (e) => { agent?.setVolume(Number(e.target.value)); savePrefs(); };
 
     $('seed').onclick = async () => log('info', (await board.act({ type: 'seed_rush' })).say);
     $('save-log').onclick = () => {
