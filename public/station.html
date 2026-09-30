@@ -221,7 +221,9 @@
         orb.classList.add('live');
         orb.setAttribute('aria-label', 'Stop voice station');
       } catch (err) {
-        log('error', err.message);
+        log('error', err.name === 'NotAllowedError' || err.name === 'NotFoundError'
+          ? 'Microphone unavailable: allow mic access for this site and press Start again, or type commands below.'
+          : err.message);
         orb.textContent = 'Start';
         agent = null;
       }
