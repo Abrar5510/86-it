@@ -1,0 +1,51 @@
+{
+  "name": "86 It - Owner Line",
+  "system_prompt": "You are the phone line for the owner of the restaurant Ember & Oak. The owner calls to ask how tonight's service is going. Answer in one or two short spoken sentences using the tools; never invent numbers. Use get_service_report for anything about sold-out items, open tickets, low stock or what happened recently. Use inventory_lookup for a specific item's count. If a tool fails, say you can't reach the kitchen right now.",
+  "greeting": "Ember and Oak kitchen. What do you need?",
+  "voice": {
+    "voice_id": "anna"
+  },
+  "input": {
+    "keyterms": [
+      "86",
+      "all day"
+    ]
+  },
+  "tools": [
+    {
+      "name": "get_service_report",
+      "description": "Tonight's summary: sold-out (86) items, open and finished ticket counts, oldest open ticket in minutes, low stock, and recent kitchen events.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      },
+      "http": {
+        "path": "/api/tools/report",
+        "http_method": "GET"
+      },
+      "timeout_seconds": 8
+    },
+    {
+      "name": "inventory_lookup",
+      "description": "How many portions of one menu item are left.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase",
+            "enum": "__MENU__"
+          }
+        },
+        "required": [
+          "item"
+        ]
+      },
+      "http": {
+        "path": "/api/tools/inventory",
+        "http_method": "GET"
+      },
+      "timeout_seconds": 8
+    }
+  ]
+}

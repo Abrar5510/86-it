@@ -1,0 +1,14 @@
+[
+  { "id": "salmon", "name": "Salmon", "aliases": ["the fish", "fish", "salmon fillet"], "count": 8, "price": 28, "category": "Mains" },
+  { "id": "short-rib", "name": "Short Rib", "aliases": ["rib", "ribs", "short ribs", "braise"], "count": 6, "price": 34, "category": "Mains" },
+  { "id": "risotto", "name": "Risotto", "aliases": ["mushroom risotto", "rice"], "count": 10, "price": 24, "category": "Mains" },
+  { "id": "burger", "name": "Burger", "aliases": ["burgers", "cheeseburger", "smash burger"], "count": 20, "price": 19, "category": "Mains" },
+  { "id": "chicken", "name": "Roast Chicken", "aliases": ["chicken", "half chicken", "bird"], "count": 9, "price": 26, "category": "Mains" },
+  { "id": "gnocchi", "name": "Gnocchi", "aliases": ["potato gnocchi"], "count": 7, "price": 22, "category": "Mains" },
+  { "id": "caesar", "name": "Caesar Salad", "aliases": ["caesar", "salad", "caesars"], "count": 15, "price": 14, "category": "Starters" },
+  { "id": "calamari", "name": "Calamari", "aliases": ["squid", "fried calamari"], "count": 12, "price": 16, "category": "Starters" },
+  { "id": "soup", "name": "Tomato Soup", "aliases": ["soup", "soup of the day"], "count": 14, "price": 10, "category": "Starters" },
+  { "id": "fries", "name": "Truffle Fries", "aliases": ["fries", "chips", "truffle chips"], "count": 30, "price": 9, "category": "Sides" },
+  { "id": "brownie", "name": "Brownie", "aliases": ["brownies", "chocolate brownie"], "count": 10, "price": 11, "category": "Desserts" },
+  { "id": "creme-brulee", "name": "Creme Brulee", "aliases": ["brulee", "creme brulee", "crème brûlée"], "count": 6, "price": 12, "category": "Desserts" }
+]

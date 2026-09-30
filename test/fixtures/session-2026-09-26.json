@@ -1,0 +1,348 @@
+{
+  "system_prompt": "You are the voice system on a busy restaurant kitchen line. You hear cooks through a headset in a loud kitchen.\n\n# How you talk\n- Reply in 1 to 5 words. No greetings, no small talk, no filler, no \"sure\" or \"let me check\".\n- Examples: \"Fired 12.\" \"86 salmon.\" \"Seven: 14 minutes.\" \"Two short rib left.\" \"Which item?\"\n- Say table numbers as plain numbers.\n- When a tool returns a \"say\" field, say exactly that.\n\n# When to act\nOnly act on kitchen commands. Kitchen commands include:\n- \"fire 12\", \"fire table 12\" → fire_ticket\n- \"hold 9\" → hold_ticket\n- \"bump 4\", \"12 is up\", \"sold 12\", \"12 out the window\" → bump_ticket\n- \"void 7\", \"kill 7\" → void_ticket (confirm first, see below)\n- \"86 salmon\", \"we're out of salmon\", \"no more salmon\" → mark_86 with remaining 0\n- \"two short rib left\", \"only 3 risotto\" → mark_86 with remaining set to that number\n- \"salmon is back\", \"salmon back on\", \"un-86 salmon\", \"un eighty-six the salmon\" → restore_item\n- \"how long on 7\", \"where's 7\", \"status 7\" → ticket_status\n- \"all day fries\", \"how many fries all day\" → all_day\n- \"how many brownies left\", \"count on calamari\" → inventory_lookup\n- \"12 has a nut allergy\", \"allergy on 12, shellfish\" → flag_allergy\n\nIf what you hear is NOT a kitchen command (chatter, music, arguing, people talking to each other, half sentences, \"yes chef\", \"heard\"), call no tool and reply with exactly one dash: -\nNever write words like \"silence\", \"blank\" or \"skip\" for these; the dash is the only allowed reply.\n\n# Rules\n- Void: first ask \"Void 7?\". Only call void_ticket with confirmed=true after the cook says yes. If they say no, say \"Kept.\"\n- If an item name is unclear or a tool returns error \"unknown_item\", say \"Which item?\" and wait. Never guess an item.\n- If a tool returns \"no_open_ticket\", say \"No ticket for 12.\" with the right number.\n- If a table number is missing, ask \"Which table?\". If the words already contain a number — including sound-alikes \"for\", \"to\", \"ate\", \"won\" — never ask; call the tool with that number.\n- Speech-to-text mishears numbers: treat \"for\"/\"fore\" as 4, \"to\"/\"too\" as 2, \"ate\" as 8, \"won\" as 1 when a table number or count is expected (\"fire for\" = \"fire 4\").\n- Kitchen slang: \"86\" means out of stock. \"All day\" means total count on open tickets. \"On the fly\" means rush. \"Fire\" means start cooking.\n- When asked to announce something, say exactly the text you are given.\n\n# Menu nicknames (use the menu name in tools)\n- \"the fish\", \"fish\", \"salmon fillet\" = salmon\n- \"rib\", \"ribs\", \"short ribs\", \"braise\" = short rib\n- \"mushroom risotto\", \"rice\" = risotto\n- \"burgers\", \"cheeseburger\", \"smash burger\" = burger\n- \"chicken\", \"half chicken\", \"bird\" = roast chicken\n- \"potato gnocchi\" = gnocchi\n- \"caesar\", \"salad\", \"caesars\" = caesar salad\n- \"squid\", \"fried calamari\" = calamari\n- \"soup\", \"soup of the day\" = tomato soup\n- \"fries\", \"chips\", \"truffle chips\" = truffle fries\n- \"brownies\", \"chocolate brownie\" = brownie\n- \"brulee\", \"creme brulee\", \"crème brûlée\" = creme brulee\n",
+  "tools": [
+    {
+      "type": "function",
+      "name": "fire_ticket",
+      "description": "Start cooking a table's ticket. Use when a cook says 'fire 12' or 'fire table 12'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 12"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "hold_ticket",
+      "description": "Put a table's ticket on hold. Use for 'hold 9'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 9"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "bump_ticket",
+      "description": "Mark a table's ticket finished and remove it from the screen. Use for 'bump 4', '4 is up', '4 out the window'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 4"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "void_ticket",
+      "description": "Cancel a table's ticket. Destructive: ask 'Void 7?' first and only call with confirmed=true after the cook says yes.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 7"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "true only after the cook explicitly said yes, e.g. true"
+          }
+        },
+        "required": [
+          "table",
+          "confirmed"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "flag_allergy",
+      "description": "Flag an allergy on a table's ticket. Use for '12 has a nut allergy'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 12"
+          },
+          "allergen": {
+            "type": "string",
+            "description": "Lowercase allergen, e.g. 'nuts', 'shellfish', 'gluten'"
+          }
+        },
+        "required": [
+          "table",
+          "allergen"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "ticket_status",
+      "description": "Get how long a table's ticket has been open and its status. Use for 'how long on 7', 'where's 7'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 7"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "mark_86",
+      "description": "Set how many portions of a menu item are left. remaining=0 means the item is 86 (sold out). Use for '86 salmon', 'out of salmon', 'two short rib left'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase, one of the menu names",
+            "enum": [
+              "salmon",
+              "short rib",
+              "risotto",
+              "burger",
+              "roast chicken",
+              "gnocchi",
+              "caesar salad",
+              "calamari",
+              "tomato soup",
+              "truffle fries",
+              "brownie",
+              "creme brulee"
+            ]
+          },
+          "remaining": {
+            "type": "integer",
+            "description": "Portions left as an integer; 0 = sold out. Example: 0"
+          }
+        },
+        "required": [
+          "item",
+          "remaining"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "restore_item",
+      "description": "Put a sold-out item back on the menu. Use for 'salmon is back', 'un-86 salmon'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase",
+            "enum": [
+              "salmon",
+              "short rib",
+              "risotto",
+              "burger",
+              "roast chicken",
+              "gnocchi",
+              "caesar salad",
+              "calamari",
+              "tomato soup",
+              "truffle fries",
+              "brownie",
+              "creme brulee"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "description": "Portions now available, e.g. 10. Omit if not said."
+          }
+        },
+        "required": [
+          "item"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "all_day",
+      "description": "Total quantity of an item across all open tickets. Use for 'all day fries'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase",
+            "enum": [
+              "salmon",
+              "short rib",
+              "risotto",
+              "burger",
+              "roast chicken",
+              "gnocchi",
+              "caesar salad",
+              "calamari",
+              "tomato soup",
+              "truffle fries",
+              "brownie",
+              "creme brulee"
+            ]
+          }
+        },
+        "required": [
+          "item"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "inventory_lookup",
+      "description": "How many portions of an item are left in stock. Use for 'how many brownies left'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase",
+            "enum": [
+              "salmon",
+              "short rib",
+              "risotto",
+              "burger",
+              "roast chicken",
+              "gnocchi",
+              "caesar salad",
+              "calamari",
+              "tomato soup",
+              "truffle fries",
+              "brownie",
+              "creme brulee"
+            ]
+          }
+        },
+        "required": [
+          "item"
+        ]
+      },
+      "timeout_seconds": 8
+    }
+  ],
+  "input": {
+    "format": {
+      "encoding": "audio/pcm"
+    },
+    "transcription_mode": "min_latency",
+    "keyterms": [
+      "86",
+      "eighty-six",
+      "all day",
+      "fire",
+      "bump",
+      "on the fly",
+      "void",
+      "allergy",
+      "table",
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
+      "eight",
+      "nine",
+      "ten",
+      "eleven",
+      "twelve",
+      "thirteen",
+      "fourteen",
+      "fifteen",
+      "sixteen",
+      "seventeen",
+      "eighteen",
+      "nineteen",
+      "twenty",
+      "Salmon",
+      "the fish",
+      "fish",
+      "salmon fillet",
+      "Short Rib",
+      "rib",
+      "ribs",
+      "short ribs",
+      "braise",
+      "Risotto",
+      "mushroom risotto",
+      "rice",
+      "Burger",
+      "burgers",
+      "cheeseburger",
+      "smash burger",
+      "Roast Chicken",
+      "chicken",
+      "half chicken",
+      "bird",
+      "Gnocchi",
+      "potato gnocchi",
+      "Caesar Salad",
+      "caesar",
+      "salad",
+      "caesars",
+      "Calamari",
+      "squid",
+      "fried calamari",
+      "Tomato Soup",
+      "soup",
+      "soup of the day",
+      "Truffle Fries",
+      "fries",
+      "chips",
+      "truffle chips",
+      "Brownie",
+      "brownies",
+      "chocolate brownie",
+      "Creme Brulee",
+      "brulee",
+      "creme brulee",
+      "crème brûlée"
+    ],
+    "voice_focus": "near-field",
+    "voice_focus_threshold": 0.85
+  },
+  "output": {
+    "voice": "michael",
+    "format": {
+      "encoding": "audio/pcm"
+    }
+  }
+}

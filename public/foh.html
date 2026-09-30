@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>86 It · Front of House</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="top">
+    <span class="brand"><b>86</b> It · Front of house</span>
+    <span class="dot" id="dot"></span>
+    <nav class="nav">
+      <a href="/station">Station</a>
+      <a href="/kds">Kitchen</a>
+      <a href="/foh" aria-current="page">Front of house</a>
+      <a href="/menu">Online menu</a>
+    </nav>
+  </header>
+  <main class="foh">
+    <section>
+      <div class="menu-grid" id="grid" aria-live="polite"></div>
+    </section>
+    <aside class="feed">
+      <h2>Kitchen updates</h2>
+      <ol id="feed"></ol>
+    </aside>
+  </main>
+
+  <script type="module">
+    import { connectBoard, clock, esc } from '/js/board.js';
+
+    let prevOut = null;
+    function render(state) {
+      document.getElementById('grid').innerHTML = state.items.map((i) => `
+        <div class="item ${i.out ? 'out' : ''} ${i.out && prevOut && !prevOut.has(i.id) ? 'flash' : ''}">
+          <div class="name">${esc(i.name)}</div>
+          <div class="meta"><span>${esc(i.category)}</span><span>${i.out ? '0' : i.count} left</span></div>
+          <div class="badge">86'd ${i.outAt ? 'at ' + clock(i.outAt) : ''} · don't sell</div>
+        </div>`).join('');
+      prevOut = new Set(state.items.filter((i) => i.out).map((i) => i.id));
+      document.getElementById('feed').innerHTML = state.log.map((l) => `<li><time>${clock(l.at)}</time><span>${esc(l.text)}</span></li>`).join('') || '<li>Quiet so far.</li>';
+    }
+
+    connectBoard({ onState: render, onStatus: (on) => document.getElementById('dot').classList.toggle('on', on) });
+  </script>
+</body>
+</html>

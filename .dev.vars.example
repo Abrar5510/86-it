@@ -1,0 +1,7 @@
+# Copy to .dev.vars (local) — never commit .dev.vars
+ASSEMBLYAI_API_KEY=your_assemblyai_key
+# Only for the optional owner phone line (HTTP tools):
+# shared secret AssemblyAI sends to your HTTP tools (openssl rand -hex 24)
+TOOL_SECRET=change_me
+# public https URL of the deployed worker, e.g. https://86-it.<you>.workers.dev
+PUBLIC_URL=

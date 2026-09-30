@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>86 It · Kitchen</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="top">
+    <span class="brand"><b>86</b> It · Kitchen display</span>
+    <span class="dot" id="dot"></span>
+    <nav class="nav">
+      <a href="/station">Station</a>
+      <a href="/kds" aria-current="page">Kitchen</a>
+      <a href="/foh">Front of house</a>
+      <a href="/menu">Online menu</a>
+    </nav>
+  </header>
+  <div class="eighty-six" id="outs" aria-live="polite"></div>
+  <main class="tickets" id="tickets" aria-live="polite"></main>
+
+  <script type="module">
+    import { connectBoard, minutesSince, esc } from '/js/board.js';
+
+    const OPEN = ['new', 'fired', 'held'];
+    const LATE_MIN = 10;
+    let last = null;
+    let prevStatus = null; // null until first render, so the initial paint doesn't flash
+
+    function render(state) {
+      last = state;
+      const outIds = new Set(state.items.filter((i) => i.out).map((i) => i.id));
+      document.getElementById('outs').innerHTML = '<span class="label">86</span>' +
+        (state.items.filter((i) => i.out).map((i) => `<span class="chip out">${esc(i.name)}</span>`).join('') || '<span class="chip">nothing</span>');
+
+      const open = state.tickets.filter((t) => OPEN.includes(t.status)).sort((a, b) => a.createdAt - b.createdAt);
+      const el = document.getElementById('tickets');
+      el.innerHTML = open.length ? open.map((t) => {
+        const age = minutesSince(t.createdAt);
+        const changed = prevStatus && prevStatus.get(t.id) !== `${t.status}|${t.allergy}`;
+        return `<article class="ticket ${t.status} ${age >= LATE_MIN ? 'late' : ''} ${changed ? 'flash' : ''}">
+          ${t.allergy ? `<div class="allergy">⚠ ${esc(t.allergy)}</div>` : ''}
+          <div class="head"><span class="table">${t.table}${t.source === 'online' ? '<span class="src">online</span>' : ''}</span><span class="age">${age}m</span></div>
+          <div class="status">${t.status}</div>
+          <ul>${t.lines.map((l) => `<li class="${outIds.has(l.id) ? 'gone' : ''}"><b>${l.qty}</b>${esc(l.name)}</li>`).join('')}</ul>
+        </article>`;
+      }).join('') : '<p class="empty">No open tickets. Hit “Seed dinner rush” on the station.</p>';
+      prevStatus = new Map(state.tickets.map((t) => [t.id, `${t.status}|${t.allergy}`]));
+    }
+
+    connectBoard({ onState: render, onStatus: (on) => document.getElementById('dot').classList.toggle('on', on) });
+    setInterval(() => last && render(last), 30_000); // keep ages fresh
+  </script>
+</body>
+</html>

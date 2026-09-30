@@ -1,0 +1,252 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "name": "fire_ticket",
+      "description": "Start cooking a table's ticket. Use when a cook says 'fire 12' or 'fire table 12'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 12"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "hold_ticket",
+      "description": "Put a table's ticket on hold. Use for 'hold 9'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 9"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "bump_ticket",
+      "description": "Mark a table's ticket finished and remove it from the screen. Use for 'bump 4', '4 is up', '4 out the window'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 4"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "void_ticket",
+      "description": "Cancel a table's ticket. Destructive: ask 'Void 7?' first and only call with confirmed=true after the cook says yes.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 7"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "true only after the cook explicitly said yes, e.g. true"
+          }
+        },
+        "required": [
+          "table",
+          "confirmed"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "flag_allergy",
+      "description": "Flag an allergy on a table's ticket. Use for '12 has a nut allergy'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 12"
+          },
+          "allergen": {
+            "type": "string",
+            "description": "Lowercase allergen, e.g. 'nuts', 'shellfish', 'gluten'"
+          }
+        },
+        "required": [
+          "table",
+          "allergen"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "ticket_status",
+      "description": "Get how long a table's ticket has been open and its status. Use for 'how long on 7', 'where's 7'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "integer",
+            "description": "Table number as an integer, e.g. 7"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "mark_86",
+      "description": "Set how many portions of a menu item are left. remaining=0 means the item is 86 (sold out). Use for '86 salmon', 'out of salmon', 'two short rib left'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase, one of the menu names",
+            "enum": "__MENU__"
+          },
+          "remaining": {
+            "type": "integer",
+            "description": "Portions left as an integer; 0 = sold out. Example: 0"
+          }
+        },
+        "required": [
+          "item",
+          "remaining"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "restore_item",
+      "description": "Put a sold-out item back on the menu. Use for 'salmon is back', 'un-86 salmon'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase",
+            "enum": "__MENU__"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Portions now available, e.g. 10. Omit if not said."
+          }
+        },
+        "required": [
+          "item"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "all_day",
+      "description": "Total quantity of an item across all open tickets. Use for 'all day fries'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase",
+            "enum": "__MENU__"
+          }
+        },
+        "required": [
+          "item"
+        ]
+      },
+      "timeout_seconds": 5
+    },
+    {
+      "type": "function",
+      "name": "inventory_lookup",
+      "description": "How many portions of an item are left in stock. Use for 'how many brownies left'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Menu item, lowercase",
+            "enum": "__MENU__"
+          }
+        },
+        "required": [
+          "item"
+        ]
+      },
+      "timeout_seconds": 8
+    }
+  ],
+  "input": {
+    "format": {
+      "encoding": "audio/pcm"
+    },
+    "transcription_mode": "min_latency",
+    "voice_focus": "near-field",
+    "voice_focus_threshold": 0.85,
+    "keyterms": [
+      "86",
+      "eighty-six",
+      "all day",
+      "fire",
+      "bump",
+      "on the fly",
+      "void",
+      "allergy",
+      "table",
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
+      "eight",
+      "nine",
+      "ten",
+      "eleven",
+      "twelve",
+      "thirteen",
+      "fourteen",
+      "fifteen",
+      "sixteen",
+      "seventeen",
+      "eighteen",
+      "nineteen",
+      "twenty"
+    ]
+  },
+  "output": {
+    "voice": "michael",
+    "format": {
+      "encoding": "audio/pcm"
+    }
+  }
+}

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>86 It · Station</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="top">
+    <span class="brand"><b>86</b> It</span>
+    <span class="dot" id="board-dot" title="Kitchen board connection"></span>
+    <nav class="nav">
+      <a href="/station" aria-current="page">Station</a>
+      <a href="/kds" target="kds">Kitchen</a>
+      <a href="/foh" target="foh">Front of house</a>
+      <a href="/menu" target="menu">Online menu</a>
+    </nav>
+  </header>
+
+  <div class="eighty-six" id="outs"></div>
+
+  <main class="station">
+    <section class="panel mic" id="mic-panel">
+      <button class="orb" id="orb" aria-label="Start voice station">Start</button>
+      <div class="phase" id="phase">offline</div>
+      <div class="said" id="said" aria-live="polite"></div>
+      <div class="stats">
+        <div class="stat"><b id="st-cmd">0</b><span>commands</span></div>
+        <div class="stat"><b id="st-lat">–</b><span>median speech→action</span></div>
+        <div class="stat"><b id="st-open">0</b><span>open tickets</span></div>
+      </div>
+      <div class="controls">
+        <label class="toggle"><input type="checkbox" id="ptt"> Push-to-talk (hold Space)</label>
+        <label class="toggle">Voice <input type="range" id="vol" min="0" max="1" step="0.1" value="1"></label>
+      </div>
+      <div class="controls">
+        <button class="btn" id="seed">Seed dinner rush</button>
+        <button class="btn" id="reset">Reset</button>
+        <button class="btn" id="save-log" title="Download the full event log (session ids included)">Download log</button>
+      </div>
+      <p class="ptt-hint">Try: “Fire 12” · “86 salmon” · “How long on 7?” · “Two short rib left” · “All day fries”</p>
+    </section>
+
+    <section class="panel">
+      <h2>Live event log</h2>
+      <ol class="log" id="log"></ol>
+    </section>
+  </main>
+
+  <script type="module">
+    import { connectBoard, esc } from '/js/board.js';
+    import { startAgent } from '/js/agent.js';
+
+    const $ = (id) => document.getElementById(id);
+    const logEl = $('log');
+    const latencies = [];
+    const fullLog = []; // everything, for the download button
+    let commands = 0;
+    let agent = null;
+    let alertPending = null; // alert text the agent hasn't been confirmed to have spoken yet
+
+    function log(kind, text) {
+      fullLog.push({ at: new Date().toISOString(), kind, text });
+      const li = document.createElement('li');
+      li.innerHTML = `<time>${new Date().toLocaleTimeString([], { hour12: false })}</time><span class="k k-${kind}">${kind}</span><span>${esc(text)}</span>`;
+      logEl.prepend(li);
+      while (logEl.children.length > 200) logEl.lastChild.remove();
+      const ms = /\+(\d+)ms after speech end$/.exec(text);
+      if (kind === 'ack' && ms) {
+        commands++;
+        latencies.push(Number(ms[1]));
+        const sorted = [...latencies].sort((a, b) => a - b);
+        $('st-cmd').textContent = commands;
+        $('st-lat').textContent = `${sorted[sorted.length >> 1]}ms`;
+      }
+    }
+
+    let items = [];
+    const board = connectBoard({
+      onStatus: (on) => $('board-dot').classList.toggle('on', on),
+      onState(state) {
+        items = state.items;
+        $('outs').innerHTML = '<span class="label">86</span>' + (state.items.filter((i) => i.out).map((i) => `<span class="chip out">${esc(i.name)}</span>`).join('') || '<span class="chip">nothing</span>') +
+          state.items.filter((i) => !i.out && i.count <= 3).map((i) => `<span class="chip low">${esc(i.name)} · ${i.count}</span>`).join('');
+        $('st-open').textContent = state.tickets.filter((t) => ['new', 'fired', 'held'].includes(t.status)).length;
+      },
+      onAlert(a) {
+        log('alert', a.text);
+        if (!agent) return;
+        // reply.create sent while a turn is in flight is dropped without error, and say()
+        // no-ops while audio plays — retry until the agent transcript confirms the alert.
+        alertPending = a.text;
+        let tries = 0;
+        const attempt = () => {
+          if (alertPending !== a.text) return; // spoken: transcript cleared it
+          if (tries >= 12) return log('warn', `alert not spoken: ${a.text}`);
+          tries++;
+          agent.say(a.text);
+          setTimeout(attempt, 2500);
+        };
+        attempt();
+      },
+    });
+
+    const said = $('said');
+    let partial = null;
+    function onTranscript(who, text, final, interrupted) {
+      if (who === 'user' && !final) {
+        partial ||= said.appendChild(document.createElement('p'));
+        partial.className = 'user partial';
+        // Works whether deltas are cumulative or incremental.
+        partial.textContent = text.startsWith(partial.textContent) ? text : `${partial.textContent} ${text}`;
+        return;
+      }
+      if (!text) return;
+      if (who === 'agent' && alertPending) {
+        const normS = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '');
+        if (normS(text).includes(normS(alertPending))) alertPending = null;
+      }
+      const p = partial && who === 'user' ? partial : document.createElement('p');
+      partial = null;
+      p.className = who;
+      p.textContent = (who === 'agent' ? '→ ' : '') + text + (interrupted ? ' …' : '');
+      said.appendChild(p);
+      while (said.children.length > 4) said.firstChild.remove();
+    }
+
+    const orb = $('orb');
+    function onPhase(p) {
+      $('phase').textContent = p;
+      orb.classList.toggle('speaking', p === 'speaking');
+    }
+
+    orb.onclick = async () => {
+      orb.blur(); // so Space (push-to-talk) can never press this button
+      if (agent) {
+        agent.stop();
+        agent = null;
+        orb.textContent = 'Start';
+        orb.classList.remove('live', 'speaking');
+        onPhase('offline');
+        return;
+      }
+      orb.textContent = '…';
+      try {
+        agent = await startAgent({
+          board, log, onTranscript, onPhase, getItems: () => items,
+          onLevel: (l) => orb.style.setProperty('--lvl', Math.min(1, l * 6).toFixed(2)),
+        });
+        agent.setMuted($('ptt').checked);
+        agent.setVolume(Number($('vol').value));
+        orb.textContent = 'Live';
+        orb.classList.add('live');
+        orb.setAttribute('aria-label', 'Stop voice station');
+      } catch (err) {
+        log('error', err.message);
+        orb.textContent = 'Start';
+        agent = null;
+      }
+    };
+
+    // Push-to-talk: hold Space (or a USB foot pedal mapped to Space).
+    const ptt = $('ptt');
+    ptt.onchange = () => {
+      ptt.blur();
+      document.body.classList.toggle('ptt-on', ptt.checked);
+      agent?.setMuted(ptt.checked);
+    };
+    const key = (down) => (e) => {
+      if (e.code !== 'Space' || !ptt.checked || e.target.tagName === 'INPUT' && e.target.type !== 'checkbox') return;
+      e.preventDefault();
+      orb.classList.toggle('keyed', down);
+      agent?.setMuted(!down);
+    };
+    addEventListener('keydown', key(true));
+    addEventListener('keyup', key(false));
+    $('vol').oninput = (e) => agent?.setVolume(Number(e.target.value));
+
+    $('seed').onclick = async () => log('info', (await board.act({ type: 'seed_rush' })).say);
+    $('save-log').onclick = () => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(fullLog, null, 2)], { type: 'application/json' }));
+      a.download = `86it-station-log-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+    $('reset').onclick = async () => log('info', (await board.act({ type: 'reset' })).say);
+  </script>
+</body>
+</html>

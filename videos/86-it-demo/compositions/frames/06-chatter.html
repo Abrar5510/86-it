@@ -1,0 +1,360 @@
+<template>
+<style>
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb54C_k3HqUtEw.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face{
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb94C_k3HqUtEw.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb54C_k3HqUtEw.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+@font-face{
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb94C_k3HqUtEw.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+#root {
+  container-type: size;
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden;
+  background: #0D0F12;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #EEF1F5;
+}
+
+.clip {
+  position: absolute;
+  inset: 0;
+}
+
+.frame-06-bg {
+  background: #0D0F12;
+}
+
+.frame-06-video {
+  width: 1920px;
+  height: 1080px;
+  object-fit: cover;
+}
+
+.frame-06-chatter-quote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5.5cqw;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.frame-06-chatter-quote .quote-text {
+  font-size: 3.8cqw;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  text-align: center;
+  max-width: 78cqw;
+  text-shadow: 0 2px 8px rgba(13,15,18,0.6);
+}
+
+.frame-06-chatter-quote .quote-text b {
+  color: #FF8A00;
+}
+
+.frame-06-stamp {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 5.5cqw;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-40px) scale(0.85);
+}
+
+.frame-06-stamp .stamp-panel {
+  display: flex;
+  align-items: center;
+  gap: 1.5cqw;
+  padding: 1.2cqw 2cqw;
+  border: 1px solid #FF8A00;
+  border-radius: 0;
+  background: rgba(13,15,18,0.85);
+  backdrop-filter: blur(4px);
+}
+
+.frame-06-stamp .stamp-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72cqw;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #FF8A00;
+  white-space: nowrap;
+}
+
+.frame-06-nothing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5.5cqw;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.frame-06-nothing .nothing-text {
+  font-size: 5.5cqw;
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  text-transform: lowercase;
+  text-align: center;
+  max-width: 78cqw;
+  text-shadow: 0 4px 16px rgba(13,15,18,0.7);
+}
+
+.frame-06-rule {
+  position: absolute;
+  left: 50%;
+  bottom: 220px;
+  width: 0;
+  height: 2px;
+  background: #FF8A00;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.frame-06-accent-dots {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.frame-06-accent-dots .dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FF8A00;
+  opacity: 0;
+}
+</style>
+
+<div id="root" data-composition-id="06-chatter" data-width="1920" data-height="1080">
+  <div class="clip frame-06-bg" id="bg" data-start="0" data-duration="6.792" data-track-index="0" style="background:#0D0F12;"></div>
+
+  <!-- approved frame video hoisted by assemble-index -->
+
+  <div class="clip frame-06-chatter-quote" id="chatterQuote" data-start="0.3" data-duration="6.492" data-track-index="2">
+    <div class="quote-text">"did you watch the <b>game</b> last night?"</div>
+  </div>
+
+  <div class="clip frame-06-stamp" id="stamp" data-start="1.5" data-duration="5.292" data-track-index="3">
+    <div class="stamp-panel">
+      <span class="stamp-label">0 tool calls · log: — · dash reply</span>
+    </div>
+  </div>
+
+  <div class="clip frame-06-nothing" id="nothing" data-start="2.0" data-duration="4.792" data-track-index="4">
+    <div class="nothing-text" id="nothingText">nothing happens.</div>
+  </div>
+
+  <div class="clip frame-06-rule" id="rule" data-start="3.5" data-duration="3.292" data-track-index="5"></div>
+
+  <div class="clip frame-06-accent-dots" id="accentDots" data-start="1.5" data-duration="5.292" data-track-index="6">
+    <div class="dot" style="left: -120px; top: -60px;"></div>
+    <div class="dot" style="left: 140px; top: -40px;"></div>
+    <div class="dot" style="left: -100px; top: 80px;"></div>
+    <div class="dot" style="left: 160px; top: 60px;"></div>
+  </div>
+</div>
+
+<script type="module">
+import { gsap } from "assets/vendor/gsap.js";
+
+window.__timelines = window.__timelines || {};
+
+const tl = gsap.timeline({ paused: true });
+window.__timelines["06-chatter"] = tl;
+
+const quoteEl = document.getElementById("chatterQuote");
+const stampEl = document.getElementById("stamp");
+const nothingEl = document.getElementById("nothing");
+const nothingTextEl = document.getElementById("nothingText");
+const ruleEl = document.getElementById("rule");
+const dotsEl = document.getElementById("accentDots");
+const dotEls = dotsEl.querySelectorAll(".dot");
+
+const dotPaths = [
+  { x: -24, y: -18, rot: -72 },
+  { x: 28, y: -12, rot: 108 },
+  { x: -20, y: 24, rot: -144 },
+  { x: 32, y: 18, rot: 36 }
+];
+
+tl.fromTo(quoteEl, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.3);
+
+tl.fromTo(stampEl, { opacity: 0, x: -40, scale: 0.85 }, { opacity: 1, x: 0, scale: 1, duration: 0.7, ease: "back.out(1.7)" }, 1.5);
+
+tl.fromTo(dotsEl, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.5);
+dotEls.forEach((dot, i) => {
+  const p = dotPaths[i];
+  gsap.fromTo(dot, { scale: 0, opacity: 0 }, { scale: 1, opacity: 0.6, duration: 0.5, delay: i * 0.08, ease: "back.out(2)" }, 1.5);
+  gsap.to(dot, { x: p.x, y: p.y, rotation: p.rot, duration: 3.2, ease: "sine.inOut", repeat: 1, yoyo: true }, 1.8);
+});
+
+const nothingText = "nothing happens.";
+nothingTextEl.textContent = "";
+tl.to({}, { duration: 0.04, repeat: nothingText.length, onRepeat: () => {
+  const idx = Math.floor(tl.progress() * nothingText.length * 2.5);
+  if (idx < nothingText.length) {
+    nothingTextEl.textContent = nothingText.slice(0, idx + 1);
+  }
+}, onComplete: () => { nothingTextEl.textContent = nothingText; } }, 2.0);
+
+tl.fromTo(nothingEl, { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.0);
+
+tl.fromTo(ruleEl, { width: 0, opacity: 0 }, { width: "420px", opacity: 1, duration: 0.6, ease: "power2.out" }, 3.5);
+
+tl.to(ruleEl, { opacity: 0.4, duration: 2.5, ease: "none" }, 4.1);
+
+tl.to(stampEl, { opacity: 0.7, duration: 0.3, yoyo: true, repeat: 3, ease: "sine.inOut" }, 4.5);
+</script>
+</template>

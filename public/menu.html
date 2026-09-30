@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Ember &amp; Oak · Order online</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛵</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <style>body { background: #f4f4f5; color-scheme: light; }</style>
+</head>
+<body>
+  <div class="phone">
+    <header>
+      <h1>Ember &amp; Oak</h1>
+      <div class="sub">Delivery · 25–35 min · <span id="live">connecting…</span></div>
+    </header>
+    <div id="list" aria-live="polite"></div>
+    <div class="cart"><button id="order" disabled>Add items</button></div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script type="module">
+    import { connectBoard, esc } from '/js/board.js';
+
+    const cart = new Map();
+    let state = null;
+    const toast = (text) => {
+      const t = document.getElementById('toast');
+      t.textContent = text;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    };
+
+    function render() {
+      const cats = [...new Set(state.items.map((i) => i.category))];
+      for (const [id] of cart) if (state.items.find((i) => i.id === id)?.out) cart.delete(id);
+      document.getElementById('list').innerHTML = cats.map((c) => `<div class="cat">${esc(c)}</div>` +
+        state.items.filter((i) => i.category === c).map((i) => `
+          <div class="dish ${i.out ? 'out' : ''}">
+            <div><div class="n">${esc(i.name)}</div><div class="p">$${i.price}</div></div>
+            <button data-id="${i.id}" ${i.out ? 'disabled' : ''}>${i.out ? 'Sold out' : cart.get(i.id) ? `Added ×${cart.get(i.id)}` : 'Add'}</button>
+          </div>`).join('')).join('');
+      const n = [...cart.values()].reduce((a, b) => a + b, 0);
+      const total = [...cart].reduce((s, [id, q]) => s + q * state.items.find((i) => i.id === id).price, 0);
+      const btn = document.getElementById('order');
+      btn.disabled = !n;
+      btn.textContent = n ? `Place order · ${n} item${n > 1 ? 's' : ''} · $${total}` : 'Add items';
+    }
+
+    const board = connectBoard({
+      onState(s) { state = s; render(); },
+      onStatus(on) { document.getElementById('live').textContent = on ? 'live menu' : 'reconnecting…'; },
+    });
+
+    document.getElementById('list').onclick = (e) => {
+      const id = e.target.closest('button[data-id]')?.dataset.id;
+      if (!id) return;
+      cart.set(id, (cart.get(id) || 0) + 1);
+      render();
+    };
+
+    document.getElementById('order').onclick = async () => {
+      const lines = [...cart].map(([item, qty]) => ({ item, qty }));
+      const r = await board.act({ type: 'add_ticket', lines, source: 'online' });
+      if (r.ok) {
+        cart.clear();
+        toast(`Order placed · ticket ${r.table}`);
+      } else {
+        toast(r.error === 'sold_out' ? `Sorry, ${r.item} just sold out` : 'Could not place order');
+      }
+      render();
+    };
+  </script>
+</body>
+</html>

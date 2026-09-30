@@ -1,0 +1,316 @@
+<template>
+  <style>
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2") format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx3cwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxTcwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxPcwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx_cwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPx7cwgknk-6nFg.woff2") format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face{
+      font-family: 'JetBrains Mono';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2") format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face{
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb54C_k3HqUtEw.woff2") format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    @font-face{
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb94C_k3HqUtEw.woff2") format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face{
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2") format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face{
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb54C_k3HqUtEw.woff2") format('woff2');
+      unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+    }
+    @font-face{
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPb94C_k3HqUtEw.woff2") format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+    @font-face{
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("assets/fonts/captured-V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2") format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      container-type: size;
+      overflow: hidden;
+      background: #0D0F12;
+      font-family: 'Space Grotesk', sans-serif;
+      color: #EEF1F5;
+    }
+
+    .clip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .frame-05-bg {
+      background: #0D0F12;
+    }
+
+    .frame-05-video {
+      width: 1920px;
+      height: 1080px;
+      object-fit: cover;
+    }
+
+    .frame-05-overlay {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 5.5cqw;
+      pointer-events: none;
+    }
+
+    .frame-05-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72cqw;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #FF8A00;
+      opacity: 0;
+      transform: translateY(20px);
+      margin-bottom: 1cqw;
+    }
+
+    .frame-05-question {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 4.5cqw;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      color: #EEF1F5;
+      opacity: 0;
+      transform: translateY(30px);
+      max-width: 78cqw;
+      margin-bottom: 2cqw;
+    }
+
+    .frame-05-reply-panel {
+      background: #161A20;
+      border: 1px solid #2A313B;
+      border-radius: 0;
+      padding: 2cqw 3cqw;
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      max-width: 78cqw;
+    }
+
+    .frame-05-reply-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3.8cqw;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+      color: #FF8A00;
+    }
+
+    .frame-05-reply-text b {
+      font-weight: 900;
+    }
+
+    .frame-05-log-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72cqw;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #B7B3AF;
+      opacity: 0;
+      transform: translateY(20px);
+      margin-top: 2cqw;
+    }
+  </style>
+
+  <div id="root" data-composition-id="05-status" data-width="1920" data-height="1080">
+    <div class="clip frame-05-bg" id="bg" data-start="0" data-duration="5.381" data-track-index="0" style="background:#0D0F12;"></div>
+
+    <!-- approved frame video hoisted by assemble-index -->
+
+    <div class="clip frame-05-overlay" id="frame-05-overlay" data-start="0" data-duration="5.381" data-track-index="2">
+      <div class="frame-05-kicker" id="frame-05-kicker">station · transcript</div>
+      <div class="frame-05-question" id="frame-05-question">"how long on <b>seven</b>?"</div>
+      <div class="frame-05-reply-panel" id="frame-05-reply-panel">
+        <div class="frame-05-reply-text" id="frame-05-reply-text">"Seven: <b>14 minutes.</b>"</div>
+      </div>
+      <div class="frame-05-log-label" id="frame-05-log-label">ticket_status(7) · spoken reply</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["05-status"] = tl;
+
+      const kicker = document.getElementById('frame-05-kicker');
+      const question = document.getElementById('frame-05-question');
+      const replyPanel = document.getElementById('frame-05-reply-panel');
+      const replyText = document.getElementById('frame-05-reply-text');
+      const logLabel = document.getElementById('frame-05-log-label');
+
+      // Scene 1: Input takes focus - kicker appears (0.5s)
+      tl.fromTo(kicker,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+        0.5
+      );
+
+      // Scene 2: Prompt types - question appears character by character (1.2s)
+      // Using discrete-text-sequence for the typed effect
+      tl.fromTo(question,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+        1.2
+      );
+
+      // Scene 3: Submit + machine theater - reply panel appears (2.8s)
+      tl.fromTo(replyPanel,
+        { opacity: 0, y: 30, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' },
+        2.8
+      );
+
+      // Scene 4: Answer arrives - reply text emphasis (3.2s)
+      tl.fromTo(replyText,
+        { opacity: 0.6 },
+        { opacity: 1, duration: 0.4, ease: 'power2.out' },
+        3.2
+      );
+
+      // Scene 5: Resolve - log label appears (3.8s)
+      tl.fromTo(logLabel,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+        3.8
+      );
+
+      // Hold final state to end (5.381s)
+      // No exit animations - frame unmounts via root transition
+    })();
+  </script>
+</template>
