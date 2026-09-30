@@ -11,13 +11,13 @@ import { execFileSync } from 'node:child_process';
 const FF = '/opt/homebrew/bin/ffmpeg', FP = '/opt/homebrew/bin/ffprobe';
 const dur = (f) => parseFloat(execFileSync(FP, ['-v','error','-show_entries','format=duration','-of','csv=p=0',f]).toString());
 const PHRASES = [
-  { t: 4.0,   f: '/tmp/86wav/p3.wav',           name: 'status-7' },
-  { t: 34,    f: '/tmp/86wav/p1.wav',           name: 'fire-12' },
-  { t: 55,    f: '/tmp/86wav/p2.wav',           name: '86-salmon' },
-  { t: 75,    f: '/tmp/86wav/p4.wav',           name: 'chatter' },
-  { t: 90,    f: '/tmp/86wav/p8-allday.wav',    name: 'all-day' },
-  { t: 95.0,  f: '/tmp/86wav/p6.wav',           name: 'stop' },
-  { t: 110,   f: '/tmp/86wav/p9.wav',           name: 'fire-table-4' },
+  { t: 4.0,   f: 'recordings/cook/status-7.wav',           name: 'status-7' },
+  { t: 34,    f: 'recordings/cook/fire-12.wav',           name: 'fire-12' },
+  { t: 55,    f: 'recordings/cook/86-salmon.wav',           name: '86-salmon' },
+  { t: 75,    f: 'recordings/cook/chatter.wav',           name: 'chatter' },
+  { t: 90,    f: 'recordings/cook/all-day.wav',    name: 'all-day' },
+  { t: 95.0,  f: 'recordings/cook/stop.wav',           name: 'stop' },
+  { t: 110,   f: 'recordings/cook/fire-table-4.wav',           name: 'fire-table-4' },
 ];
 const TOTAL = 135;
 const args = [];

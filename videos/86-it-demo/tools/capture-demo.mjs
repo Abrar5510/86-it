@@ -11,7 +11,7 @@ const PROJ = path.resolve(ROOT, '..');
 const BASE = 'https://86-it.rd5510.workers.dev';
 const WAV = path.join(PROJ, 'capture/demo/demo-mic.wav');
 const RAW = path.join(PROJ, 'capture/demo/raw');
-const CHROME = '/Users/abrar/.cache/puppeteer/chrome/mac_arm-154.0.8037.57/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
+const CHROME = '/Users/abrar/.cache/puppeteer/chrome/mac_arm-154.0.8037.92/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
 const PAGES = { station: '/station', kds: '/kds', foh: '/foh', menu: '/menu' };
 const RUN_MS = 145_000;
 
@@ -62,7 +62,7 @@ try {
         fs.writeFileSync(path.join(dir, n + '.jpg'), Buffer.from(f.data, 'base64'));
         rec[name].frames.push({ f: n + '.jpg', t: f.metadata.timestamp });
         await client.send('Page.screencastFrameAck', { sessionId: f.sessionId });
-      } catch {}
+      } catch (e) { if (!rec[name].err) { rec[name].err = e; log('FRAME WRITE FAILED', name, e.code || e.message); } }
     });
   }
   log('pages loaded');
@@ -90,10 +90,15 @@ try {
   let T0 = 0;
   for (let attempt = 1; attempt <= 4 && !T0; attempt++) {
     await tap('#orb');
-    await sleep(3000);
-    const phase = await pages.station.$eval('#phase', (e) => e.textContent).catch(() => '?');
+    const clickedAt = Date.now();
+    // poll up to 12s for the session to leave 'offline' — a second click while connecting opens a 2nd session (doubled transcript)
+    let phase = 'offline';
+    for (let i = 0; i < 24 && phase === 'offline'; i++) {
+      await sleep(500);
+      phase = await pages.station.$eval('#phase', (e) => e.textContent).catch(() => '?');
+    }
     log('start attempt', attempt, '-> phase', phase);
-    if (phase && phase !== 'offline') { T0 = Date.now() - 3000; } // mic opened ~3s ago
+    if (phase && phase !== 'offline') { T0 = clickedAt; } // mic opens right after the click
   }
   if (!T0) { throw new Error('station never left offline'); }
   events.push({ name: 'T0-mic-start', t: T0, rel: 0 });
@@ -126,6 +131,8 @@ try {
     await rec[name].client.send('Page.stopScreencast').catch(() => {});
   }
   note('screencast-stop');
+  const bad = Object.entries(rec).filter(([, v]) => v.err).map(([k]) => k);
+  if (bad.length) throw new Error('frame writes failed for: ' + bad.join(', ') + ' (disk full?) — capture is unusable');
 
   const out = {
     t0: T0,
