@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>86 It · Station</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/app.css">
@@ -97,9 +97,16 @@
     let agent = null;
     let alertPending = null; // alert text the agent hasn't been confirmed to have spoken yet
 
+    function updateLogEmptyState() {
+      const empty = $('log-empty');
+      if (empty) {
+        empty.hidden = fullLog.length > 0;
+      }
+    }
+
     function log(kind, text) {
-      document.getElementById('log-empty')?.setAttribute('hidden', '');
       fullLog.push({ at: new Date().toISOString(), kind, text });
+      updateLogEmptyState();
       const li = document.createElement('li');
       li.innerHTML = `<time>${new Date().toLocaleTimeString([], { hour12: false })}</time><span class="k k-${kind}">${kind}</span><span>${esc(text)}</span>`;
       logEl.prepend(li);
@@ -214,7 +221,9 @@
         orb.classList.add('live');
         orb.setAttribute('aria-label', 'Stop voice station');
       } catch (err) {
-        log('error', err.message);
+        log('error', err.name === 'NotAllowedError' || err.name === 'NotFoundError'
+          ? 'Microphone unavailable: allow mic access for this site and press Start again, or type commands below.'
+          : err.message);
         orb.textContent = 'Start';
         agent = null;
       }

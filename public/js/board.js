@@ -20,7 +20,12 @@ export function connectBoard({ station = '', onState = () => {}, onAlert = () =>
       while (queue.length) ws.send(queue.shift());
     };
     ws.onmessage = (e) => {
-      const msg = JSON.parse(e.data);
+      let msg;
+      try {
+        msg = JSON.parse(e.data);
+      } catch {
+        return; // one malformed frame must not stop state updates for the page
+      }
       if (msg.type === 'state') onState(msg.state);
       else if (msg.type === 'alert') onAlert(msg);
       else if (msg.type === 'ack') {
@@ -40,8 +45,14 @@ export function connectBoard({ station = '', onState = () => {}, onAlert = () =>
       const id = ++seq;
       const data = JSON.stringify({ type: 'action', id, action });
       return new Promise((resolve) => {
-        pending.set(id, resolve);
-        setTimeout(() => pending.has(id) && (pending.delete(id), resolve({ ok: false, error: 'board_timeout' })), timeoutMs);
+        const timer = setTimeout(() => {
+          pending.delete(id);
+          resolve({ ok: false, error: 'board_timeout' });
+        }, timeoutMs);
+        pending.set(id, (result) => {
+          clearTimeout(timer); // don't hold the timer (and this closure) for the full window
+          resolve(result);
+        });
         ws.readyState === WebSocket.OPEN ? ws.send(data) : queue.push(data);
       });
     },

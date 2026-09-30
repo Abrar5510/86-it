@@ -2,14 +2,14 @@
 // mountChrome({ active: 'kds', title: 'Kitchen display', outs: true }) -> { setStatus, setOuts }
 // Every page calls it at the top of its module script so all four screens stay consistent.
 
+import { esc } from './board.js';
+
 const NAV = [
   { href: '/station', key: 'station', label: 'Station' },
   { href: '/kds', key: 'kds', label: 'Kitchen' },
   { href: '/foh', key: 'foh', label: 'Front of house' },
   { href: '/menu', key: 'menu', label: 'Online menu' },
 ];
-
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 export function mountChrome({ active = '', title = '', outs = false } = {}) {
   const nav = NAV.map((n) => `<a href="${n.href}"${n.key === active ? ' aria-current="page"' : ''}>${n.label}</a>`).join('');

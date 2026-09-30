@@ -13,3 +13,15 @@ videos/86-it-demo/build/
 videos/86-it-demo/.thumbnails/
 videos/86-it-demo/.hyperframes/preview/
 videos/86-it-demo/.hyperframes/history-id
+videos/86-it-demo/AGENTS.md
+videos/86-it-demo/CLAUDE.md
+videos/86-it-demo/RECORDING.md
+videos/86-it-demo/.hyperframes/
+videos/86-it-demo/.media/
+videos/86-it-demo/tools/probe*.mjs
+videos/86-it-demo/samples/
+deck/AGENTS.md
+deck/CLAUDE.md
+deck/.hyperframes/
+deck/.thumbnails/
+deck/snapshots/

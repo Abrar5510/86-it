@@ -15,7 +15,7 @@ flowchart LR
     TTS[Text-to-speech]
   end
   subgraph CF["Cloudflare"]
-    W[Worker<br/>/api/token · /api/tools/* · /ws]
+    W[Worker<br/>/api/token · /ws]
     DO[(Kitchen<br/>Durable Object)]
   end
   SCREENS[KDS · FOH · Online menu]
@@ -25,7 +25,6 @@ flowchart LR
   DO -- ack --> AG -- tool.result --> LLM
   DO -- state broadcast --> SCREENS
   AG -. GET /api/token (token + session config) .-> W
-  PHONE[Owner phone line<br/>stored agent, Twilio SIP] -. HTTP tools .-> W
 ```
 
 ## A single command, end to end ("86 salmon")
@@ -40,16 +39,18 @@ sequenceDiagram
   Station->>AAI: input.audio (streaming)
   AAI-->>Station: input.speech.started / stopped
   AAI-->>Station: transcript.user "86 salmon"
-  AAI-->>Station: tool.call mark_86 {item:"salmon", remaining:0}
-  Station->>DO: {type:"action", action:{type:"mark_86",...}}
+  Station->>DO: instant lane: {type:"action", action:{type:"mark_86",...}}
   DO->>DO: applyAction() + storage.put()
   DO-->>Screens: {type:"state"} (all sockets)
   DO-->>Station: {type:"ack", result:{ok, say:"86 Salmon."}}
-  Station->>AAI: tool.result (immediately)
+  AAI-->>Station: tool.call mark_86 (~2 s later, deduped)
+  Station->>AAI: tool.result (the instant lane's result)
   AAI-->>Station: reply.audio "86 salmon." + transcript.agent
   AAI-->>Station: reply.done
 ```
-The screens update when the Durable Object broadcasts, before the agent even speaks its confirmation. The spoken reply is only a confirmation; the UI doesn't wait for it.
+The screens update when the Durable Object broadcasts, before the LLM has even chosen a tool. The spoken reply is only a confirmation; the UI doesn't wait for it.
+
+**Instant lane.** On every final `transcript.user`, `public/js/intent.js` tries a strict grammar (every rule is anchored on a command word). A match runs the action immediately; the LLM's own `tool.call` for the same action arrives 2–4 s later and is matched against recent instant actions (`DEDUPE_MS`, 6 s), so it is acknowledged without running twice. Voids and unknown items are never handled by the grammar: the LLM asks "Void 7?" or "Which item?". If the grammar doesn't match, nothing changes and the LLM path runs as before. `node eval/replay.js` measures the grammar against recorded sessions.
 
 ## Components
 
@@ -83,12 +84,9 @@ Per screen:
 |---|---|
 | `GET /ws` | Upgrades to the Kitchen DO WebSocket |
 | `GET /api/token` | Mints an AssemblyAI temporary token; returns it with `wsUrl` and the inline `session` config |
-| `GET /api/tools/inventory` | HTTP tool (owner phone agent) |
-| `GET /api/tools/report` | HTTP tool (owner phone agent) |
-| `GET /api/health` | Shows whether the API key and tool secret are configured |
+| `GET /api/health` | Shows whether the API key is configured |
 | everything else | Static assets from `public/` |
 
-HTTP tools require the `x-tool-secret` header. The value is stored encrypted on the AssemblyAI agent and never returned by their API.
 
 ### Kitchen Durable Object (`src/kitchen.js`)
 - One instance (`idFromName('main')`) per restaurant, holding the authoritative state and persisting it to DO storage on every change.
@@ -108,27 +106,27 @@ HTTP tools require the `x-tool-secret` header. The value is stored encrypted on 
 |---|---|
 | Browser connects straight to AssemblyAI | Audio has no extra hop; latency is AssemblyAI's pipeline plus the network |
 | Station: inline session config | The documented way to use client-side tools; config lives in git and changes apply on the next session, with nothing to sync |
-| Owner line: stored agent with HTTP tools | A phone call has no browser to run tools, so AssemblyAI calls the Worker; the header secret is stored encrypted on the agent |
+| Grammar acts first, the LLM confirms | The LLM path alone took 2–3 s from speech end to screen. The grammar acts as soon as the transcript lands, and the Voice Agent still does what the grammar can't: speech, fuzzy phrasing, confirmations |
 | Station tools are all client-side | They update the UI instantly and work on localhost with no public endpoint |
 | ≤ 10 tools per agent | AssemblyAI's guidance: tool-selection accuracy drops above that |
 | Menu `enum` on item parameters + keyterms | Two layers of accuracy: keyterms bias transcription toward menu words, and the enum restricts what the LLM can output |
 | Durable Object instead of a database | Holds state and fans out in real time in one place; no extra service |
-| In-memory + DO storage, single restaurant | `ponytail:` enough for the demo. Multi-tenant = one DO per restaurant id |
+| In-memory + DO storage, single restaurant | Enough for the demo. Multi-tenant = one DO per restaurant id |
 | Replies of 1–5 words | A kitchen can't take chatty audio; short replies also reduce time to first audio |
 | Managed LLM (no BYO) | BYO LLM is only allowed on stored agents, and on this account the only gateway model available has no tool support. The managed model got every tested command right |
 | Chatter → silence (prompt) + push-to-talk fallback | Continuous listening in a loud kitchen is the biggest false-trigger risk |
 
 ## Latency budget (measure with `npm run eval`; live breakdown in docs/SUBMISSION.md)
-| Segment | Target |
-|---|---|
-| End of speech → turn detected | set by AssemblyAI turn detection |
-| Turn → `tool.call` | LLM tool selection |
-| `tool.call` → DO ack → screens updated | < 100 ms (edge round trip) |
-| **End of speech → screens updated** | **< 1.5 s** |
+| Segment | Instant lane | LLM path |
+|---|---|---|
+| End of speech → final transcript | ≈ 0 ms (replay p50) | same |
+| Transcript → `tool.call` | not needed | ~2 s (LLM tool selection) |
+| Action → DO ack → screens updated | edge round trip | edge round trip |
+| **End of speech → screens updated** | **transcript + round trip** | **~2–4 s** |
 
 The station shows the live median as "median speech→action", measured from `input.speech.stopped` to the DO ack.
 
 ## Limits and next steps
 - **One restaurant per deployment.** Next step: key the DO by restaurant id and add auth.
-- **Stations aren't told apart.** Every station gets every alert. Next step: a station id in the alert and the session.
+- **Alerts go to the station that fired the ticket.** If that station is offline, every connected station gets the alert. Tickets created elsewhere (online orders, the seed) have no owner, so they go to every station.
 - **Mock POS.** Next step: Toast / Square inventory APIs behind the same `act()` interface.

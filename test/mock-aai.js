@@ -273,4 +273,17 @@ wss.on('connection', (ws, req) => {
   });
 });
 
+// Without a listener, a port clash (EADDRINUSE) surfaces as an unhandled 'error' event and an
+// opaque stack trace instead of a usable message. `ws` re-emits the server's error on the
+// WebSocketServer, and that emit happens first — so both need the handler.
+const onServerError = (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`mock AssemblyAI: port ${PORT} is already in use — stop the other mock (or set MOCK_PORT).`);
+    process.exit(1);
+  }
+  throw err;
+};
+server.on('error', onServerError);
+wss.on('error', onServerError);
+
 server.listen(PORT, () => console.log(`mock AssemblyAI Voice Agent API on http://localhost:${PORT}`));

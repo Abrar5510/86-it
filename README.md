@@ -1,7 +1,7 @@
-# 86 It 🔥🎙️
+# 86 It
 
 **Kitchen voice control, built on the AssemblyAI Voice Agent API.**
-A cook says "86 salmon" into a headset. Within about a second, salmon is greyed out on the kitchen display, on the servers' screen and on the online ordering page. Cooks can also say "Fire 12", "Bump 4", "How long on 7?" or "All day fries" without touching a screen.
+A cook says "86 salmon" into a headset. The moment the transcript lands, salmon is greyed out on the kitchen display, on the servers' screen and on the online ordering page. Cooks can also say "Fire 12", "Bump 4", "How long on 7?" or "All day fries" without touching a screen.
 
 | Page | What it is |
 |---|---|
@@ -11,13 +11,14 @@ A cook says "86 salmon" into a headset. Within about a second, salmon is greyed 
 | `/foh` | Front of house: what servers can sell right now, search + category filters, kitchen feed |
 | `/menu` | Mock delivery/online ordering page (open it on your phone) |
 
-Docs: [Architecture](docs/ARCHITECTURE.md) · [API & tools](docs/API.md) · [Submission / pitch](docs/SUBMISSION.md) · [Product plan](PLAN.md) · [Build plan](BUILD_PLAN.md) · [Demo video](videos/86-it-demo/renders/86-it-demo-final.mp4)
+Docs: [Architecture](docs/ARCHITECTURE.md) · [API & tools](docs/API.md) · [Submission / pitch](docs/SUBMISSION.md) · [Demo video](videos/86-it-demo/renders/86-it-demo-final.mp4)
 
 ---
 
 ## Stack
 - **AssemblyAI Voice Agent API**: speech-to-text, LLM, text-to-speech, turn detection, tool calling. One WebSocket straight from the browser.
-- **Cloudflare Workers + Durable Objects**: token minting, HTTP tools, shared kitchen state, real-time fan-out to every screen.
+- **Cloudflare Workers + Durable Objects**: token minting, shared kitchen state, real-time fan-out to every screen.
+- **Instant lane**: a small command grammar (`public/js/intent.js`) acts on the final transcript straight away, while the Voice Agent's LLM speaks the confirmation and handles anything the grammar doesn't match. Its tool call for the same command is deduped.
 - **Plain HTML/JS**: no framework and no build step. Dev dependencies: `wrangler`, plus `ws` for the test mock.
 
 ## Prerequisites
@@ -25,7 +26,7 @@ Docs: [Architecture](docs/ARCHITECTURE.md) · [API & tools](docs/API.md) · [Sub
 - An AssemblyAI API key: https://www.assemblyai.com/dashboard
 - A Cloudflare account (the free plan works): https://dash.cloudflare.com/sign-up
 - Chrome, Edge or Safari for the station page (Firefox can't record the mic into a 24 kHz audio context)
-- Optional: `ffmpeg` (for eval clips), a Twilio account (owner phone line)
+- Optional: `ffmpeg` (for eval clips)
 
 ## Quick start (local)
 ```bash
@@ -52,11 +53,11 @@ In the browser, speak or make any sound into the mic in bursts. Each burst plays
 npx wrangler login
 npx wrangler deploy                                   # prints https://86-it.<you>.workers.dev
 npx wrangler secret put ASSEMBLYAI_API_KEY
-npx wrangler secret put TOOL_SECRET                   # same value as in .dev.vars (only used by the phone line)
 ```
-Check `https://86-it.<you>.workers.dev/api/health`. You should see `{"ok":true,"key":true,"toolSecret":true}`. That's it: open `/station` on the public URL.
+Check `https://86-it.<you>.workers.dev/api/health`. You should see `{"ok":true,"key":true}`. That's it: open `/station` on the public URL.
 
 ## Accuracy eval
+Headline numbers are in [SUBMISSION.md](docs/SUBMISSION.md#results). `node eval/replay.js` re-scores the instant lane against the recorded runs offline, with no credits.
 ```bash
 npm run eval:clips          # synthesizes 43 clips with macOS `say` (+ noisy copies)
 npm run eval                # clean audio (uses AssemblyAI credits: 43 short sessions)
@@ -76,31 +77,18 @@ npm run sessions:save -- --id sess_…   # one session (ids appear in the statio
 ```
 `npm run eval` downloads its own sessions automatically. On the station, **Download log** saves the full event log, including session ids.
 
-## Owner phone line (optional, Twilio)
-A stored agent with only HTTP tools answers "What did we 86 tonight?" over the phone. AssemblyAI calls the Worker's `/api/tools/*` endpoints directly, so deploy first.
-```bash
-# in .dev.vars: PUBLIC_URL=https://86-it.<you>.workers.dev  and the same TOOL_SECRET as the Worker
-npm run agent:owner          # creates/updates the agent, writes OWNER_AGENT_ID
-npm run agent:owner -- --dry # print the request without sending it
-```
-Then follow AssemblyAI's Twilio guide to point a Twilio number at the agent over SIP:
-https://www.assemblyai.com/docs/voice-agents/voice-agent-api/deploy
-
-> Not tested yet: the Twilio part needs a Twilio account. Test the tools first with `curl -H "x-tool-secret: …" https://…/api/tools/report`.
-
 ## Configuration
 | What | Where |
 |---|---|
 | Menu (names, aliases, stock, prices) | `data/menu.json` (keyterms and tool enums are generated from it) |
 | Station prompt | `agent/prompt.md` |
 | Station tools, voice, voice focus, extra keyterms | `agent/station.json` |
-| Owner phone agent | `agent/owner.json` |
 | Late-ticket alert threshold | `ALERT_AFTER_MS` in `src/state.js` (10 min) |
 | Demo tickets | `rushTickets()` in `src/state.js` |
 
 ## Project layout
 ```
-src/worker.js        routes: /api/token, /api/tools/*, /api/health, /ws → Durable Object
+src/worker.js        routes: /api/token, /api/health, /ws → Durable Object
 src/kitchen.js       Kitchen Durable Object: state, WebSocket fan-out, late-ticket alarm
 src/state.js         pure reducer + fuzzy item matching (shared by DO, tests, eval)
 src/session.js       builds the station's inline session config (shared by Worker, eval, tests)
@@ -109,8 +97,8 @@ public/station.html   voice station              public/js/audio.js   mic captur
 public/kds.html       kitchen display            public/js/board.js   Durable Object client
 public/foh.html       front of house             public/js/chrome.js  shared header + 86 strip
 public/menu.html      online menu                public/js/intent.js  command grammar (typed + voice)
-agent/               station config + prompt, owner phone agent config
-scripts/agent.js     create/update the owner phone agent via REST
+agent/               station config + prompt
+scripts/sessions.js  download AssemblyAI session recordings
 eval/                clips, runner, results
 test/mock-aai.js     fake AssemblyAI server for credit-free testing
 ```
@@ -123,5 +111,4 @@ test/mock-aai.js     fake AssemblyAI server for credit-free testing
 | Agent talks but screens don't change | Check the green dot in the header (board connection) and the event log for `warn` lines |
 | Log shows "retrying without voice_focus" | AssemblyAI rejected the inline noise setting; the station reconnects without it automatically. To stop the retry, remove the `voice_focus` block from `agent/station.json` |
 | Log shows `session.error` about a tool or field | The message names the field; fix `agent/station.json` and restart |
-| Owner line tools fail | `PUBLIC_URL` must be the deployed https URL and `TOOL_SECRET` must match the Worker secret. Rerun `npm run agent:owner` |
 | Agent reacts to chatter | Turn on push-to-talk (hold Space, or map a USB foot pedal to Space) |
