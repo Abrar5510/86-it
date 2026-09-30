@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#131518" media="(prefers-color-scheme: dark)">
   <title>Ember &amp; Oak · Order online</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/app.css">
 </head>
-<body class="light">
+<body>
   <div class="phone">
     <header>
       <h1>Ember &amp; Oak</h1>
-      <div class="sub">Delivery · 25–35 min · <span id="live">connecting…</span></div>
+      <div class="sub">Delivery, 25-35 min <span id="live"></span></div>
     </header>
     <div id="sold-banner"></div>
     <div id="list" aria-live="polite"></div>
@@ -22,13 +22,14 @@
       <ul class="lines" id="cart-lines"></ul>
       <div class="totals"><span>Subtotal</span><b id="cart-total">$0.00</b></div>
       <button class="place" id="order" disabled>Add items</button>
-      <button class="clear" id="clear" hidden>clear cart</button>
+      <button class="clear" id="clear" hidden>Clear cart</button>
     </div>
   </div>
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
     import { mountChrome } from '/js/chrome.js';
+    import { icon } from '/js/icons.js';
     import { connectBoard, esc } from '/js/board.js';
 
     const chrome = mountChrome({ active: 'menu', title: 'Online menu' });
@@ -54,7 +55,7 @@
         const item = byId.get(id);
         if (!item || item.out) {
           cart.delete(id);
-          if (item) toast(`${item.name} just sold out — removed from your cart`);
+          if (item) toast(`${item.name} just sold out and was removed from your cart`);
         } else if (qty > item.count) {
           cart.set(id, item.count);
         }
@@ -70,9 +71,9 @@
             ? '<span class="soldout">Sold out</span>'
             : qty
               ? `<div class="qty">
-                   <button data-dec="${i.id}" aria-label="Remove one ${esc(i.name)}">−</button>
+                   <button data-dec="${i.id}" aria-label="Remove one ${esc(i.name)}">${icon('minus')}</button>
                    <b>${qty}</b>
-                   <button data-inc="${i.id}" aria-label="Add one ${esc(i.name)}" ${qty >= i.count ? 'disabled' : ''}>+</button>
+                   <button data-inc="${i.id}" aria-label="Add one ${esc(i.name)}" ${qty >= i.count ? 'disabled' : ''}>${icon('plus')}</button>
                  </div>`
               : `<button class="add" data-inc="${i.id}" ${i.count <= 0 ? 'disabled' : ''}>Add</button>`;
           return `<div class="dish ${i.out ? 'out' : ''}">
@@ -88,21 +89,21 @@
       // Sold-out banner
       const out = state.items.filter((i) => i.out);
       document.getElementById('sold-banner').innerHTML = out.length
-        ? `<div class="sold-banner">Off the menu right now: <b>${out.map((i) => esc(i.name)).join('</b>, <b>')}</b> — the kitchen called it.</div>`
+        ? `<div class="sold-banner">Off the menu right now: <b>${out.map((i) => esc(i.name)).join('</b>, <b>')}</b>. The kitchen called it.</div>`
         : '';
 
       // Cart
       const lines = [...cart];
       document.getElementById('cart-lines').innerHTML = lines.map(([id, qty]) => {
         const i = byId.get(id);
-        return `<li><span class="n">${esc(i.name)}</span><span class="c">×${qty}</span><span class="c">$${(i.price * qty).toFixed(2)}</span><button class="rm" data-rm="${id}" aria-label="Remove ${esc(i.name)}">✕</button></li>`;
+        return `<li><span class="n">${esc(i.name)}</span><span class="c">×${qty}</span><span class="c">$${(i.price * qty).toFixed(2)}</span><button class="rm" data-rm="${id}" aria-label="Remove ${esc(i.name)}">${icon('x')}</button></li>`;
       }).join('');
       const n = [...cart.values()].reduce((a, b) => a + b, 0);
       const total = lines.reduce((s, [id, qty]) => s + qty * byId.get(id).price, 0);
       document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
       const btn = document.getElementById('order');
       btn.disabled = !n;
-      btn.textContent = n ? `Place order · ${n} item${n > 1 ? 's' : ''}` : 'Add items';
+      btn.textContent = n ? `Place order, ${n} item${n > 1 ? 's' : ''}` : 'Add items';
       document.getElementById('clear').hidden = !n;
     }
 
@@ -110,7 +111,7 @@
       onState(s) { state = s; render(); },
       onStatus(on) {
         chrome.setStatus(on);
-        document.getElementById('live').textContent = on ? 'live menu' : 'reconnecting…';
+        document.getElementById('live').textContent = on ? '' : 'Reconnecting…';
       },
     });
 
@@ -140,7 +141,7 @@
       const r = await board.act({ type: 'add_ticket', lines, source: 'online' });
       if (r.ok) {
         cart.clear();
-        toast(`Order placed · ticket ${r.table}`);
+        toast(`Order placed. Ticket ${r.table}`);
       } else {
         toast(r.error === 'sold_out' ? `Sorry, ${r.item} just sold out` : 'Could not place order');
       }

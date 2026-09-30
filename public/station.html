@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>86 It · Station</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
@@ -16,26 +15,26 @@
         <button class="orb" id="orb" aria-label="Start voice station">Start</button>
       </div>
       <div class="phase" id="phase">offline</div>
-      <p class="ptt-hint">station <b class="mono" id="station-id">line</b> · <a id="station-other" href="/station?id=expo">open a second station →</a></p>
+      <p class="ptt-hint">Station <b class="mono" id="station-id">line</b>. <a id="station-other" href="/station?id=expo">Open a second station</a></p>
 
       <div class="said" id="said" aria-live="polite">
-        <p class="said-empty" id="said-empty">Transcript lands here — start the station, or type a command below.</p>
+        <p class="said-empty" id="said-empty">Transcript lands here. Start the station, or type a command below.</p>
       </div>
 
       <div class="stats">
         <div class="stat"><b id="st-cmd">0</b><span>commands</span></div>
-        <div class="stat"><b id="st-lat">–</b><span>median speech→action</span></div>
+        <div class="stat"><b id="st-lat">-</b><span>median speech to action</span></div>
         <div class="stat"><b id="st-open">0</b><span>open tickets</span></div>
       </div>
 
       <div class="spark" id="spark" aria-hidden="true"></div>
-      <div class="spark-legend"><span>last 20 latencies</span><span id="spark-max"></span></div>
+      <div class="spark-legend"><span>Last 20 latencies</span><span id="spark-max"></span></div>
 
       <form class="cmdline" id="cmd-form" autocomplete="off">
         <div class="row">
           <label class="field">
-            <span class="mono" aria-hidden="true">❯</span>
-            <input id="cmd" type="text" placeholder="type a command — “fire 12”" aria-label="Type a kitchen command">
+            <span data-icon="microphone"></span>
+            <input id="cmd" type="text" placeholder="Type a command, like “fire 12”" aria-label="Type a kitchen command">
           </label>
           <button class="btn primary" type="submit">Run</button>
         </div>
@@ -47,7 +46,7 @@
           <button type="button">How long on 7?</button>
           <button type="button">All day fries</button>
         </div>
-        <p class="ptt-hint">Same instant grammar as the mic — runs even with no microphone and no AssemblyAI key.</p>
+        <p class="ptt-hint">Same instant grammar as the mic. Works with no microphone and no AssemblyAI key.</p>
       </form>
 
       <div class="controls">
@@ -57,9 +56,9 @@
       <div class="controls">
         <button class="btn" id="seed">Seed dinner rush</button>
         <button class="btn" id="reset">Reset</button>
-        <button class="btn" id="save-log" title="Download the full event log (session ids included)">Download log</button>
+        <button class="btn" id="save-log" title="Download the full event log (session ids included)"><span data-icon="download-simple"></span>Download log</button>
       </div>
-      <p class="ptt-hint">Voice: “Fire 12” · “86 salmon” · “How long on 7?” · “Two short rib left” · “All day fries”</p>
+      <p class="ptt-hint">Try: “Fire 12”, “86 salmon”, “How long on 7?”, “Two short rib left”, “All day fries”.</p>
     </section>
 
     <section class="panel log-panel">
@@ -87,7 +86,7 @@
     })();
     document.getElementById('station-id').textContent = stationId;
     document.getElementById('station-other').href = stationId === 'line' ? '/station?id=expo' : '/station';
-    document.getElementById('station-other').textContent = stationId === 'line' ? 'open a second station →' : 'back to the main station →';
+    document.getElementById('station-other').textContent = stationId === 'line' ? 'Open a second station' : 'Back to the main station';
 
     const $ = (id) => document.getElementById(id);
     const logEl = $('log');
@@ -132,10 +131,10 @@
       $('spark').innerHTML = bars.length
         ? bars.map((v) => `<i class="${v > 1500 ? 'hot' : ''}" style="height:${Math.max(8, Math.round((v / max) * 100))}%" title="${v}ms"></i>`).join('')
         : Array(20).fill('<i style="height:2px;opacity:.2"></i>').join('');
-      $('spark-max').textContent = bars.length ? `${max}ms max` : 'no speech yet';
+      $('spark-max').textContent = bars.length ? `${max}ms max` : 'No speech yet';
     }
     renderSpark();
-    log('info', `station "${stationId}" — its own session; late-ticket alerts for tickets it fires are routed here`);
+    log('info', `station "${stationId}": its own session. Late-ticket alerts for tickets it fires are routed here`);
 
     let items = [];
     const board = connectBoard({
@@ -258,10 +257,10 @@
         onTranscript('agent', result.say, true);
         log('agent', result.say);
       } else if (!result.ok) {
-        log('warn', `${action.type} → ${result.error}${result.options ? ` (${result.options.join(', ')})` : ''}`);
+        log('warn', `${action.type}: ${result.error}${result.options ? ` (${result.options.join(', ')})` : ''}`);
       } else {
         typedPending = null;
-        log('ack', `${action.type} → ${result.say} (typed)`);
+        log('ack', `${action.type}: ${result.say} (typed)`);
         if (result.say) onTranscript('agent', result.say, true);
       }
     }

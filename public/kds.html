@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>86 It · Kitchen</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
@@ -18,7 +17,7 @@
           <button role="tab" aria-selected="false" data-filter="fired">Fired <b id="c-fired">0</b></button>
           <button role="tab" aria-selected="false" data-filter="late">Late <b id="c-late">0</b></button>
         </div>
-        <span class="hint">voice: “fire 7” · “bump 12” — or tap a ticket</span>
+        <span class="hint">Say “fire 7” or “bump 12”, or tap a ticket.</span>
       </div>
       <section class="tickets" id="tickets" aria-live="polite"></section>
     </div>
@@ -28,9 +27,9 @@
         <h2>Service</h2>
         <div class="kpis">
           <div class="kpi"><b id="k-open">0</b><span>open</span></div>
-          <div class="kpi warm"><b id="k-warn">0</b><span>5–10 min</span></div>
+          <div class="kpi warm"><b id="k-warn">0</b><span>5-10 min</span></div>
           <div class="kpi hot"><b id="k-late">0</b><span>late</span></div>
-          <div class="kpi"><b id="k-oldest">–</b><span>oldest</span></div>
+          <div class="kpi"><b id="k-oldest">-</b><span>oldest</span></div>
         </div>
       </section>
       <section class="panel pad">
@@ -43,6 +42,7 @@
 
   <script type="module">
     import { mountChrome } from '/js/chrome.js';
+    import { icon } from '/js/icons.js';
     import { connectBoard, minutesSince, esc } from '/js/board.js';
 
     const chrome = mountChrome({ active: 'kds', title: 'Kitchen display', outs: true });
@@ -70,7 +70,7 @@
       document.getElementById('k-open').textContent = open.length;
       document.getElementById('k-warn').textContent = warn.length;
       document.getElementById('k-late').textContent = late.length;
-      document.getElementById('k-oldest').textContent = open.length ? `${minutesSince(open[0].createdAt)}m` : '–';
+      document.getElementById('k-oldest').textContent = open.length ? `${minutesSince(open[0].createdAt)}m` : '-';
       document.getElementById('c-all').textContent = open.length;
       document.getElementById('c-fired').textContent = open.filter((t) => t.status === 'fired').length;
       document.getElementById('c-late').textContent = late.length;
@@ -85,7 +85,7 @@
         const changed = prevStatus && prevStatus.get(t.id) !== `${t.status}|${t.allergy}`;
         return `<article class="ticket ${t.status} ${age >= LATE_MIN ? 'late' : age >= WARN_MIN ? 'warn' : ''} ${changed ? 'flash' : ''}"
             data-id="${t.id}" data-table="${t.table}" data-created="${t.createdAt}" tabindex="0">
-          ${t.allergy ? `<div class="allergy">⚠ ${esc(t.allergy)}</div>` : ''}
+          ${t.allergy ? `<div class="allergy">${icon('warning')}${esc(t.allergy)}</div>` : ''}
           <div class="head">
             <span class="table">${t.table}${t.source === 'online' ? '<span class="src">online</span>' : ''}</span>
             <span class="age">${mmss(ageOf(t))}</span>
@@ -93,9 +93,9 @@
           <div class="meta"><span class="status ${t.status}">${t.status}</span></div>
           <ul>${t.lines.map((l) => `<li class="${outIds.has(l.id) ? 'gone' : ''}"><b>${l.qty}</b>${esc(l.name)}</li>`).join('')}</ul>
           <div class="actions">
-            <button class="btn sm amber" data-act="fire" ${t.status === 'fired' ? 'disabled' : ''}>Fire</button>
-            <button class="btn sm ghost" data-act="hold" ${t.status === 'held' ? 'disabled' : ''}>Hold</button>
-            <button class="btn sm primary" data-act="bump">Bump</button>
+            <button class="btn sm amber" data-act="fire" ${t.status === 'fired' ? 'disabled' : ''}>${icon('fire')}Fire</button>
+            <button class="btn sm ghost" data-act="hold" ${t.status === 'held' ? 'disabled' : ''}>${icon('pause')}Hold</button>
+            <button class="btn sm primary" data-act="bump">${icon('check')}Bump</button>
           </div>
           <div class="agebar"><i></i></div>
         </article>`;
